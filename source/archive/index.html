@@ -1,0 +1,19 @@
+{% extends "_layout/base.html" %}
+{% block title %}
+归档
+{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>归档</h1>
+</div>
+<div class="row">
+  <div class="span14">
+      <ul>
+      {% for post in posts %}
+         <li><span>{{ post.pub_time }}</span> » <a href="{{ post.url }}">{{ post.title }}</a></li>
+      {% endfor %}
+      </ul>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "_layout/base.html" %}
+{% block title %}
+{{ post.title }}
+{% endblock %}
+{% block description %}
+{{ post.html | striptags | truncate(length=255 ,killwords=False)}}
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{{ post.title }} <small>由{{ post.author }}发表于 {{ post.pub_time }}</small></h1>
+</div>
+<div class="row">
+    <div class="span10">
+        {{ post.html | safe }}
+
+        <hr/>
+
+        {% if settings.share == True %}
+        <script type="text/javascript">var switchTo5x=true;</script>
+        <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+        <script type="text/javascript">stLight.options({publisher: "3171cacb-0cc2-4ddc-9234-35abbf517f8b", doNotHash: true, doNotCopy: false, hashAddressBar: false});</script>
+        <span class='st_googleplus_hcount' displayText='Google +'></span>
+        <span class='st_twitter_hcount' displayText='Tweet'></span>
+        <span class='st_facebook_hcount' displayText='Facebook'></span>
+        <span class='st_sina_hcount' displayText='Sina'></span>
+        <span class='st_linkedin_hcount' displayText='LinkedIn'></span>
+        <span class='st_pinterest_hcount' displayText='Pinterest'></span>
+        <span class='st_email_hcount' displayText='Email'></span>
+        {% endif %}
+
+        <hr/>
+
+        {% if settings.comment_system == 'disqus' %}
+        {% include "_comments/disqus.html" %}
+        {% elif settings.comment_system == 'duoshuo' %}
+        {% include "_comments/duoshuo.html" %}
+        {% endif %}
+    </div>
+
+    <div class="span4">
+        {% include "_layout/sidebar.html" %}
+    </div>
+
+</div>
+{% endblock %}

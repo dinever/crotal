@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {% for post in posts %}
+    <url><loc>{{ settings.site_url }}{{ post.url }}
+    </loc>
+    <lastmod>{{ post.pub_time.strftime('%Y-%m-%d') }}</lastmod>
+    <priority>0.6</priority>
+</url>
+{% endfor %}
+</urlset>

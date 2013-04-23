@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <atom:link rel="hub" href="http://pubsubhubbub.appspot.com" xmlns:atom="http://www.w3.org/2005/Atom"/>
+    <title>{{ settings.site_name }}</title>
+    <generator>Turtpress</generator>
+    <link>{{ settings.site_url }}</link>
+
+    {% for post in posts %}
+    <item>
+      <title>{{ post.title }}</title>
+      <description>{{ post.html | striptags | truncate(length=255 ,killwords=True)}}</description>
+      <link>{{ settings.site_url }}{{ post.url }}</link>
+      <pubDate>{{ post.pub_time}} +0800</pubDate>
+      2012-11-20 13:55:00 +0100
+      <guid>{{ settings.site_url }}{{ post.url }}</guid>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

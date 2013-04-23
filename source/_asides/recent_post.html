@@ -1,0 +1,7 @@
+<h2>最新文章</h2>
+<div id="post">
+{% for post in posts | batch(5) | first%}
+<a href="{{ post.url }}">{{ post.title }}</a><br/>
+{% endfor %}
+</div>
+
