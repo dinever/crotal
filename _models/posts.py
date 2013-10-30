@@ -7,10 +7,10 @@ import re
 import settings
 from .category import Categories
 
+permalink = settings.permalink.split('/')
 
 class Posts():
     def __init__(self):
-        """docstring for __init__"""
         self.header = ''
         self.title = ''
         self.pub_time = datetime
@@ -41,13 +41,24 @@ class Posts():
             slug = PinYin()
             slug.load_word()
             self.slug = slug.hanzi2pinyin_split(string= self.title, split="-")
-        self.url = '/blog/'+ self.pub_time.strftime("%G") + '/' + self.pub_time.strftime("%m") + '/' + self.pub_time.strftime("%d") + '/' + self.slug + '/'
+        for item in permalink:
+            if item.startswith(':'):
+                self.url = self.url + '/' + self.escape_keywords(item.replace(':',''))
+            else:
+                self.url = self.url + '/' + item
+
+    def escape_keywords(self, word):
+        return {
+            'year':self.pub_time.strftime('%G'),
+            'month':self.pub_time.strftime('%m'),
+            'day':self.pub_time.strftime('%d'),
+            'title':self.slug,
+        }[word]
 
     def save_info(self, keyword):
         return re.compile(r'(?<=' + keyword + ':\s).*?(?=\n)').findall(self.header)[0]
 
-    def save_html(self):
-        f = self.content
+    def code_highlight(self, content):
         a = re.compile(r'\`\`\`[\s\S]*?\n\`\`\`')
         finds = a.findall(self.content)
         for find in finds:
@@ -61,6 +72,10 @@ class Posts():
             else:
                 lexer = get_lexer_by_name('text', stripall=True)
             find_new = highlight(find_new, lexer, HtmlFormatter(linenos=True))
-            f = f.replace(find, find_new)
-        self.html = markdown(f)
-        self.front_html = markdown(f.split('<!--more-->')[0])
+            content = content.replace(find, find_new)
+        return content
+
+    def save_html(self):
+        content = self.code_highlight(self.content)
+        self.html = markdown(content)
+        self.front_html = markdown(content.split('<!--more-->')[0])
