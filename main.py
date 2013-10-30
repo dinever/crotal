@@ -2,7 +2,7 @@ import os
 import sys
 from unipath import Path
 from _models.posts import Posts
-from views import Views
+from source.views import Views
 from copydir import copyDir
 
 posts = []
@@ -36,7 +36,12 @@ def posts_sort():
 if __name__ == '__main__':
     flag = 0
     if len(sys.argv) == 1:
-        print 'Usage: make'
+        print 'Usage:'
+        print 'to generate the site:    python main.py make'
+        print 'to create a new post:    python main.py new_post "your title here"'
+        print 'to create a new page:    python main.py new_page'
+        print 'to start the server:     python main.py server'
+        print '                         python main.py server 8080'
 
     elif len(sys.argv) != 1:
         if sys.argv[1] == 'make':
@@ -44,6 +49,18 @@ if __name__ == '__main__':
             print 'Static Files Copied.'
             make_site()
             print 'Site Generated.'
+        elif sys.argv[1] == 'server':
+            del sys.argv[1]
+            from source import server
+            server.main()
+        elif sys.argv[1] == 'new_page':
+            del sys.argv[1]
+            from source import create_pages
+            create_pages.create_page()
+        elif sys.argv[1] == 'new_post':
+            del sys.argv[1]
+            from source import create_post
+            create_post.create_post()
     else:
         usraccount = sys.argv[1]
         passwd = sys.argv[2]
