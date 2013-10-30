@@ -5,15 +5,13 @@ import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from unipath import Path
 
-dir = Path(__file__).ancestor(1).absolute()
+dir = Path(__file__).ancestor(2).absolute()
 
 ROUTES = (
     ['', dir +'/_sites'],
 )
 
-
 class RequestHandler(SimpleHTTPRequestHandler):
-
     def translate_path(self, path):
 
         root = os.getcwd()
@@ -40,5 +38,8 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
         return path
 
-if __name__ == '__main__':
+def main():
     BaseHTTPServer.test(RequestHandler, BaseHTTPServer.HTTPServer)
+
+if __name__ == '__main__':
+    main()
