@@ -2,13 +2,13 @@ import os
 import sys
 from unipath import Path
 from _models.posts import Posts
-from templates import Views
+from views import Views
 from copydir import copyDir
 
 posts = []
 categories = []
 
-def get_path():
+def make_site():
     dir = Path(__file__).ancestor(1).absolute()
     posts_titles = os.listdir(dir.child('_posts'))
     templates = os.listdir(dir)
@@ -31,7 +31,7 @@ def posts_sort():
     for i in range(len(posts)):
         for j in range(len(posts)):
             if  posts[i].pub_time > posts[j].pub_time:
-                posts[i] ,posts[j] = posts[j], posts[i]
+                posts[i], posts[j] = posts[j], posts[i]
 
 if __name__ == '__main__':
     flag = 0
@@ -42,9 +42,8 @@ if __name__ == '__main__':
         if sys.argv[1] == 'make':
             copyDir('_static','_sites')
             print 'Static Files Copied.'
-            get_path()
+            make_site()
             print 'Site Generated.'
-
     else:
         usraccount = sys.argv[1]
         passwd = sys.argv[2]
