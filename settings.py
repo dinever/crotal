@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
-site_name = "Turtpress"
+site_name = "Trutpress"
 
 site_url = "http://turtpress.com"
 
@@ -9,6 +9,8 @@ site_description = "这里填写你对站点的描述"
 site_description = site_description.decode('utf-8')
 
 author = 'dinever'
+
+permalink='blog/:year/:month/:day/:title'
 
 asides = ['_asides/about.html','_asides/recent_post.html']
 #Available sidebars: weibo twitter about recent_post friends
@@ -27,9 +29,9 @@ twitter_uid = ''
 #choose 'disqus' or 'duoshuo'
 comment_system = 'disqus'
 
-disqus_shortname = 'dineversblog'
+disqus_shortname = ''
 
-duoshuo_shortname = 'dinever'
+duoshuo_shortname = ''
 
 # SHARE SETTINGS
 
