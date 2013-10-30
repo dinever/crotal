@@ -3,7 +3,7 @@ import sys
 from unipath import Path
 from _models.posts import Posts
 from source.views import Views
-from copydir import copyDir
+from source.copydir import copyDir
 
 posts = []
 categories = []
