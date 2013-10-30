@@ -43,29 +43,12 @@ class Views():
             open(dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
 
     def save_posts(self, posts):
-            try:
-                os.mkdir(dir+'/'+'_sites/'+'blog/')
-            except:
-                pass
-            for post in posts:
-                try:
-                    os.mkdir(dir+'/'+'_sites/'+'blog/'+ post.pub_time.strftime("%G"))
-                except:
-                    pass
-                try:
-                    os.mkdir(dir+'/'+'_sites/'+'blog/'+ post.pub_time.strftime("%G") + '/' + post.pub_time.strftime("%m"))
-                except:
-                    pass
-                try:
-                    os.mkdir(dir+'/'+'_sites/'+'blog/'+ post.pub_time.strftime("%G") + '/' + post.pub_time.strftime("%m") + '/' + post.pub_time.strftime("%d"))
-                except:
-                    pass
-                try:
-                    os.mkdir(dir+'/'+'_sites/'+'blog/'+ post.pub_time.strftime("%G") + '/' + post.pub_time.strftime("%m") + '/' + post.pub_time.strftime("%d") + '/' +post.slug)
-                except:
-                    pass
-                rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, settings = settings)
-                open(dir+'/'+'_sites/'+'blog/'+ post.pub_time.strftime("%G") + '/' + post.pub_time.strftime("%m") + '/' + post.pub_time.strftime("%d") + '/' +post.slug + '/index.html', 'w+').write(rendered.encode('utf8'))
+        for post in posts:
+            if not os.path.exists(dir + '/_sites' + post.url):
+                os.makedirs(dir + '/_sites' + post.url)
+            print post.url
+            rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, settings = settings)
+            open(dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
     def save_get_more(self, posts):
         try:
