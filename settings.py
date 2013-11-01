@@ -21,7 +21,7 @@ twitter_tweet_button = True
 
 # SOCIAL SETTINGS
 
-weibo_uid = '2991975565'
+weibo_uid = ''
 twitter_uid = ''
 
 # COMMENT SYSTEM SETTINGS
