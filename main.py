@@ -7,9 +7,9 @@ from source.copydir import copyDir
 
 posts = []
 categories = []
+dir = Path(__file__).ancestor(1).absolute()
 
 def make_site():
-    dir = Path(__file__).ancestor(1).absolute()
     posts_titles = os.listdir(dir.child('_posts'))
     templates = os.listdir(dir)
     categories_tmp = []
@@ -45,6 +45,8 @@ if __name__ == '__main__':
 
     elif len(sys.argv) != 1:
         if sys.argv[1] == 'make':
+            import shutil
+            shutil.rmtree(dir + '/' + '_sites/')
             copyDir('_static','_sites')
             print 'Static Files Copied.'
             make_site()
