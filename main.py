@@ -1,6 +1,8 @@
 import os
 import sys
 from unipath import Path
+
+import settings
 from _models.posts import Posts
 from source.views import Views
 from source.copydir import copyDir
@@ -33,16 +35,19 @@ def posts_sort():
             if  posts[i].pub_time > posts[j].pub_time:
                 posts[i], posts[j] = posts[j], posts[i]
 
+def usage():
+    print 'Usage:'
+    print 'to generate the site:    python main.py make'
+    print 'to create a new post:    python main.py new_post "your title here"'
+    print 'to create a new page:    python main.py new_page'
+    print 'to start the server:     python main.py server'
+    print 'to deploy the site:      python main.py deploy'
+    print '                         python main.py server 8080'
+
 if __name__ == '__main__':
     flag = 0
     if len(sys.argv) == 1:
-        print 'Usage:'
-        print 'to generate the site:    python main.py make'
-        print 'to create a new post:    python main.py new_post "your title here"'
-        print 'to create a new page:    python main.py new_page'
-        print 'to start the server:     python main.py server'
-        print '                         python main.py server 8080'
-
+        usage()
     elif len(sys.argv) != 1:
         if sys.argv[1] == 'make':
             import shutil
@@ -63,6 +68,13 @@ if __name__ == '__main__':
             del sys.argv[1]
             from source import create_post
             create_post.create_post()
+        elif sys.argv[1] == 'deploy':
+            if settings.deploy_default == 'rsync':
+                from source import rsync
+                rsync.rsyncDeploy(str(dir) + '/_sites/')
+            else:
+                print 'Only support rsync for now.'
+        else:
+            usage()
     else:
-        usraccount = sys.argv[1]
-        passwd = sys.argv[2]
+        usage()

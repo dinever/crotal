@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
+deploy_default = "rsync"
+ip = 'root@106.187.101.54'
+deployDir = '/var/www/test'
 
 site_name = "Trutpress"
 
