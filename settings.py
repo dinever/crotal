@@ -4,7 +4,7 @@ deploy_default = "rsync"
 ip = 'root@106.187.101.54'
 deployDir = '/var/www/test'
 
-site_name = "Trutpress"
+site_name = "Turtpress"
 
 site_url = "http://turtpress.com"
 
