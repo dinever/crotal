@@ -5,9 +5,9 @@ categories: turtpress
 slug: hello-world
 ---
 
-欢迎来到Turtpress，这是你的第一篇文章，修改或删除它，然后开始你的折腾之旅吧！
+Welcome to Turtpress, This is the first post, modify or remove it, and start your own blog!
 
 ```python
-for i in range(1,100:
+for i in range(1,100):
     print 'hello world'
 ```

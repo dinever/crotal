@@ -1,22 +1,22 @@
 {% extends "_layout/base.html" %}
 {% block title %}
-首页
+Index
 {% endblock %}
 {% block content %}
 <div class="page-header">
-    <h1>首页<small></small></h1>
+    <h1>Index<small></small></h1>
 </div>
 <div class="row">
     <div class="col-md-8">
         {% for post in posts | batch(5) | first%}
         <div id="article">
-            <div id="time">由{{ post.author }}发表于 {{ post.pub_time }} </div>
+            <div id="time">Posted by {{ post.author }}, {{ post.pub_time }} </div>
             <div id="header">
                 <h1><a href="{{ post.url }}">{{ post.title }}</a></h1>
             </div>
             {{ post.front_html |safe }}
             <p>...</p>
-            <a id="more" href='{{ post.url }}'>阅读全文</a>
+            <a id="more" href='{{ post.url }}'>Continue</a>
             <div id="info">
                 <p><a class="lowkey" href="{{ post.url }}#disqus_thread"></a>
             </div>
