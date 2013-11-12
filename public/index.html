@@ -7,7 +7,7 @@
     <h1>首页<small></small></h1>
 </div>
 <div class="row">
-    <div class="span10">
+    <div class="col-md-8">
         {% for post in posts | batch(5) | first%}
         <div id="article">
             <div id="time">由{{ post.author }}发表于 {{ post.pub_time }} </div>
@@ -36,11 +36,11 @@
      (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
      }());
  </script>
- <div class="span4">
+ <div class="col-md-4">
      {% include "_layout/sidebar.html" %}
  </div>
 
- <div class="span9" id="niubi"></div>
+ <div class="col-md-9" id="niubi"></div>
  </div>
  <script type="text/javascript" charset="utf-8">
      if (!num) { var num =0;}
