@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <atom:link rel="hub" href="http://pubsubhubbub.appspot.com" xmlns:atom="http://www.w3.org/2005/Atom"/>
+    <title>Turtpress</title>
+    <generator>Turtpress</generator>
+    <link>http://turtpress.com</link>
+
+        <item>
+      <title>Hello, World</title>
+      <description>Welcome to Turtpress, This is the first post, modify or remove it, and start your own blog! 1 2for i in range(1,100): print 'hello world'</description>
+      <link>http://turtpress.com/blog/2013/04/20/hello-world</link>
+      <pubDate>2013-04-20 15:10:00 +0800</pubDate>
+      2012-11-20 13:55:00 +0100
+      <guid>http://turtpress.com/blog/2013/04/20/hello-world</guid>
+    </item>
+      </channel>
+</rss>
