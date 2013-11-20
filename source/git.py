@@ -1,11 +1,17 @@
 import os
 import settings
 from datetime import datetime
+from unipath import Path
 
-def rsyncDeploy(dir):
+dir = Path(__file__).ancestor(2).absolute()
+
+def rsyncDeploy():
+    deploy_dir = dir + '/_sites/'
+    os.chdir(deploy_dir)
+    os.system("ls")
     os.system("git add .")
     os.system("git add -u")
-    message = "Site updated at %s" % datetime.strptime(datetime.now(), "%Y-%m-%d %H:%M:%S")
+    message = "Site updated at %s" % datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
     os.system("git commit -m '%s'" % message)
     os.system("git push origin %s" % deploy_branch --force)
     print "Github Pages deploy complete"
@@ -16,7 +22,7 @@ def setupGithubPages():
     repo_url = raw_inpout("Repository url: ")
 
 if __name__ == '__main__':
-    rsyncDeploy(dir)
+    rsyncDeploy()
 
 #  if args.repo
 #    repo_url = args.repo
