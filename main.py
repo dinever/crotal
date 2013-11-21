@@ -3,9 +3,9 @@ import sys
 from unipath import Path
 
 import settings
-from _models.posts import Posts
-from source.views import Views
-from source.copydir import copyDir
+from turtpress.models.posts import Posts
+from turtpress.views import Views
+from turtpress.copydir import copyDir
 
 posts = []
 categories = []
@@ -58,20 +58,23 @@ if __name__ == '__main__':
             print 'Site Generated.'
         elif sys.argv[1] == 'server':
             del sys.argv[1]
-            from source import server
+            from turtpress import server
             server.main()
         elif sys.argv[1] == 'new_page':
             del sys.argv[1]
-            from source import create_pages
+            from turtpress import create_pages
             create_pages.create_page()
         elif sys.argv[1] == 'new_post':
             del sys.argv[1]
-            from source import create_post
+            from turtpress import create_post
             create_post.create_post()
         elif sys.argv[1] == 'deploy':
             if settings.deploy_default == 'rsync':
-                from source import rsync
+                from turtpress import rsync
                 rsync.rsyncDeploy(str(dir) + '/_sites/')
+            elif settings.deploy_default == 'git':
+                from turtpress import git
+                git.rsyncDeploy()
             else:
                 print 'Only support rsync for now.'
         else:
