@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
-deploy_default = "rsync"
+deploy_default = "git"
 ip = 'root@106.187.101.54'
 deployDir = '/var/www/test'
+
+theme = 'default'
 
 site_name = "Turtpress"
 
