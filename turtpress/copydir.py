@@ -2,7 +2,7 @@
 
 import os
 
-def copyDir(srcDir, tarDir):
+def copy_dir(srcDir, tarDir):
     for item in os.listdir(srcDir):
         srcFile = os.path.join(srcDir, item)
         tarFile = os.path.join(tarDir, item)
@@ -16,7 +16,7 @@ def copyDir(srcDir, tarDir):
                 pass
 
         if os.path.isdir(srcFile):
-            copyDir(srcFile, tarFile)
+            copy_dir(srcFile, tarFile)
 
 if __name__ == '__main__':
     copyDir(srcDir, tarDir)
