@@ -1,39 +1,44 @@
 import os
 import sys
 from unipath import Path
+import timeit
+from collections import OrderedDict
 
 import settings
 from turtpress.models.posts import Posts
 from turtpress.views import Views
 from turtpress.copydir import copyDir
 
-posts = []
-categories = []
 dir = Path(__file__).ancestor(1).absolute()
 
+def remove_site():
+    '''
+    Remove site.
+    '''
+    import shutil
+    shutil.rmtree(dir + '/' + '_sites/')
+
 def make_site():
-    posts_titles = os.listdir(dir.child('_posts'))
-    templates = os.listdir(dir)
-    categories_tmp = []
-    for post_title in posts_titles:
-        post_tmp = Posts()
-        post_tmp.save(open(dir + '/_posts/' + post_title, 'r').read().decode('utf8'))
-        posts.append(post_tmp)
-        for category in post_tmp.categories:
-            categories_tmp.append(category)
-
-    categories = sorted({}.fromkeys(categories_tmp).keys())
-    posts_sort()
+    start = timeit.default_timer()
+    copyDir('_static','_sites')
+    copydir_time = timeit.default_timer()
     view = Views()
-    view.save(posts, categories)
-    view.save_posts(posts)
-    view.save_get_more(posts)
+    view.get_posts()
+    get_posts_time = timeit.default_timer()
+    view.save(view.posts, view.categories)
+    save_other_files_time = timeit.default_timer()
+    view.save_posts(view.posts)
+    save_posts_time = timeit.default_timer()
 
-def posts_sort():
-    for i in range(len(posts)):
-        for j in range(len(posts)):
-            if  posts[i].pub_time > posts[j].pub_time:
-                posts[i], posts[j] = posts[j], posts[i]
+    #Caculating running time
+    statistics = OrderedDict([('Static Files Copied', copydir_time - start),
+             ('Posts got', get_posts_time - copydir_time),
+             ('Other files saved', save_other_files_time - get_posts_time),
+             ('Posts saved', save_posts_time - save_other_files_time)])
+    for string, time in statistics.items():
+        print '{0:20} in {1:3.3f} seconds'.format(string, time)
+    print '-------------------------------------'
+    print '{0:20} in {1:3.3f} seconds'.format('Site Generated', save_posts_time - start)
 
 def usage():
     print 'Usage:'
@@ -50,12 +55,7 @@ if __name__ == '__main__':
         usage()
     elif len(sys.argv) != 1:
         if sys.argv[1] == 'make':
-            import shutil
-            shutil.rmtree(dir + '/' + '_sites/')
-            copyDir('_static','_sites')
-            print 'Static Files Copied.'
             make_site()
-            print 'Site Generated.'
         elif sys.argv[1] == 'server':
             del sys.argv[1]
             from turtpress import server
