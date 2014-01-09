@@ -37,7 +37,7 @@ class Posts():
         try:
             self.slug = self.save_info('slug')
         except:
-            from _plugins.pinyin.pinyin import PinYin
+            from turtpress.plugins.pinyin.pinyin import PinYin
             slug = PinYin()
             slug.load_word()
             self.slug = slug.hanzi2pinyin_split(string= self.title, split="-")
@@ -71,7 +71,7 @@ class Posts():
                 lexer = get_lexer_by_name(type, stripall=True)
             else:
                 lexer = get_lexer_by_name('text', stripall=True)
-            find_new = highlight(find_new, lexer, HtmlFormatter(linenos=True))
+            find_new = highlight(find_new, lexer, HtmlFormatter(linenos=False))
             content = content.replace(find, find_new)
         return content
 

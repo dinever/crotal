@@ -14,6 +14,7 @@ class Views():
     def __init__(self):
         """docstring for __init__"""
         self.posts = []
+        self.page = 0
         self.categories = []
         self.templates_path = []
         self.templates = [] #html files start not with '_'
@@ -43,9 +44,11 @@ class Views():
                 os.mkdir(dir + '/' + '_sites/' + item)
             except Exception:
                 pass
+        self.page = len(self.posts)/5 + 1
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts=posts, settings = settings, categories = categories)
+            rendered = self.j2_env.get_template(item).render(posts=posts, settings = settings, categories = categories, current_page = 1, page = self.page)
             open(dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
+        self.save_index_pages()
 
     def get_posts(self):
         '''
@@ -63,7 +66,6 @@ class Views():
             self.posts.append(post_tmp)
             for category in post_tmp.categories:
                 categories_tmp.append(category)
-
         categories = sorted({}.fromkeys(categories_tmp).keys())
         self.posts_sort()
 
@@ -72,7 +74,6 @@ class Views():
             for j in range(len(self.posts)):
                 if  self.posts[i].pub_time > self.posts[j].pub_time:
                     self.posts[i], self.posts[j] = self.posts[j], self.posts[i]
-
 
     def save_posts(self, posts):
         '''
@@ -83,3 +84,10 @@ class Views():
                 os.makedirs(dir + '/_sites' + post.url)
             rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, settings = settings)
             open(dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
+
+    def save_index_pages(self):
+        for i in range(1, self.page):
+            if not os.path.exists(dir + '/_sites/blog/page/' + str(i+1)):
+                os.makedirs(dir + '/_sites/blog/page/' + str(i+1))
+            rendered = self.j2_env.get_template('index.html').render(posts = self.posts[i*5:(i+1)*5], settings = settings, current_page = i+1, page = self.page)
+            open(dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))

@@ -19,6 +19,7 @@ def remove_site():
     shutil.rmtree(dir + '/' + '_sites/')
 
 def make_site():
+    remove_site()
     start = timeit.default_timer()
     copyDir('_static','_sites')
     copydir_time = timeit.default_timer()
