@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-<title>{% block title %}首页{% endblock %}| {{ settings.site_name }}</title>
-<meta name="author" content="{{ settings.author }}">
+<title>{% block title %}首页{% endblock %}| {{ config.site_name }}</title>
+<meta name="author" content="{{ config.author }}">
 
 
-<meta name="description" content="{% block description %}{{ settings.site_description }}{% endblock %}">
+<meta name="description" content="{% block description %}{{ config.site_description }}{% endblock %}">
 
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 
-<meta property="og:site_name" content="Heroic Yang's Blog"/>
+<meta property="og:site_name" content=""/>
 
 <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
 <link rel="stylesheet" href="/css/about.css" media="screen" type="text/css">
@@ -28,8 +28,8 @@
 <body>
 <div class="wrapper">
     <header id="header"><div class="title">
-            <h1><a href="/">{{ settings.site_name }}</a></h1>
-            <p><a href="index.html">{{ settings.sub_title }}</a></p>
+            <h1><a href="/">{{ config.title }}</a></h1>
+            <p><a href="index.html">{{ config.subtitle }}</a></p>
         </div>
         <nav class="nav">
             <ul>
@@ -66,7 +66,7 @@
     <div class="theme-copyright">
         Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
         |
-        Powered by <a href="http://turtpress.com" target="_blank">Turtpress</a>
+        Powered by <a href="http://crotal.org" target="_blank">Crotal</a>
     </div>
     <div class="clearfix"></div></footer>
 

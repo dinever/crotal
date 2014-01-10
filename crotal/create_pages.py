@@ -4,9 +4,8 @@
 import os
 import sys
 from unipath import Path
-from turtpress.models.pages import Pages
-from turtpress.views import Views
-import settings
+from crotal.models.pages import Pages
+from crotal.views import Views
 
 author = 'dinever'
 
@@ -37,7 +36,7 @@ SAMPLE = """{%% extends "_layout/base.html" %%}
 
 """
 
-def create_page():
+def create_page(config):
     flag = 0
     if len(sys.argv) == 1:
         title = raw_input('页面标题/Page Title:')
@@ -48,8 +47,8 @@ def create_page():
         except:
             pass
         open('public/'+ slug +'/index.html', 'w+').write(SAMPLE % (title, description, title, slug))
-        print 'make之后就可以去' + settings.site_url + '/' + slug + '/' + '查看新页面了。'
-        print 'You can view the new page at ' + settings.site_url + '/' + slug + '/' + ' after make the site.'
+        print 'make之后就可以去' + config.url + '/' + slug + '/' + '查看新页面了。'
+        print 'You can view the new page at ' + config.url + '/' + slug + '/' + ' after make the site.'
 
     elif len(sys.argv) != 1:
         open('_posts/' + file_title, 'w+').write(new_post)

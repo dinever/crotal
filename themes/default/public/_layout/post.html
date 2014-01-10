@@ -10,7 +10,7 @@
             <header>
 
                 <div class="icon"></div>
-                <time datetime="{{ post.pub_time }}"><a href="{{ post.url }}">{{ post.pub_time.strftime('%Y-%m-%d') }}</a></time>
+                <time datetime="{{ post.pub_time }}"><a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</a></time>
 
                 <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
             </header>
@@ -21,9 +21,9 @@
 
             </div>
 
-        {% if settings.comment_system == 'disqus' %}
+        {% if config.comment_system == 'disqus' %}
         {% include "_comments/disqus.html" %}
-        {% elif settings.comment_system == 'duoshuo' %}
+        {% elif config.comment_system == 'duoshuo' %}
         {% include "_comments/duoshuo.html" %}
         {% endif %}
         </article>

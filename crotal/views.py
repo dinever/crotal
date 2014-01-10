@@ -4,16 +4,16 @@ import re
 from unipath import Path
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
-from turtpress.models.posts import Posts
-from turtpress.plugins.markdown.jinja_markdown import MarkdownExtension
-import settings
+from crotal.models.posts import Posts
+from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
 
 theme_name = 'default'
 theme_dir = 'themes/' + theme_name + '/public/'
 
 class Views():
-    def __init__(self):
+    def __init__(self, config):
         """docstring for __init__"""
+        self.config = config
         self.dir = Path(__file__).ancestor(2).absolute()
         self.posts = []
         self.page = 0
@@ -51,7 +51,7 @@ class Views():
                 pass
         self.page = len(self.posts)/5 + 1
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts=posts, settings = settings, categories = categories, current_page = 1, page = self.page)
+            rendered = self.j2_env.get_template(item).render(posts=posts, config = self.config, categories = categories, current_page = 1, page = self.page)
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
@@ -66,7 +66,7 @@ class Views():
         templates = os.listdir(self.dir)
         categories_tmp = []
         for post_title in posts_titles:
-            post_tmp = Posts()
+            post_tmp = Posts(self.config)
             post_tmp.save(open(self.dir + '/_posts/' + post_title, 'r').read().decode('utf8'))
             self.posts.append(post_tmp)
             for category in post_tmp.categories:
@@ -87,12 +87,12 @@ class Views():
         for post in posts:
             if not os.path.exists(self.dir + '/_sites' + post.url):
                 os.makedirs(self.dir + '/_sites' + post.url)
-            rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, settings = settings)
+            rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, config = self.config)
             open(self.dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
     def save_index_pages(self):
         for i in range(1, self.page):
             if not os.path.exists(self.dir + '/_sites/blog/page/' + str(i+1)):
                 os.makedirs(self.dir + '/_sites/blog/page/' + str(i+1))
-            rendered = self.j2_env.get_template('index.html').render(posts = self.posts[i*5:(i+1)*5], settings = settings, current_page = i+1, page = self.page)
+            rendered = self.j2_env.get_template('index.html').render(posts = self.posts[i*5:(i+1)*5], config = self.config, current_page = i+1, page = self.page)
             open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))

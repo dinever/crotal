@@ -2,17 +2,16 @@
 # -*- coding:utf-8 -*-
 
 import sys
-from turtpress.models.posts import Posts
-from turtpress.plugins.pinyin.pinyin import PinYin
+from crotal.models.posts import Posts
+from crotal.plugins.pinyin.pinyin import PinYin
 from datetime import datetime
-import settings
 
 author = 'dinever'
 
 SAMPLE = """---
 title: "%s"
 date: %s
-category:
+categories:
 slug: %s
 ---
 

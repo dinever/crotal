@@ -1,5 +1,4 @@
 import os
-import settings
 from datetime import datetime
 from unipath import Path
 

@@ -4,13 +4,11 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from datetime import datetime
 import re
-import settings
 from .category import Categories
 
-permalink = settings.permalink.split('/')
-
 class Posts():
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
         self.header = ''
         self.title = ''
         self.pub_time = datetime
@@ -29,7 +27,7 @@ class Posts():
         self.save_html()
         self.title = self.save_info('title').replace('"','')
         self.pub_time = datetime.strptime(self.save_info('date'),"%Y-%m-%d %H:%M")
-        self.author = settings.author
+        self.author = self.config.author
         try:
             self.categories = self.save_info('categories').split(' ')
         except:
@@ -37,11 +35,11 @@ class Posts():
         try:
             self.slug = self.save_info('slug')
         except:
-            from turtpress.plugins.pinyin.pinyin import PinYin
+            from crotal.plugins.pinyin.pinyin import PinYin
             slug = PinYin()
             slug.load_word()
             self.slug = slug.hanzi2pinyin_split(string= self.title, split="-")
-        for item in permalink:
+        for item in self.config.permalink.split('/'):
             if item.startswith(':'):
                 self.url = self.url + '/' + self.escape_keywords(item.replace(':',''))
             else:

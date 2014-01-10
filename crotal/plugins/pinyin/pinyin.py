@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 
 """
+    PinYin
     Author:cleverdeng
     E-mail:clverdeng@gmail.com
 """
@@ -11,12 +12,13 @@ __all__ = ["PinYin"]
 
 import os.path
 
+from unipath import Path
 
 class PinYin(object):
-    def __init__(self, dict_file='word.data'):
+    def __init__(self):
+        dir = Path(__file__).ancestor(1).absolute()
         self.word_dict = {}
-        self.dict_file = dict_file
-
+        self.dict_file = dir + '/word.data'
 
     def load_word(self):
         if not os.path.exists(self.dict_file):
@@ -66,9 +68,4 @@ class PinYin(object):
 
 
 if __name__ == "__main__":
-    test = PinYin()
-    test.load_word()
-    string = "钓鱼岛是中国的"
-    print "in: %s" % string
-    print "out: %s" % str(test.hanzi2pinyin(string=string))
-    print "out: %s" % test.hanzi2pinyin_split(string=string, split="-")
+    pass
