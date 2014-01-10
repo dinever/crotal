@@ -1,0 +1,9 @@
+<div class="widget recent-posts">
+<h3 class="title">最近文章</h3>
+<ul class="entry">
+{% for post in posts | batch(5) | first%}
+<li><a href="{{ post.url }}">{{ post.title }}</a></li>
+{% endfor %}
+</ul>
+</div>
+

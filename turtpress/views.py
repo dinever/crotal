@@ -9,6 +9,8 @@ from turtpress.plugins.markdown.jinja_markdown import MarkdownExtension
 import settings
 
 dir = Path(__file__).ancestor(2).absolute()
+theme_name = settings.theme
+theme_dir = 'themes/' + theme_name + '/public/'
 
 class Views():
     def __init__(self):
@@ -19,18 +21,18 @@ class Views():
         self.templates_path = []
         self.templates = [] #html files start not with '_'
         self.other_files = [] #html files start with '_'
-        os.path.walk(r'public', self.processDirectory, None)
-        self.j2_env = Environment(loader=FileSystemLoader(dir + '/public/'), trim_blocks=True, extensions=[MarkdownExtension])
+        os.path.walk(repr(theme_dir)[1:-1], self.processDirectory, None)
+        self.j2_env = Environment(loader=FileSystemLoader(theme_dir), trim_blocks=True, extensions=[MarkdownExtension])
 
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
             file_path = dirname + '/' + filename
-            if len(re.compile(r'\.html$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace('public/', ''))) == 0:
-                self.templates_path.append(file_path.replace('public/', ''))
-            elif len(re.compile(r'\.xml$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace('public/', ''))) == 0:
-                self.templates_path.append(file_path.replace('public/', ''))
+            if len(re.compile(r'\.html$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(theme_dir, ''))) == 0:
+                self.templates_path.append(file_path.replace(theme_dir, ''))
+            elif len(re.compile(r'\.xml$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(theme_dir, ''))) == 0:
+                self.templates_path.append(file_path.replace(theme_dir, ''))
             elif len(re.compile(r'^_.*').findall(filename)) == 0:
-                self.other_files.append(file_path.replace('public/', ''))
+                self.other_files.append(file_path.replace(theme_dir, ''))
 
     def get_templates(self):
         pass
@@ -66,7 +68,7 @@ class Views():
             self.posts.append(post_tmp)
             for category in post_tmp.categories:
                 categories_tmp.append(category)
-        categories = sorted({}.fromkeys(categories_tmp).keys())
+        self.categories = sorted({}.fromkeys(categories_tmp).keys())
         self.posts_sort()
 
     def posts_sort(self):

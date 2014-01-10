@@ -12,12 +12,15 @@ def remove_site():
     Remove site.
     '''
     import shutil
-    shutil.rmtree(dir + '/' + '_sites/')
+    try:
+        shutil.rmtree(dir + '/' + '_sites/')
+    except:
+        pass
 
 def generate_site():
     remove_site()
     start = timeit.default_timer()
-    copy_dir('_static','_sites')
+    copy_dir('themes/' + settings.theme + '/static','_sites')
     copydir_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Static Files Copied', copydir_time - start)
 
