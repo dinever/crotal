@@ -25,7 +25,7 @@ class Posts():
     def save(self, content):
         get_header = re.compile(r'---[\s\S]*?---')
         self.header = get_header.findall(content)[0]
-        self.content = content.replace(self.header, '')
+        self.content = content.replace(self.header, '', 1)
         self.save_html()
         self.title = self.save_info('title').replace('"','')
         self.pub_time = datetime.strptime(self.save_info('date'),"%Y-%m-%d %H:%M")

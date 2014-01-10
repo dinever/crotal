@@ -13,7 +13,7 @@ import os.path
 
 
 class PinYin(object):
-    def __init__(self, dict_file='turtpress/plugins/pinyin/word.data'):
+    def __init__(self, dict_file='word.data'):
         self.word_dict = {}
         self.dict_file = dict_file
 

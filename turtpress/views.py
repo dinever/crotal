@@ -8,13 +8,13 @@ from turtpress.models.posts import Posts
 from turtpress.plugins.markdown.jinja_markdown import MarkdownExtension
 import settings
 
-dir = Path(__file__).ancestor(2).absolute()
-theme_name = settings.theme
+theme_name = 'default'
 theme_dir = 'themes/' + theme_name + '/public/'
 
 class Views():
     def __init__(self):
         """docstring for __init__"""
+        self.dir = Path(__file__).ancestor(2).absolute()
         self.posts = []
         self.page = 0
         self.categories = []
@@ -23,6 +23,9 @@ class Views():
         self.other_files = [] #html files start with '_'
         os.path.walk(repr(theme_dir)[1:-1], self.processDirectory, None)
         self.j2_env = Environment(loader=FileSystemLoader(theme_dir), trim_blocks=True, extensions=[MarkdownExtension])
+
+    def get_directory(self, dir):
+        self.dir = dir
 
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
@@ -43,13 +46,13 @@ class Views():
         '''
         for item in self.other_files:
             try:
-                os.mkdir(dir + '/' + '_sites/' + item)
+                os.mkdir(self.dir + '/' + '_sites/' + item)
             except Exception:
                 pass
         self.page = len(self.posts)/5 + 1
         for item in self.templates_path:
             rendered = self.j2_env.get_template(item).render(posts=posts, settings = settings, categories = categories, current_page = 1, page = self.page)
-            open(dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
+            open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
     def get_posts(self):
@@ -57,14 +60,14 @@ class Views():
         Get posts from markdown files
         '''
         posts_titles = []
-        for item in os.listdir(dir.child('_posts')):
+        for item in os.listdir(self.dir.child('_posts')):
             if not item.startswith('.'):
                 posts_titles.append(item)
-        templates = os.listdir(dir)
+        templates = os.listdir(self.dir)
         categories_tmp = []
         for post_title in posts_titles:
             post_tmp = Posts()
-            post_tmp.save(open(dir + '/_posts/' + post_title, 'r').read().decode('utf8'))
+            post_tmp.save(open(self.dir + '/_posts/' + post_title, 'r').read().decode('utf8'))
             self.posts.append(post_tmp)
             for category in post_tmp.categories:
                 categories_tmp.append(category)
@@ -82,14 +85,14 @@ class Views():
         Save posts .html files.
         '''
         for post in posts:
-            if not os.path.exists(dir + '/_sites' + post.url):
-                os.makedirs(dir + '/_sites' + post.url)
+            if not os.path.exists(self.dir + '/_sites' + post.url):
+                os.makedirs(self.dir + '/_sites' + post.url)
             rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, settings = settings)
-            open(dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
+            open(self.dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
     def save_index_pages(self):
         for i in range(1, self.page):
-            if not os.path.exists(dir + '/_sites/blog/page/' + str(i+1)):
-                os.makedirs(dir + '/_sites/blog/page/' + str(i+1))
+            if not os.path.exists(self.dir + '/_sites/blog/page/' + str(i+1)):
+                os.makedirs(self.dir + '/_sites/blog/page/' + str(i+1))
             rendered = self.j2_env.get_template('index.html').render(posts = self.posts[i*5:(i+1)*5], settings = settings, current_page = i+1, page = self.page)
-            open(dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))
+            open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))
