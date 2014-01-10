@@ -25,6 +25,7 @@ def generate_site():
     print '{0:20} in {1:3.3f} seconds'.format('Static Files Copied', copydir_time - start)
 
     view = Views()
+    view.get_directory(dir)
     view.get_posts()
     get_posts_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Posts got', get_posts_time - copydir_time)
@@ -59,6 +60,7 @@ if __name__ == '__main__':
         elif sys.argv[1] == 'server':
             del sys.argv[1]
             from turtpress import server
+            server.dir = dir
             server.main()
         elif sys.argv[1] == 'new_page':
             del sys.argv[1]

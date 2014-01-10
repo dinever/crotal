@@ -7,13 +7,12 @@ from unipath import Path
 
 dir = Path(__file__).ancestor(2).absolute()
 
-ROUTES = (
-    ['', dir +'/_sites'],
-)
-
 class RequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
 
+        ROUTES = (
+            ['', dir +'/_sites'],
+        )
         root = os.getcwd()
 
         for pattern, rootdir in ROUTES:
