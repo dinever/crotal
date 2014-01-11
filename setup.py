@@ -6,8 +6,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name = "crotal",
-    version = "0.0.1",
+    name = "Crotal",
+    version = "0.2.0",
     packages = find_packages(),
 
     include_package_data = True,
@@ -24,5 +24,5 @@ setup(
     author = "Dinever",
     author_email = 'dingpeixuan911@gmail.com',
     url = "http://www.dinever.com",
-    description = 'a demo for setuptools',
+    description = 'A static site generator written in python.',
 )
