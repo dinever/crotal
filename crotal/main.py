@@ -29,13 +29,14 @@ def generate_site(config):
     copydir_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Static Files Copied', copydir_time - start)
 
-    view = Views(config)
     try:
         os.mkdir('.private/')
     except:
         pass
     copy_dir('themes/' + config.theme + '/public', '.private')
     copy_dir('public/', '.private')
+
+    view = Views(config)
     view.get_directory(dir)
     view.get_posts()
     get_posts_time = timeit.default_timer()
