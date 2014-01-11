@@ -1,0 +1,3 @@
+recursive-include crotal *.data
+
+recursive-include crotal/init *.yml *.markdown *.html *.css

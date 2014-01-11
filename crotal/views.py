@@ -1,20 +1,18 @@
 # -*- coding:utf-8 -*-
 import os.path
 import re
-from unipath import Path
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
 from crotal.models.posts import Posts
 from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
 
-theme_name = 'default'
-theme_dir = 'themes/' + theme_name + '/public/'
+theme_dir = '.private/'
 
 class Views():
     def __init__(self, config):
         """docstring for __init__"""
         self.config = config
-        self.dir = Path(__file__).ancestor(2).absolute()
+        self.dir = ''
         self.posts = []
         self.page = 0
         self.categories = []
@@ -40,7 +38,7 @@ class Views():
     def get_templates(self):
         pass
 
-    def save(self, posts, categories):
+    def save(self, posts):
         '''
         Save rendered files except posts.
         '''
@@ -51,7 +49,7 @@ class Views():
                 pass
         self.page = len(self.posts)/5 + 1
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts=posts, config = self.config, categories = categories, current_page = 1, page = self.page)
+            rendered = self.j2_env.get_template(item).render(posts=posts, config = self.config, current_page = 1, page = self.page)
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
@@ -60,7 +58,7 @@ class Views():
         Get posts from markdown files
         '''
         posts_titles = []
-        for item in os.listdir(self.dir.child('_posts')):
+        for item in os.listdir(self.dir + '/_posts'):
             if not item.startswith('.'):
                 posts_titles.append(item)
         templates = os.listdir(self.dir)
