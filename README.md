@@ -6,7 +6,7 @@ A static site generator which is written in Python, easy to use, and free to all
 
 todo
 
-#许可证
+#License
 (BSD Licenses)
 
 Copyright (c) 2013, [Peixuan Ding](http://dinever.com)
