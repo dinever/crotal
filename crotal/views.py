@@ -6,6 +6,8 @@ from jinja2.environment import Environment
 from crotal.models.posts import Posts
 from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
 
+theme_name = 'default'
+theme_dir = 'themes/' + theme_name + '/public/'
 theme_dir = '.private/'
 
 class Views():
@@ -38,7 +40,7 @@ class Views():
     def get_templates(self):
         pass
 
-    def save(self, posts):
+    def save(self, posts, categories):
         '''
         Save rendered files except posts.
         '''
@@ -49,7 +51,7 @@ class Views():
                 pass
         self.page = len(self.posts)/5 + 1
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts=posts, config = self.config, current_page = 1, page = self.page)
+            rendered = self.j2_env.get_template(item).render(posts=posts, config = self.config, categories = categories, current_page = 1, page = self.page)
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 

@@ -1,4 +1,4 @@
-import os, sys, timeit, shutil
+import os, sys, timeit
 
 import config
 from crotal.views import Views
@@ -11,6 +11,7 @@ def remove_site():
     '''
     Remove site.
     '''
+    import shutil
     try:
         shutil.rmtree(dir + '/_sites/')
     except:
@@ -28,20 +29,19 @@ def generate_site(config):
     copydir_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Static Files Copied', copydir_time - start)
 
+    view = Views(config)
     try:
         os.mkdir('.private/')
     except:
         pass
     copy_dir('themes/' + config.theme + '/public', '.private')
     copy_dir('public/', '.private')
-
-    view = Views(config)
     view.get_directory(dir)
     view.get_posts()
     get_posts_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Posts got', get_posts_time - copydir_time)
 
-    view.save(view.posts)
+    view.save(view.posts, view.categories)
     save_other_files_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Other files saved', save_other_files_time - get_posts_time)
 
@@ -55,7 +55,7 @@ def generate_site(config):
     try:
         shutil.rmtree(dir + '/.private/')
     except Exception, e:
-        raise e
+        pass
 
 def usage():
     print 'Usage:'
