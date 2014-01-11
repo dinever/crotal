@@ -52,6 +52,7 @@ def generate_site(config):
 
     print '-------------------------------------'
     print '{0:20} in {1:3.3f} seconds'.format('Site Generated', save_posts_time - start)
+    print str(len(view.posts)) + ' posts published.'
 
     try:
         shutil.rmtree(dir + '/.private/')
