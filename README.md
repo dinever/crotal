@@ -2,7 +2,7 @@
 
 A static site generator which is written in Python, easy to use, and free to all.Start a blog right now using Crotal now!
 
-#Install
+##Installation
 
 via pip:
 
@@ -14,17 +14,17 @@ via github:
     $ cd crotal
     $ sudo python setup.py install
 
-#Usage
+##Usage
 
     $ crotal init my_site $$ cd my_site
     $ crotal generator
     $ crotal server
 
-#Documents
+##Documents
 
 todo
 
-#License
+##License
 (BSD Licenses)
 
 Copyright (c) 2013, [Peixuan Ding](http://dinever.com)
