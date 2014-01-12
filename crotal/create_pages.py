@@ -45,7 +45,7 @@ def create_page(config):
             os.makedirs('public/'+slug)
         except:
             pass
-        open(config.theme'public/'+ slug +'/index.html', 'w+').write(SAMPLE % (title, description, title, slug))
+        open('public/'+ slug +'/index.html', 'w+').write(SAMPLE % (title, description, title, slug))
         print 'make之后就可以去' + config.url + '/' + slug + '/' + '查看新页面了。'
         print 'You can view the new page at ' + config.url + '/' + slug + '/' + ' after make the site.'
 

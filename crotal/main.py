@@ -94,11 +94,14 @@ def main():
         else:
             usage()
     else:
-        if sys.argv[1] == 'init':
-            site_name = sys.argv[2]
-            init_site(site_name)
-        else:
+        if len(sys.argv) == 1:
             usage()
+        else:
+            if sys.argv[1] == 'init':
+                site_name = sys.argv[2]
+                init_site(site_name)
+            else:
+                usage()
 
 if __name__ == '__main__':
     pass

@@ -6,8 +6,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name = "Crotal",
-    version = "0.2.0",
+    name = "crotal",
+    version = "0.2.2",
     packages = find_packages(),
 
     include_package_data = True,
