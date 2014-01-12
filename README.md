@@ -7,15 +7,18 @@ A static site generator which is written in Python, easy to use, and free to all
 via pip:
 
     $ sudo pip install crotal
-    $ crotal init my_site $$ cd my_site
-    $ crotal generator
-    $ crotal server
 
 via github:
 
     $ git clone https://github.com/dinever/crotal.git
     $ cd crotal
     $ sudo python setup.py install
+
+#Usage
+
+    $ crotal init my_site $$ cd my_site
+    $ crotal generator
+    $ crotal server
 
 #Documents
 
