@@ -1,10 +1,7 @@
-from markdown import markdown
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
-from datetime import datetime
 import re
-from .category import Categories
+
+from markdown import markdown
+from datetime import datetime
 
 class Posts():
     def __init__(self, config):
@@ -56,24 +53,6 @@ class Posts():
     def save_info(self, keyword):
         return re.compile(r'(?<=' + keyword + ':\s).*?(?=\n)').findall(self.header)[0]
 
-    def code_highlight(self, content):
-        a = re.compile(r'\`\`\`[\s\S]*?\n\`\`\`')
-        finds = a.findall(self.content)
-        for find in finds:
-            b = re.compile(r'(?<=\`\`\`).*?(?=\n)')
-            type = b.findall(find)[0].encode('utf-8')
-            type = type.replace('\r', '')
-            find_new = find.replace('```' + type, '')
-            find_new = find_new.replace('```', '')
-            if type != '':
-                lexer = get_lexer_by_name(type, stripall=True)
-            else:
-                lexer = get_lexer_by_name('text', stripall=True)
-            find_new = highlight(find_new, lexer, HtmlFormatter(linenos=False))
-            content = content.replace(find, find_new)
-        return content
-
     def save_html(self):
-        content = self.code_highlight(self.content)
-        self.html = markdown(content)
-        self.front_html = markdown(content.split('<!--more-->')[0])
+        self.html = markdown(self.content, extensions=['fenced_code','codehilite'])
+        self.front_html = self.html.split('<!--more-->')[0]

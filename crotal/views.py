@@ -6,13 +6,10 @@ from jinja2.environment import Environment
 from crotal.models.posts import Posts
 from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
 
-theme_name = 'default'
-theme_dir = 'themes/' + theme_name + '/public/'
-theme_dir = '.private/'
+private_dir = '.private/'
 
 class Views():
     def __init__(self, config):
-        """docstring for __init__"""
         self.config = config
         self.dir = ''
         self.posts = []
@@ -21,8 +18,8 @@ class Views():
         self.templates_path = []
         self.templates = [] #html files start not with '_'
         self.other_files = [] #html files start with '_'
-        os.path.walk(repr(theme_dir)[1:-1], self.processDirectory, None)
-        self.j2_env = Environment(loader=FileSystemLoader(theme_dir), trim_blocks=True, extensions=[MarkdownExtension])
+        os.path.walk(repr(private_dir)[1:-1], self.processDirectory, None)
+        self.j2_env = Environment(loader=FileSystemLoader(private_dir), trim_blocks=True, extensions=[MarkdownExtension])
 
     def get_directory(self, dir):
         self.dir = dir
@@ -30,12 +27,12 @@ class Views():
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
             file_path = dirname + '/' + filename
-            if len(re.compile(r'\.html$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(theme_dir, ''))) == 0:
-                self.templates_path.append(file_path.replace(theme_dir, ''))
-            elif len(re.compile(r'\.xml$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(theme_dir, ''))) == 0:
-                self.templates_path.append(file_path.replace(theme_dir, ''))
+            if len(re.compile(r'\.html$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
+                self.templates_path.append(file_path.replace(private_dir, ''))
+            elif len(re.compile(r'\.xml$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
+                self.templates_path.append(file_path.replace(private_dir, ''))
             elif len(re.compile(r'^_.*').findall(filename)) == 0:
-                self.other_files.append(file_path.replace(theme_dir, ''))
+                self.other_files.append(file_path.replace(private_dir, ''))
 
     def get_templates(self):
         pass
@@ -60,18 +57,15 @@ class Views():
         Get posts from markdown files
         '''
         posts_titles = []
+        categories_tmp = []
         for item in os.listdir(self.dir + '/_posts'):
             if not item.startswith('.'):
-                posts_titles.append(item)
-        templates = os.listdir(self.dir)
-        categories_tmp = []
-        for post_title in posts_titles:
-            post_tmp = Posts(self.config)
-            post_tmp.save(open(self.dir + '/_posts/' + post_title, 'r').read().decode('utf8'))
-            self.posts.append(post_tmp)
-            for category in post_tmp.categories:
-                categories_tmp.append(category)
-        self.categories = sorted({}.fromkeys(categories_tmp).keys())
+                post_tmp = Posts(self.config)
+                post_tmp.save(open(self.dir + '/_posts/' + item , 'r').read().decode('utf8'))
+                self.posts.append(post_tmp)
+                for category in post_tmp.categories:
+                    categories_tmp.append(category)
+        self.categories = sorted({}.fromkeys(categories_tmp).keys()) #Sort the categories, remove the repeat items.
         self.posts_sort()
 
     def posts_sort(self):
@@ -84,15 +78,20 @@ class Views():
         '''
         Save posts .html files.
         '''
+        post_template = self.j2_env.get_template('_layout/post.html')
         for post in posts:
             if not os.path.exists(self.dir + '/_sites' + post.url):
                 os.makedirs(self.dir + '/_sites' + post.url)
-            rendered = self.j2_env.get_template('_layout/post.html').render(post = post ,posts=posts, config = self.config)
+            rendered = post_template.render(post = post ,posts=posts, config = self.config)
             open(self.dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
     def save_index_pages(self):
+        '''
+        Generate pagnition like 'http://localhost:8000/blog/page/2/'
+        '''
+        index_template = self.j2_env.get_template('index.html')
         for i in range(1, self.page):
             if not os.path.exists(self.dir + '/_sites/blog/page/' + str(i+1)):
                 os.makedirs(self.dir + '/_sites/blog/page/' + str(i+1))
-            rendered = self.j2_env.get_template('index.html').render(posts = self.posts[i*5:(i+1)*5], config = self.config, current_page = i+1, page = self.page)
+            rendered = index_template.render(posts = self.posts[i*5:(i+1)*5], config = self.config, current_page = i+1, page = self.page)
             open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))

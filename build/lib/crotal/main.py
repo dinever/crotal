@@ -13,14 +13,20 @@ def init_site(site_name):
     copy_dir(init_site.get_init_dierctory(), site_name)
 
 def generate_site(config):
-    shutil.rmtree(dir + '/_sites/')
+    try:
+        shutil.rmtree(dir + '/_sites/')
+    except Exception, e:
+        pass
     start = timeit.default_timer()
     copy_dir('themes/' + config.theme + '/static', '_sites')
     copy_dir('static', '_sites')
     copydir_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Static Files Copied', copydir_time - start)
 
-    os.mkdir('.private/')
+    try:
+        os.mkdir('.private/')
+    except Exception, e:
+        pass
     copy_dir('themes/' + config.theme + '/public', '.private')
     copy_dir('public/', '.private')
 
@@ -42,7 +48,10 @@ def generate_site(config):
     print '{0:20} in {1:3.3f} seconds'.format('Site Generated', save_posts_time - start)
     print str(len(view.posts)) + ' posts published.'
 
-    shutil.rmtree(dir + '/.private/')
+    try:
+        shutil.rmtree(dir + '/.private/')
+    except Exception, e:
+        pass
 
 def usage():
     print 'Usage:'
