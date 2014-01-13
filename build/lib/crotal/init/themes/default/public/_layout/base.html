@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+<title>{% block title %}首页{% endblock %}| {{ config.site_name }}</title>
+<meta name="author" content="{{ config.author }}">
+
+
+<meta name="description" content="{% block description %}{{ config.site_description }}{% endblock %}">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
+<meta property="og:site_name" content=""/>
+
+<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<link rel="stylesheet" href="/css/about.css" media="screen" type="text/css">
+<link rel="stylesheet" href="/css/pygments.css" media="screen" type="text/css">
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+
+</head>
+
+
+<body>
+<div class="wrapper">
+    <header id="header"><div class="title">
+            <h1><a href="/">{{ config.title }}</a></h1>
+            <p><a href="index.html">{{ config.subtitle }}</a></p>
+        </div>
+        <nav class="nav">
+            <ul>
+
+                <li><a href="/">Home</a></li>
+
+                <li><a href="/archive">Archives</a></li>
+
+                <li><a href="/category">Categories</a></li>
+
+                <li><a href="/about">About</a></li>
+
+                <li><a href="/rss.xml">Rss</a></li>
+
+            </ul>
+            <div class="clearfix"></div>
+        </nav>
+        <div class="clearfix"></div></header>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+<div class="widget-wrapper">
+    <aside id="sidebar">
+        {% include '_layout/sidebar.html' %}
+    </aside>
+    <div class="clearfix"></div>
+</div>
+<footer id="footer"><div class="copyright">
+
+        &copy; 2013 <a href="/">Dinever</a>
+
+    </div>
+    <div class="theme-copyright">
+        Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+        |
+        Powered by <a href="http://crotal.org" target="_blank">Crotal</a>
+    </div>
+    <div class="clearfix"></div></footer>
+
+</body>
+</html>

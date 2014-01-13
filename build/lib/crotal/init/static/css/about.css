@@ -1,0 +1,166 @@
+@font-face {
+  font-family: 'wlige';
+  src: url('fonts/wlige.eot');
+  src: url('fonts/wlige-.eot#iefix') format('embedded-opentype'),
+    url('fonts/wlige.woff') format('woff'),
+    url('fonts/wlige.ttf') format('truetype'),
+    url('fonts/wlige.svg#wlige') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.about-header {
+  position: relative;
+  margin: 30px 0 10px;
+}
+
+.about-header .avatar {
+  float: left;
+}
+
+.about-header .avatar img {
+  width: 96px;
+  border-radius: 55px !important;
+  -webkit-border-radius: 55px !important;
+  box-shadow: 0 1px 1px rgba(0,0,0,.25) !important;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.25) !important;
+}
+
+.about-header .profile {
+  padding: 2px 0 0 120px;
+}
+
+.about-header .profile h3,
+.about-header .profile h4 {
+  text-shadow: rgba(255,255,255,0.9) 0 1px 0;
+  margin: 0 0 10px;
+}
+
+.about-social {
+  float: right;
+  margin-bottom: 10px;
+}
+
+.about-social ul {
+  list-style: none;
+}
+
+.about-social ul li {
+  float: left;
+  margin-left: 10px;
+}
+
+.about-social .social {
+  background: #333333;
+  color: #ffffff;
+  border-radius: 16px;
+  width: 32px;
+  height: 32px;
+  display: block;
+  position: relative;
+}
+.about-social .social span:before {
+  font: 1.3em FontAwesome;
+  position: absolute;
+  left: 6px;
+  top: 5px;
+}
+.about-social .social span {
+  position: absolute;
+  left: 1px;
+  top: 3px;
+}
+.about-social .github span:before {
+  content: '\f09b';
+}
+.about-social .twitter span:before {
+  content: '\f099';
+}
+.about-social .weibo span:before {
+  font-family: "wlige";
+  content: '\21';
+}
+.about-social .weibo span {
+  left: 0px;
+  top: 0px;
+}
+.about-social .facebook span:before {
+  content: '\f09a';
+}
+.about-social .facebook span {
+  left: 6px;
+}
+.about-social .tqq span:before {
+  font-family: "wlige";
+  content: '\29';
+}
+.about-social .tqq span {
+  left: 0px;
+  top: 0px;
+}
+.about-social .rss span:before {
+  content: '\f09e';
+}
+.about-social .rss span {
+  left: 3px;
+}
+
+ul.about-tag {
+  list-style: none;
+  margin-left: -40px !important;
+}
+
+ul.about-tag li {
+  float: left;
+  margin-right: 20px;
+  padding-bottom: 20px;
+}
+
+.about-updated {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.douban-book {
+  margin-top: 10px;
+}
+
+.douban-book td {
+  border-bottom: 0 !important;
+}
+
+.douban-book td img {
+  width: 105px; 
+  height: 110px;
+}
+
+.about-license .cc {
+  float: left;
+}
+
+.about-license .license {
+  padding: 12px 0 0 80px;
+}
+
+@media screen and (max-width:580px) {
+  .about-header .avatar img {
+    width: 64px;
+  }
+
+  .about-header .profile {
+    padding: 2px 0 0 78px;
+  }
+
+  .douban-book {
+    display: none;
+  }
+
+  .about-license .cc {
+    float: none;
+    display: none;
+  }
+
+  .about-license .license {
+    padding: 0;
+  }
+}

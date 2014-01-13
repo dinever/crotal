@@ -1,0 +1,36 @@
+{% extends "_layout/base.html" %}
+{% block title %}
+归档
+{% endblock %}
+{% block content %}
+<h2 class="archive-title">Archives</h2>
+<div class="archive">
+{% for post in posts %}
+{% endfor %}
+{% set this_year = 0 %}
+{% for post in posts %}
+{% set this_month = post.pub_time.strftime('%b') %}
+
+{% if this_year != post.pub_time.strftime('%Y') %}
+{% set this_year = post.pub_time.strftime('%Y') %}
+
+<div class="archive-year">
+    <p>{{ this_year }}</p>
+    <div class="sep"></div>
+</div>
+{% endif %}
+
+    <article class="post">
+        <header>
+            <div class="icon"></div>
+            <time datetime="{{ post.pub_time }}"><a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</a></time>
+
+            <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
+
+        </header>
+    </article>
+
+{% endfor %}
+</div>
+
+{% endblock %}

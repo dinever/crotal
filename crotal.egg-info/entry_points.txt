@@ -1,0 +1,3 @@
+[console_scripts]
+crotal = crotal.main:main
+

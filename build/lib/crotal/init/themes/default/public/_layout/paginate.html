@@ -1,0 +1,27 @@
+<br/>
+<ul class="paginate pag3 clearfix">
+    {% if current_page == 1 %}
+    <li class="current">prev</li>
+    {% else %}
+    <li><a href="/blog/page/{{ current_page - 1 }}">prev</a></li>
+    {% endif %}
+
+    {% if page %}
+        {% for page_number in range(1, page + 1) %}
+            {% if page_number == current_page %}
+                <li class="current">{{ page_number }}</li>
+            {% elif page_number == 1 %}
+            <li><a href="/">{{ page_number }}</a></li>
+            {% else %}
+            <li><a href="/blog/page/{{ page_number }}">{{ page_number }}</a></li>
+            {% endif %}
+        {% endfor %}
+    <!-- <li><a href="#">prev</a></li> -->
+    {% if current_page == page %}
+    <li class="current">next</li>
+    {% else %}
+    <li><a href="/blog/page/{{ current_page + 1 }}">next</a></li>
+    {% endif %}
+    {% endif %}
+</ul>
+

@@ -1,0 +1,35 @@
+{% extends "_layout/base.html" %}
+{% block title %}
+分类
+{% endblock %}
+{% block content %}
+<h2 class="archive-title">Categories</h2>
+<div class="archive">
+
+{% for category in categories %}
+<div class="archive-year">
+    <p>{{ category }}</p>
+    <div class="sep"></div>
+</div>
+
+{% for post in posts %}
+{% for post_category in post.categories %}
+{% if post_category == category %}
+<article class="post">
+    <header>
+        <div class="icon"></div>
+        <time datetime="{{ post.pub_time }}"><a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</a></time>
+
+        <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
+
+    </header>
+</article>
+
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% endfor %}
+</div>
+
+{% endblock %}

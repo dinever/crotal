@@ -1,0 +1,14 @@
+{% for post in posts%}
+<div id="article">
+        <div id="time">由{{ post.author }}发表于 {{ post.pub_time }} </div>
+        <div id="header">
+            <h1><a href="{{ post.url }}">{{ post.title }}</a></h1>
+        </div>
+        {{ post.front_html |safe }}
+        <a id="more" href='{{ post.url }}'>阅读全文</a>
+        <div id="info">
+            <p><a class="lowkey" href="{{ post.get_absolute_url }}#disqus_thread"></a>
+            分类：{% for category in post.categories %}{{ category }}&nbsp;{% endfor %}</p>
+        </div>
+    </div>
+  {% endfor %}
