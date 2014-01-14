@@ -55,12 +55,12 @@ def generate_site(config):
 
 def usage():
     print 'Usage:'
-    print 'to generate the site:    python main.py generate'
-    print 'to create a new post:    python main.py new_post "your title here"'
-    print 'to create a new page:    python main.py new_page'
-    print 'to start the server:     python main.py server'
-    print 'to deploy the site:      python main.py deploy'
-    print '                         python main.py server 8080'
+    print 'to init a new site:      crotal init you_site_name'
+    print 'to generate the site:    crotal generate'
+    print 'to create a new post:    crotal new_post "your title here"'
+    print 'to create a new page:    crotal new_page'
+    print 'to start the server:     crotal server'
+    print 'to deploy the site:      crotal deploy'
 
 def main():
     flag = False #flag indicates whether the _config.yml file is loaded.
