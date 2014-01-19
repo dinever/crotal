@@ -20,6 +20,7 @@ class Views():
         self.other_files = [] #html files start with '_'
         os.path.walk(repr(private_dir)[1:-1], self.processDirectory, None)
         self.j2_env = Environment(loader=FileSystemLoader(private_dir), trim_blocks=True, extensions=[MarkdownExtension])
+        self.post_template = self.j2_env.get_template('_layout/post.html')
 
     def get_directory(self, dir):
         self.dir = dir
@@ -48,7 +49,7 @@ class Views():
                 pass
         self.page = len(self.posts)/5 + 1
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts=posts, config = self.config, categories = categories, current_page = 1, page = self.page)
+            rendered = self.j2_env.get_template(item).render(posts = posts, config = self.config, categories = categories, current_page = 1, page = self.page)
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
@@ -58,10 +59,11 @@ class Views():
         '''
         posts_titles = []
         categories_tmp = []
-        for item in os.listdir(self.dir + '/_posts'):
+        posts_dir = self.dir + '/_posts/'
+        for item in os.listdir(posts_dir):
             if not item.startswith('.'):
                 post_tmp = Posts(self.config)
-                post_tmp.save(open(self.dir + '/_posts/' + item , 'r').read().decode('utf8'))
+                post_tmp.save(open(posts_dir  + item , 'r').read().decode('utf8'))
                 self.posts.append(post_tmp)
                 for category in post_tmp.categories:
                     categories_tmp.append(category)
@@ -78,12 +80,14 @@ class Views():
         '''
         Save posts .html files.
         '''
-        post_template = self.j2_env.get_template('_layout/post.html')
         for post in posts:
-            if not os.path.exists(self.dir + '/_sites' + post.url):
-                os.makedirs(self.dir + '/_sites' + post.url)
-            rendered = post_template.render(post = post ,posts=posts, config = self.config)
-            open(self.dir + '/_sites' + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
+            self.save_post_file(post, self.dir + '/_sites/')
+
+    def save_post_file(self, post, dir):
+        if not os.path.exists(dir + post.url):
+            os.makedirs(dir + post.url)
+        rendered = self.post_template.render(post = post ,posts=self.posts, config = self.config)
+        open(dir + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
     def save_index_pages(self):
         '''
