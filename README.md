@@ -16,7 +16,7 @@ via github:
 
 ##Usage
 
-    $ crotal init my_site $$ cd my_site
+    $ crotal init my_site && cd my_site
     $ crotal generator
     $ crotal server
 
