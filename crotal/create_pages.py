@@ -3,7 +3,6 @@
 
 import os
 import sys
-from crotal.models.pages import Pages
 from crotal.views import Views
 
 author = 'dinever'
@@ -16,20 +15,18 @@ SAMPLE = """{%% extends "_layout/base.html" %%}
 %s
 {%% endblock %%}
 {%% block content %%}
-<div id="index_content" class="span9">
-    <div id="article">
-        <h1>%s</h1>
+<h2 class="page-title">%s</h2>
+<article class="post">
+
 {%% markdown %%}
 
-请在这里写下内容，
+Please write down you content right here.
 
-编辑该页，请去`/public/%s/index.html`。
+To edit this page, check `/public/%s/index.html`.
 
-记得在`/public/_layout/base.html`中以你喜欢的方式加上该页的链接。（比如在导航栏中）
+Remember to add a link to this page in `/public/_layout/base.html`.(For example, in the navigation bar)
 
 {%% endmarkdown %%}
-    </div>
-</div>
 
 {%% endblock %%}
 
@@ -38,16 +35,15 @@ SAMPLE = """{%% extends "_layout/base.html" %%}
 def create_page(config):
     flag = 0
     if len(sys.argv) == 1:
-        title = raw_input('页面标题/Page Title:')
-        slug = raw_input('页面简写(用于URL)/Page Slug(For URL):')
-        description = raw_input('页面描述(用于SEO)/Page Description(For SEO):')
+        title = raw_input('Page Title:')
+        slug = raw_input('Page Slug(For URL):')
+        description = raw_input('Page Description(For SEO):')
         try:
             os.makedirs('public/'+slug)
         except:
             pass
         open('public/'+ slug +'/index.html', 'w+').write(SAMPLE % (title, description, title, slug))
-        print 'make之后就可以去' + config.url + '/' + slug + '/' + '查看新页面了。'
-        print 'You can view the new page at ' + config.url + '/' + slug + '/' + ' after make the site.'
+        print 'You can check browse the page by ' + config.url + '/' + slug + '/' + ' After generating the site.'
 
     elif len(sys.argv) != 1:
         open('_posts/' + file_title, 'w+').write(new_post)
