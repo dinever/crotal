@@ -8,10 +8,6 @@ from crotal.config import Config
 
 dir = os.getcwd()
 
-def init_site(site_name):
-    from crotal import init_site
-    copy_dir(init_site.get_init_dierctory(), site_name)
-
 def generate_site(config):
     try:
         shutil.rmtree(dir + '/_sites/')
@@ -107,6 +103,7 @@ def main():
         else:
             if sys.argv[1] == 'init':
                 site_name = sys.argv[2]
+                from crotal.init_site import init_site
                 init_site(site_name)
             else:
                 usage()

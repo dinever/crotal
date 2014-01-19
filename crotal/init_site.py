@@ -2,6 +2,8 @@
 
 from os import path
 
-def get_init_dierctory():
+from crotal.copy_dir import copy_dir
+
+def init_site(site_name):
     dir = path.dirname(path.abspath(__file__)) + '/init'
-    return dir
+    copy_dir(dir, site_name)
