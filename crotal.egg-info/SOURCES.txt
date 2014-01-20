@@ -71,6 +71,7 @@ crotal/init/themes/default/static/fonts/wlige.svg
 crotal/init/themes/default/static/fonts/wlige.ttf
 crotal/init/themes/default/static/fonts/wlige.woff
 crotal/models/__init__.py
+crotal/models/pages.py
 crotal/models/posts.py
 crotal/plugins/__init__.py
 crotal/plugins/markdown/__init__.py
