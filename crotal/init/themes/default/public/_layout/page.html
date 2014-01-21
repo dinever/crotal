@@ -1,0 +1,28 @@
+{% extends "_layout/base.html" %}
+{% block title %}
+{{ page.title }}
+{% endblock %}
+{% block description %}
+{{ page.html | striptags | truncate(length=255 ,killwords=False)}}
+{% endblock %}
+{% block content %}
+        <article class="post">
+            <header>
+
+                <div class="icon"></div>
+                <h1 class="title"><a href="{{ page.url }}">{{ page.title }}</a></h1>
+            </header>
+
+            <div class="entry">
+
+            {{ page.html |safe }}
+
+            </div>
+
+        {% if config.comment_system == 'disqus' %}
+        {% include "_comments/disqus.html" %}
+        {% elif config.comment_system == 'duoshuo' %}
+        {% include "_comments/duoshuo.html" %}
+        {% endif %}
+        </article>
+{% endblock %}

@@ -505,6 +505,12 @@ article footer .tags:before {
     padding: 0 30px;
     text-shadow: 0 0 1px #fff;
 }
+.page-title{
+    font-weight: normal;
+    margin-bottom: 10px;
+    padding: 0 30px;
+    text-shadow: 0 0 1px #fff;
+}
 .archive-title:before {
     font-family: FontAwesome;
     content: '\f073';
@@ -520,6 +526,12 @@ article footer .tags:before {
 }
 .archive-title.category:before, {
     content: '\f07b';
+}
+.page-title:before, {
+    font-family: FontAwesome;
+    content: '\f007';
+    padding-right: 15px;
+
 }
 .about-title.tag:before, {
     content: '\f007';

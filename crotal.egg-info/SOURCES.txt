@@ -18,13 +18,14 @@ crotal.egg-info/entry_points.txt
 crotal.egg-info/requires.txt
 crotal.egg-info/top_level.txt
 crotal/init/_config.yml
-crotal/init/_posts/2013-04-20-hello-world.markdown
 crotal/init/_sites/index.html
 crotal/init/public/index.html
 crotal/init/public/about/index.html
 crotal/init/public/archive/index.html
 crotal/init/public/category/index.html
 crotal/init/public/tags/index.html
+crotal/init/source/pages/about.markdown
+crotal/init/source/posts/2013-04-20-hello-world.markdown
 crotal/init/static/style.css
 crotal/init/static/css/about.css
 crotal/init/static/css/pygments.css
@@ -59,6 +60,7 @@ crotal/init/themes/default/public/_comments/disqus.html
 crotal/init/themes/default/public/_comments/duoshuo.html
 crotal/init/themes/default/public/_layout/base.html
 crotal/init/themes/default/public/_layout/get_more_posts.html
+crotal/init/themes/default/public/_layout/page.html
 crotal/init/themes/default/public/_layout/paginate.html
 crotal/init/themes/default/public/_layout/post.html
 crotal/init/themes/default/public/_layout/sidebar.html
@@ -71,6 +73,7 @@ crotal/init/themes/default/static/fonts/wlige.svg
 crotal/init/themes/default/static/fonts/wlige.ttf
 crotal/init/themes/default/static/fonts/wlige.woff
 crotal/models/__init__.py
+crotal/models/categories.py
 crotal/models/pages.py
 crotal/models/posts.py
 crotal/plugins/__init__.py

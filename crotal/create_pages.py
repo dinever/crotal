@@ -4,46 +4,32 @@
 import os
 import sys
 from crotal.views import Views
+from crotal.plugins.pinyin.pinyin import PinYin
+from datetime import datetime
 
 author = 'dinever'
 
-SAMPLE = """{%% extends "_layout/base.html" %%}
-{%% block title %%}
-%s
-{%% endblock %%}
-{%% block description %%}
-%s
-{%% endblock %%}
-{%% block content %%}
-<h2 class="page-title">%s</h2>
-<article class="post">
-
-{%% markdown %%}
-
-Please write down you content right here.
-
-To edit this page, check `/public/%s/index.html`.
-
-Remember to add a link to this page in `/public/_layout/base.html`.(For example, in the navigation bar)
-
-{%% endmarkdown %%}
-
-{%% endblock %%}
-
+SAMPLE = """---
+layout: page.html
+title: "%s"
+date: %s
+url: %s
+description: %s
+---
 """
 
 def create_page(config):
     flag = 0
     if len(sys.argv) == 1:
         title = raw_input('Page Title:')
-        slug = raw_input('Page Slug(For URL):')
+        url = raw_input('Page URL(For example, /foo/bar/):')
         description = raw_input('Page Description(For SEO):')
-        try:
-            os.makedirs('public/'+slug)
-        except:
-            pass
-        open('public/'+ slug +'/index.html', 'w+').write(SAMPLE % (title, description, title, slug))
-        print 'You can check browse the page by ' + config.url + '/' + slug + '/' + ' After generating the site.'
+        pinyin = PinYin()
+        slug = pinyin.hanzi2pinyin_split(string=title, split="-")
+        dt = datetime.now()
+        date = dt.strftime("%Y-%m-%d %H:%M")
+        open('source/pages/'+ slug +'.markdown', 'w+').write(SAMPLE % (title, date, url, description))
+        print 'You can check browse the page by ' + config.url + '/' + url + ' After generating the site.'
 
     elif len(sys.argv) != 1:
         open('_posts/' + file_title, 'w+').write(new_post)

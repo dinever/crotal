@@ -34,9 +34,9 @@ class Page():
                 pub_time = datetime.strptime(post_info['date'],"%Y-%m-%d %H:%M")
                 setattr(self, 'pub_time', pub_time)
             elif item == 'categories' or item == 'tags':
-                if post_info[item] is str:
+                if type(post_info[item]) == str:
                     setattr(self, item, post_info[item].split(','))
-                elif post_info[item] is list:
+                elif type(post_info[item]) == list:
                     setattr(self, item, post_info[item])
                 else:
                     setattr(self, item, [])
@@ -49,5 +49,5 @@ class Page():
                 setattr(self, item, post_info[item])
 
     def save_html(self):
-        self.html = markdown(self.content, extensions=['fenced_code','codehilite'])
+        self.html = markdown(self.content, extensions=['fenced_code','codehilite','tables'])
         self.front_html = self.html.split('<!--more-->')[0]

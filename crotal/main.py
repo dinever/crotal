@@ -26,9 +26,9 @@ def generate_site(config):
     copy_dir('themes/' + config.theme + '/public', '.private')
     copy_dir('public/', '.private')
 
-    view = Views(config)
-    view.get_directory(dir)
+    view = Views(config, dir)
     view.get_posts()
+    view.get_pages()
     get_posts_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Posts got', get_posts_time - copydir_time)
 
@@ -37,6 +37,7 @@ def generate_site(config):
     print '{0:20} in {1:3.3f} seconds'.format('Other files saved', save_other_files_time - get_posts_time)
 
     view.save_posts(view.posts)
+    view.save_pages(view.pages)
     save_posts_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Posts saved', save_posts_time - save_other_files_time)
 
