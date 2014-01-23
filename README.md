@@ -17,12 +17,12 @@ via github:
 ##Usage
 
     $ crotal init my_site && cd my_site
-    $ crotal generator
+    $ crotal generate
     $ crotal server
 
 ##Documents
 
-[Crotal.org](http://crotal.org)
+See [Crotal.org](http://crotal.org/docs).
 
 ##License
 (BSD Licenses)
