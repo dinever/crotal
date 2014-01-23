@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import sys
-from crotal.models.posts import Posts
+from crotal.models.posts import Post
 from crotal.plugins.pinyin.pinyin import PinYin
 from datetime import datetime
 
@@ -25,7 +25,7 @@ def create_post(config):
     if len(sys.argv) == 1:
         usage()
     elif len(sys.argv) != 1:
-        post = Posts(config)
+        post = Post(config)
         pinyin = PinYin()
         pinyin.load_word()
         string = sys.argv[1] #Assume that argv[1] is the title user inputed.
