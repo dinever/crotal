@@ -10,8 +10,8 @@ via pip:
 
 via github:
 
-    $ git clone https://github.com/dinever/crotal.git
-    $ cd crotal
+    $ git clone https://github.com/dinever/Crotal.git
+    $ cd Crotal
     $ sudo python setup.py install
 
 ##Usage

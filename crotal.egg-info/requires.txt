@@ -1,3 +1,4 @@
 Jinja2==2.7.1
 markdown==2.3.1
 PyYAML==3.10
+Pygments==1.6
