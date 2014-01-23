@@ -1,74 +1,83 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en-US">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-<title>{% block title %}首页{% endblock %}| {{ config.site_name }}</title>
-<meta name="author" content="{{ config.author }}">
-
-
-<meta name="description" content="{% block description %}{{ config.site_description }}{% endblock %}">
-
-
+<meta charset="UTF-8" /><title>{% block title %}Index{% endblock %} |  {{ site.title }}</title>
+<meta name="author" content="{{ site.author }}">
+<meta name="description" content="{% if post %}{{ post.html | striptags | truncate(length=255 ,killwords=False)}}{% elif page %}{{ page.html | striptags | truncate(length=255 ,killwords=False)}}{% else %}{{ site.description }}{% endif %}">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
-
 <meta property="og:site_name" content=""/>
 
-<link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-<link rel="stylesheet" href="/css/about.css" media="screen" type="text/css">
-<link rel="stylesheet" href="/css/pygments.css" media="screen" type="text/css">
+<link rel="stylesheet" href="{{ site.url }}/css/style.css" type="text/css" />
+<link rel="stylesheet" href="{{ site.url }}/css/pygments.css" type="text/css" />
+<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
 <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+
+<style>
+#featured .flex-direction-nav a:hover, #video-slider-section .flex-direction-nav a:hover { background-color: #ffb600; }
+#featured_section .active-slide .post-meta, #featured_section .switcher_hover .post-meta, .et_tab_link_hover .post-meta { background: #0099FF; }
+h3.main-title { background-color: #0099FF; -moz-box-shadow: inset 0 0 10px #0099FF; -webkit-box-shadow: inset 0 0 10px #0099FF; box-shadow: inset 0 0 10px #0099FF; border: 1px solid #0099FF; }
+a { color: #0099FF; }
+.et_video_play { background-color: #0099FF; }
+#second-menu > ul > li > a:hover { background-color: #0099FF; }
+#second-menu ul ul li a:hover { background-color: #ffb122; }
+#second-menu ul.nav li ul { background: #0099FF; }
+#second-menu ul ul li a { border-top: 1px solid #0099FF; }
+</style>
 
 </head>
 
-
 <body>
-<div class="wrapper">
-    <header id="header"><div class="title">
-            <h1><a href="/">{{ config.title }}</a></h1>
-            <p><a href="index.html">{{ config.subtitle }}</a></p>
+<div class="container">
+    <div id="logo-area">
+        <a href="{{ site.url }}">
+            <h1>{{ site.title }}</h1>
+            <p>{{ site.subtitle }}</p>
+        </a>
+    </div>
+</div>
+
+<div id="menu">
+    <div class="container">
+        {% include "_layout/navbar.html" %}
+    </div>
+</div>
+
+<div id="main-area">
+    <div class="container">
+        <div id="content-area" class="clearfix">
+            <div id="left-area">
+
+                {% block content %}
+                {% endblock %}
+            </div>
+
+            <div id="sidebar">
+                {% include "_layout/sidebar.html" %}
+            </div>
+
         </div>
-        <nav class="nav">
-            <ul>
 
-                <li><a href="/">Home</a></li>
 
-                <li><a href="/archive">Archives</a></li>
-
-                <li><a href="/category">Categories</a></li>
-
-                <li><a href="/about">About</a></li>
-
-                <li><a href="/rss.xml">Rss</a></li>
-
-            </ul>
-            <div class="clearfix"></div>
-        </nav>
-        <div class="clearfix"></div></header>
-    <div class="content">
-        {% block content %}{% endblock %}
     </div>
 </div>
-<div class="widget-wrapper">
-    <aside id="sidebar">
-        {% include '_layout/sidebar.html' %}
-    </aside>
-    <div class="clearfix"></div>
-</div>
-<footer id="footer"><div class="copyright">
 
-        &copy; 2013 <a href="/">Dinever</a>
+{% include "_layout/footer.html" %}
 
-    </div>
-    <div class="theme-copyright">
-        Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
-        |
-        Powered by <a href="http://crotal.org" target="_blank">Crotal</a>
-    </div>
-    <div class="clearfix"></div></footer>
+{% if site.comment_system == "disqus" %}
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = '{{ site.disqus_short_name }}'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function () {
+ var s = document.createElement('script'); s.async = true;
+ s.type = 'text/javascript';
+ s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+ (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+ }());
+</script>
+{% elif site.comment_system == "duoshuo" %}
+{% endif %}
 
 </body>
 </html>

@@ -6,8 +6,8 @@
     <li><a href="/blog/page/{{ current_page - 1 }}">prev</a></li>
     {% endif %}
 
-    {% if page %}
-        {% for page_number in range(1, page + 1) %}
+    {% if page_number %}
+        {% for page_number in range(1, page_number + 1) %}
             {% if page_number == current_page %}
                 <li class="current">{{ page_number }}</li>
             {% elif page_number == 1 %}
@@ -17,10 +17,10 @@
             {% endif %}
         {% endfor %}
     <!-- <li><a href="#">prev</a></li> -->
-    {% if current_page == page %}
-    <li class="current">next</li>
+    {% if current_page == page_number %}
+        <li class="current">next</li>
     {% else %}
-    <li><a href="/blog/page/{{ current_page + 1 }}">next</a></li>
+        <li><a href="/blog/page/{{ current_page + 1 }}">next</a></li>
     {% endif %}
     {% endif %}
 </ul>

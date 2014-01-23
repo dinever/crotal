@@ -91,7 +91,8 @@ def main():
                     from crotal import rsync
                     rsync.rsync_deploy(str(dir) + '/_sites/', config)
                 elif config.deploy_default == 'git':
-                    print 'Only support rsync for now.'
+                    from crotal import git
+                    git.git_deploy(config)
                 else:
                     print 'Only support rsync for now.'
             else:

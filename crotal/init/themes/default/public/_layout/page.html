@@ -6,23 +6,11 @@
 {{ page.html | striptags | truncate(length=255 ,killwords=False)}}
 {% endblock %}
 {% block content %}
-        <article class="post">
-            <header>
-
-                <div class="icon"></div>
-                <h1 class="title"><a href="{{ page.url }}">{{ page.title }}</a></h1>
-            </header>
-
-            <div class="entry">
-
-            {{ page.html |safe }}
-
-            </div>
-
-        {% if config.comment_system == 'disqus' %}
-        {% include "_comments/disqus.html" %}
-        {% elif config.comment_system == 'duoshuo' %}
-        {% include "_comments/duoshuo.html" %}
-        {% endif %}
-        </article>
+        <article class="post type-post status-publish hentry category-people entry clearfix">
+        <div class="post_content clearfix">
+        <h2 class="title">{{ page.title }}</h2>
+        <hr/>
+            {{ page.html | safe }}
+        </div>
+    </article>
 {% endblock %}

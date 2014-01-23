@@ -1,39 +1,23 @@
 {% extends "_layout/base.html" %}
-{% block title %}
-首页
-{% endblock %}
+{% block title %}Index{% endblock %}
 {% block content %}
 {% for post in posts | batch(5) | first%}
-<article class="post">
-    <header>
+<article class="post type-post status-publish hentry category-people entry clearfix">
+    <p class="meta-info">Posted  by {{ post.author }} on <a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</p>
 
-        <div class="icon"></div>
-        <time datetime="{{ post.pub_time }}"><a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</a></time>
-
-        <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
-    </header>
-
-    <div class="entry">
-
-        {{ post.front_html |safe }}
-
-    </div>
-    <footer class="end-sep">
-
-
-        <div class="alignleft">
-            <a href="{{ post.url }}" class="more-link">More</a>
+        <div class="post_content clearfix">
+            <h2 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+            <hr/>
+            {{ post.front_html | safe }}
+            <a href="{{ post.url }}" class="more">{{ site.excerpt_link }}</a>
         </div>
-
-        <div class="clearfix"></div>
-    </footer>
-</article>
+    </article>
 {% endfor %}
 {% include '_layout/paginate.html' %}
 
 <script type="text/javascript">
 /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'dineversblog'; // required: replace example with your forum shortname
+var disqus_shortname = '{{ site.disqus_short_name }}'; // required: replace example with your forum shortname
 
 /* * * DON'T EDIT BELOW THIS LINE * * */
 (function () {

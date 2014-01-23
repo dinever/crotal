@@ -6,8 +6,6 @@ from crotal.models.posts import Posts
 from crotal.plugins.pinyin.pinyin import PinYin
 from datetime import datetime
 
-author = 'dinever'
-
 SAMPLE = """---
 title: "%s"
 date: %s
@@ -37,7 +35,7 @@ def create_post(config):
         post.pub_time = dt.strftime("%Y-%m-%d %H:%M")
         new_post = SAMPLE % (post.title, post.pub_time, post.slug)
         file_title = dt.strftime("%Y-%m-%d") + '-' + post.slug + '.markdown'
-        open('_posts/' + file_title, 'w+').write(new_post)
+        open('source/posts/' + file_title, 'w+').write(new_post)
     else:
         usage()
 

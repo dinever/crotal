@@ -34,6 +34,8 @@ class Views():
                 self.templates_path.append(file_path.replace(private_dir, ''))
             elif len(re.compile(r'\.xml$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
                 self.templates_path.append(file_path.replace(private_dir, ''))
+            elif len(re.compile(r'\.txt$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
+                self.templates_path.append(file_path.replace(private_dir, ''))
             elif len(re.compile(r'^_.*').findall(filename)) == 0:
                 self.other_files.append(file_path.replace(private_dir, ''))
 
@@ -50,7 +52,7 @@ class Views():
             except Exception:
                 pass
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts = posts, config = self.config, categories = categories, current_page = 1, page_number = self.page_number, pages = self.pages)
+            rendered = self.j2_env.get_template(item).render(posts = posts, site = self.config, categories = categories, current_page = 1, page_number = self.page_number, pages = self.pages)
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
@@ -74,6 +76,7 @@ class Views():
                     categories_tmp.append(category)
         self.categories = categories_tmp2
         self.posts_sort()
+        self.page_number = len(self.posts)/5 + 1
 
     def get_pages(self):
         '''
@@ -112,14 +115,14 @@ class Views():
     def save_post_file(self, post, dir):
         if not os.path.exists(dir + post.url):
             os.makedirs(dir + post.url)
-        rendered = self.post_template.render(post = post, posts = self.posts, config = self.config, pages = self.pages)
+        rendered = self.post_template.render(post = post, posts = self.posts, site = self.config, pages = self.pages)
         open(dir + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
     def save_page_file(self, page, dir):
         page_template = self.j2_env.get_template('_layout/' + page.layout)
         if not os.path.exists(dir + page.url):
             os.makedirs(dir + page.url)
-        rendered = page_template.render(page = page, pages = self.pages, config = self.config, posts = self.posts)
+        rendered = page_template.render(page = page, pages = self.pages, site = self.config, posts = self.posts)
         open(dir + page.url + '/index.html', 'w+').write(rendered.encode('utf8'))
 
 
@@ -131,5 +134,5 @@ class Views():
         for i in range(1, self.page_number):
             if not os.path.exists(self.dir + '/_sites/blog/page/' + str(i+1)):
                 os.makedirs(self.dir + '/_sites/blog/page/' + str(i+1))
-            rendered = index_template.render(posts = self.posts[i*5:(i+1)*5], config = self.config, current_page = i+1, page_number = self.page_number)
+            rendered = index_template.render(posts = self.posts[i*5:(i+1)*5], site = self.config, current_page = i+1, page_number = self.page_number)
             open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))

@@ -1,15 +1,15 @@
-url: http://crotal.org
+url: http://localhost:8000
 title: Crotal
 subtitle: A static site generator written in Python.
 author: user
 simple_search: http://google.com/search
-keywords: mac, ios, web, octopress, hack, sql, linux, python, django
-description: A static site generator which is written in Python, easy to use, and free to all.Start a blog right now using Crotal now!
+keywords:
+description: A static site generator which is written in Python, super fast, easy to use, and free to all.Start a blog right now using Crotal!
 
 email:
 
 deploy_default: rsync
-ip: root@106.187.101.54
+ip: root@8.8.8.8
 deploy_dir: /var/www/test
 
 # If publishing to a subdirectory as in http://site.com/project set 'root: /project'
@@ -23,30 +23,30 @@ theme: default
 paginate: 5          # Posts per page on the blog index
 pagination_dir: blog  # Directory base for pagination URLs eg. /blog/page/2/
 recent_posts: 5       # Posts in the sidebar Recent Posts section
-excerpt_link: "继续阅读 &rarr;"  # "Continue reading" link text at the bottom of excerpted articles
+excerpt_link: "More &rarr;"  # "Continue reading" link text at the bottom of excerpted articles
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
 default_asides: [_asides/about.html, _asides/recent_post.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
-# and add an array with the asides you want to use.
-# blog_index_asides:
-# post_asides:
-# page_asides:
 
 # ----------------------- #
 #   3rd Party Settings    #
 # ----------------------- #
+#
+# Weibo
+weibo_uid:
 
 # Github repositories
-github_user: dinever
+github_user:
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: Dingpeixuan
+twitter_tweet_count: 5
 twitter_tweet_button: true
 
 # Google +1
@@ -69,8 +69,11 @@ delicious_count: 3
 comment_system: disqus
 
 # Disqus Comments
-disqus_short_name: dineversblog
+disqus_short_name:
 disqus_show_comment_count: true
+
+# Duoshuo Comments
+duoshuo_short_name:
 
 # Google Analytics
 google_analytics_tracking_id:

@@ -1,6 +1,0 @@
-# robots.txt generated at http://tool.chinaz.com/robots/
-User-agent: *
-Disallow:
-Disallow: /blog/page/
-Disallow: /tags/
-Sitemap: http://dinever.com/sitemap.xml

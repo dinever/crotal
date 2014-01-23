@@ -1,30 +1,21 @@
 {% extends "_layout/base.html" %}
-{% block title %}
-{{ post.title }}
-{% endblock %}
-{% block description %}
-{{ post.html | striptags | truncate(length=255 ,killwords=False)}}
-{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block description %}{{ post.html | striptags | truncate(length=255 ,killwords=False)}}{% endblock %}
 {% block content %}
-        <article class="post">
-            <header>
+<article class="post entry clearfix">
+    <p class="meta-info">Posted  by {{ post.author }} on <a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }} </p>
 
-                <div class="icon"></div>
-                <time datetime="{{ post.pub_time }}"><a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</a></time>
+    <div class="post_content clearfix">
+        <h2 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+        <hr/>
+        {{ post.html | safe }}
+    </div>
+</article>
 
-                <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
-            </header>
+{% if site.comment_system == 'disqus' %}
+{% include "_comments/disqus.html" %}
+{% elif site.comment_system == 'duoshuo' %}
+{% include "_comments/duoshuo.html" %}
+{% endif %}
 
-            <div class="entry">
-
-            {{ post.html |safe }}
-
-            </div>
-
-        {% if config.comment_system == 'disqus' %}
-        {% include "_comments/disqus.html" %}
-        {% elif config.comment_system == 'duoshuo' %}
-        {% include "_comments/duoshuo.html" %}
-        {% endif %}
-        </article>
 {% endblock %}
