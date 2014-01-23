@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 import os.path
-import re
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
 from crotal.models.posts import Post
@@ -30,14 +29,16 @@ class Views():
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
             file_path = dirname + '/' + filename
-            if len(re.compile(r'\.html$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
-                self.templates_path.append(file_path.replace(private_dir, ''))
-            elif len(re.compile(r'\.xml$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
-                self.templates_path.append(file_path.replace(private_dir, ''))
-            elif len(re.compile(r'\.txt$').findall(file_path)) != 0 and len(re.compile(r'^_.*').findall(file_path.replace(private_dir, ''))) == 0:
-                self.templates_path.append(file_path.replace(private_dir, ''))
-            elif len(re.compile(r'^_.*').findall(filename)) == 0:
-                self.other_files.append(file_path.replace(private_dir, ''))
+            file_relative_path = file_path.replace(private_dir, '')
+            if not file_path.replace(private_dir, '').startswith('_'):
+                if filename.endswith('.html'):
+                    self.templates_path.append(file_relative_path)
+                elif filename.endswith('.xml'):
+                    self.templates_path.append(file_relative_path)
+                elif filename.endswith('.txt'):
+                    self.templates_path.append(file_relative_path)
+                elif not filename.startswith('_'):
+                    self.other_files.append(file_relative_path)
 
     def get_templates(self):
         pass
@@ -60,21 +61,19 @@ class Views():
         '''
         Get posts from markdown files
         '''
-        categories_tmp = []
-        categories_tmp2 = {}
+        categories_tmp = {}
         for item in os.listdir(self.posts_dir):
             if not item.startswith('.'):
                 post_tmp = Post(self.config)
                 post_tmp.save(open(self.posts_dir  + item , 'r').read().decode('utf8'))
                 self.posts.append(post_tmp)
                 for category in post_tmp.categories:
-                    if categories_tmp2.has_key(category):
-                        categories_tmp2[category].add_post(post_tmp)
+                    if categories_tmp.has_key(category):
+                        categories_tmp[category].add_post(post_tmp)
                     else:
-                        categories_tmp2[category] = Category(self.config, category)
-                        categories_tmp2[category].add_post(post_tmp)
-                    categories_tmp.append(category)
-        self.categories = categories_tmp2
+                        categories_tmp[category] = Category(self.config, category)
+                        categories_tmp[category].add_post(post_tmp)
+        self.categories = categories_tmp
         self.posts_sort()
         self.page_number = len(self.posts)/5 + 1
 
@@ -124,7 +123,6 @@ class Views():
             os.makedirs(dir + page.url)
         rendered = page_template.render(page = page, pages = self.pages, site = self.config, posts = self.posts)
         open(dir + page.url + '/index.html', 'w+').write(rendered.encode('utf8'))
-
 
     def save_index_pages(self):
         '''
