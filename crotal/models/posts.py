@@ -21,6 +21,13 @@ class Post():
         self.url = ''
         self.draft = False
 
+    def get_from_db(self, content):
+        for key in content:
+            if key == 'pub_time':
+                setattr(self, key, datetime.fromtimestamp(content[key]))
+            else:
+                setattr(self, key, content[key])
+
     def save(self, content):
         get_header = re.compile(r'---[\s\S]*?---')
         self.header = get_header.findall(content)[0]

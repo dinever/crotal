@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
-import os.path
+import os.path, time, json
+
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
 from crotal.models.posts import Post
@@ -61,19 +62,63 @@ class Views():
         '''
         Get posts from markdown files
         '''
+        filenames = [] # filenames is a list of the markdown file's name from the posts' directory
+        for filename in os.listdir(self.posts_dir):
+            if not filename.startswith('.'):
+                filenames.append(filename)
+        try:
+            db = json.loads(open('db.json','r').read().encode('utf8'))
+        except Exception, e:
+            print 'Generating the site for the first time...Please be patient :)'
+            db = {'posts':{}}
+        db_filenames = [] # db_filenames is a list of the filenames read from db.json
+        for db_filename in db['posts']:
+            db_filenames.append(db_filename.encode('utf8'))
+        new_filenames = list(set(filenames) - set(db_filenames))
+        old_filenames = list(set(db_filenames) - (set(db_filenames) - set(filenames)))
+        for filename in old_filenames:
+            last_mod_time = os.path.getmtime(self.posts_dir + filename)
+            last_mod_time_in_db = db['posts'][filename]['last_mod_time']
+            if last_mod_time != last_mod_time_in_db:
+                new_filenames.append(filename)
+                old_filenames.remove(filename)
         categories_tmp = {}
-        for item in os.listdir(self.posts_dir):
-            if not item.startswith('.'):
-                post_tmp = Post(self.config)
-                post_tmp.save(open(self.posts_dir  + item , 'r').read().decode('utf8'))
-                self.posts.append(post_tmp)
-                for category in post_tmp.categories:
-                    if categories_tmp.has_key(category):
-                        categories_tmp[category].add_post(post_tmp)
-                    else:
-                        categories_tmp[category] = Category(self.config, category)
-                        categories_tmp[category].add_post(post_tmp)
-        self.categories = categories_tmp
+        post_content = {}
+        posts_dict = {}
+        for filename in old_filenames:
+            post_content = dict(db['posts'][filename]['content'])
+            post_tmp = Post(self.config)
+            post_tmp.get_from_db(post_content)
+            self.posts.append(post_tmp)
+            for category in post_tmp.categories:
+                if self.categories.has_key(category):
+                    self.categories[category].add_post(post_tmp)
+                else:
+                    self.categories[category] = Category(self.config, category)
+                    self.categories[category].add_post(post_tmp)
+            post_dict = post_tmp.__dict__.copy()
+            post_dict['pub_time'] = time.mktime(post_dict['pub_time'].timetuple())
+            post_dict.pop('config', None)
+            last_mod_time = os.path.getmtime(self.posts_dir + filename)
+            posts_dict[filename] = { 'last_mod_time': last_mod_time, 'content': post_dict }
+        for filename in new_filenames:
+            post_tmp = Post(self.config)
+            post_tmp.save(open(self.posts_dir  + filename, 'r').read().decode('utf8'))
+            self.posts.append(post_tmp)
+            for category in post_tmp.categories:
+                if self.categories.has_key(category):
+                    self.categories[category].add_post(post_tmp)
+                else:
+                    self.categories[category] = Category(self.config, category)
+                    self.categories[category].add_post(post_tmp)
+            post_dict = post_tmp.__dict__.copy()
+            post_dict['pub_time'] = time.mktime(post_dict['pub_time'].timetuple())
+            post_dict.pop('config', None)
+            last_mod_time = os.path.getmtime(self.posts_dir + filename)
+            posts_dict[filename] = { 'last_mod_time': last_mod_time, 'content': post_dict }
+        db['posts'] = posts_dict
+        db = json.dumps(db)
+        open('db.json', 'w+').write(db.encode('utf8'))
         self.posts_sort()
         self.page_number = len(self.posts)/5 + 1
 
