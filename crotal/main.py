@@ -8,7 +8,7 @@ from crotal.config import Config
 
 dir = os.getcwd()
 
-def generate_site(config):
+def generate_site(config, full):
     try:
         shutil.rmtree(dir + '/_sites/')
     except Exception, e:
@@ -26,11 +26,12 @@ def generate_site(config):
     copy_dir('themes/' + config.theme + '/public', '.private')
     copy_dir('public/', '.private')
 
-    view = Views(config, dir)
+    view = Views(config, dir, full)
     view.get_posts()
     view.get_pages()
+    view.save_db()
     get_posts_time = timeit.default_timer()
-    print '{0:20} in {1:3.3f} seconds'.format('Posts got', get_posts_time - copydir_time)
+    print '{0:20} in {1:3.3f} seconds'.format('Posts & Pages got', get_posts_time - copydir_time)
 
     view.save(view.posts, view.categories)
     save_other_files_time = timeit.default_timer()
@@ -72,7 +73,11 @@ def main():
             usage()
         elif len(sys.argv) != 1:
             if sys.argv[1] == 'generate':
-                generate_site(config)
+                if len(sys.argv) == 3:
+                    if sys.argv[2] == '-f' or sys.argv[2] == '--full':
+                        generate_site(config, True)
+                else:
+                    generate_site(config, False)
             elif sys.argv[1] == 'server':
                 del sys.argv[1]
                 from crotal import server

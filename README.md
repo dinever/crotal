@@ -1,6 +1,6 @@
 #Crotal
 
-A static site generator which is written in Python, easy to use, and free to all.Start a blog right now using Crotal now!
+A static site generator which is written in Python, simple, static and fast! Start a blog using Crotal now!
 
 ##Installation
 

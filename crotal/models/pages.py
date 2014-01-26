@@ -17,6 +17,13 @@ class Page():
         self.url = ''
         self.draft = False
 
+    def get_from_db(self, content):
+        for key in content:
+            if key == 'pub_time':
+                setattr(self, key, datetime.fromtimestamp(content[key]))
+            else:
+                setattr(self, key, content[key])
+
     def save(self, content):
         get_header = re.compile(r'---[\s\S]*?---')
         self.header = get_header.findall(content)[0]
@@ -47,6 +54,9 @@ class Page():
                     setattr(self, item, post_info[item])
             else:
                 setattr(self, item, post_info[item])
+
+        if not hasattr(self, 'order'):
+            self.order = 1000;
 
     def save_html(self):
         self.html = markdown(self.content, extensions=['fenced_code','codehilite','tables'])

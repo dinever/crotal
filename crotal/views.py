@@ -11,8 +11,9 @@ from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
 private_dir = '.private/'
 
 class Views():
-    def __init__(self, config, dir):
+    def __init__(self, config, dir, full):
         self.config = config
+        self.db = {}
         self.dir = dir
         self.posts_dir = self.dir + '/source/posts/'
         self.pages_dir = self.dir + '/source/pages/'
@@ -26,6 +27,15 @@ class Views():
         os.path.walk(repr(private_dir)[1:-1], self.processDirectory, None)
         self.j2_env = Environment(loader=FileSystemLoader(private_dir), trim_blocks=True, extensions=[MarkdownExtension])
         self.post_template = self.j2_env.get_template('_layout/post.html')
+        if full:
+            self.db = {'posts':{}, 'pages':{}}
+        else:
+            try:
+                self.db = json.loads(open('db.json','r').read().encode('utf8'))
+            except Exception, e:
+                print 'Generating the full site...Please be patient :)'
+                self.db = {'posts':{}, 'pages':{}}
+
 
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
@@ -58,6 +68,20 @@ class Views():
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
+    def get_new_filenames(self, filenames, db_filenames, source_type):
+        new_filenames = list(set(filenames) - set(db_filenames))
+        old_filenames = list(set(db_filenames) - (set(db_filenames) - set(filenames)))
+        for filename in old_filenames:
+            if source_type == 'posts':
+                last_mod_time = os.path.getmtime(self.posts_dir + filename)
+            else:
+                last_mod_time = os.path.getmtime(self.pages_dir + filename)
+            last_mod_time_in_db = self.db[source_type][filename]['last_mod_time']
+            if last_mod_time != last_mod_time_in_db:
+                new_filenames.append(filename)
+                old_filenames.remove(filename)
+        return new_filenames, old_filenames
+
     def get_posts(self):
         '''
         Get posts from markdown files
@@ -66,27 +90,16 @@ class Views():
         for filename in os.listdir(self.posts_dir):
             if not filename.startswith('.'):
                 filenames.append(filename)
-        try:
-            db = json.loads(open('db.json','r').read().encode('utf8'))
-        except Exception, e:
-            print 'Generating the site for the first time...Please be patient :)'
-            db = {'posts':{}}
+
         db_filenames = [] # db_filenames is a list of the filenames read from db.json
-        for db_filename in db['posts']:
+        for db_filename in self.db['posts']:
             db_filenames.append(db_filename.encode('utf8'))
-        new_filenames = list(set(filenames) - set(db_filenames))
-        old_filenames = list(set(db_filenames) - (set(db_filenames) - set(filenames)))
-        for filename in old_filenames:
-            last_mod_time = os.path.getmtime(self.posts_dir + filename)
-            last_mod_time_in_db = db['posts'][filename]['last_mod_time']
-            if last_mod_time != last_mod_time_in_db:
-                new_filenames.append(filename)
-                old_filenames.remove(filename)
+        new_filenames, old_filenames = self.get_new_filenames(filenames, db_filenames, 'posts')
         categories_tmp = {}
         post_content = {}
         posts_dict = {}
         for filename in old_filenames:
-            post_content = dict(db['posts'][filename]['content'])
+            post_content = dict(self.db['posts'][filename]['content'])
             post_tmp = Post(self.config)
             post_tmp.get_from_db(post_content)
             self.posts.append(post_tmp)
@@ -116,9 +129,7 @@ class Views():
             post_dict.pop('config', None)
             last_mod_time = os.path.getmtime(self.posts_dir + filename)
             posts_dict[filename] = { 'last_mod_time': last_mod_time, 'content': post_dict }
-        db['posts'] = posts_dict
-        db = json.dumps(db)
-        open('db.json', 'w+').write(db.encode('utf8'))
+        self.db['posts'] = posts_dict
         self.posts_sort()
         self.page_number = len(self.posts)/5 + 1
 
@@ -127,14 +138,73 @@ class Views():
         Get pages from pages directory
         '''
         categories_tmp = []
+        pages_filenames = []
+        pages_dict = {}
         for dirpath, dirnames, filenames in os.walk(self.pages_dir):
-            for filename in [f for f in filenames if f.endswith('.md') or f.endswith('.markdown')]:
+            for filename in filenames:
                 file_path = os.path.join(dirpath, filename)
-                page_tmp = Page(self.config)
-                page_tmp.save(open(file_path, 'r').read().decode('utf8'))
-                self.pages.append(page_tmp)
-                for category in page_tmp.categories:
-                    categories_tmp.append(category)
+                pages_filenames.append(file_path.replace(self.pages_dir, ''))
+        db_filenames = [] # db_filenames is a list of the filenames read from db.json
+
+        if 'pages' in self.db:
+            pass
+        else:
+            self.db['pages'] = {}
+        for db_filename in self.db['pages']:
+            db_filenames.append(db_filename.encode('utf8'))
+
+        new_filenames, old_filenames = self.get_new_filenames(pages_filenames, db_filenames, 'pages')
+
+        for filename in old_filenames:
+            page_content = dict(self.db['pages'][filename]['content'])
+            page_tmp = Page(self.config)
+            page_tmp.get_from_db(page_content)
+            self.pages.append(page_tmp)
+            for category in page_tmp.categories:
+                categories_tmp.append(category)
+            page_dict = page_tmp.__dict__.copy()
+            page_dict['pub_time'] = time.mktime(page_dict['pub_time'].timetuple())
+            page_dict.pop('config', None)
+            last_mod_time = os.path.getmtime(self.pages_dir + filename)
+            pages_dict[filename] = { 'last_mod_time': last_mod_time, 'content': page_dict }
+
+        for filename in new_filenames:
+            file_path = os.path.join(self.dir + filename)
+            page_tmp = Page(self.config)
+            page_tmp.save(open(self.pages_dir + filename, 'r').read().decode('utf8'))
+            self.pages.append(page_tmp)
+            for category in page_tmp.categories:
+                categories_tmp.append(category)
+            page_dict = page_tmp.__dict__.copy()
+            page_dict['pub_time'] = time.mktime(page_dict['pub_time'].timetuple())
+            page_dict.pop('config', None)
+            last_mod_time = os.path.getmtime(self.pages_dir + filename)
+            pages_dict[filename] = { 'last_mod_time': last_mod_time, 'content': page_dict }
+        self.pages_sort()
+        self.db['pages'] = pages_dict
+
+    def save_db(self):
+        db_to_save = json.dumps(self.db)
+        open('db.json', 'w+').write(db_to_save.encode('utf8'))
+
+    def get_prev_and_next(self, iterable):
+        iterator = iter(iterable)
+        prev = None
+        item = iterator.next()  # throws StopIteration if empty.
+        for next in iterator:
+            yield (prev,item,next)
+            prev = item
+            item = next
+        yield (prev,item,None)
+
+    def pages_sort(self):
+        for i in range(len(self.pages)):
+            for j in range(len(self.pages)):
+                if self.pages[i].order < self.pages[j].order:
+                    self.pages[i], self.pages[j] = self.pages[j], self.pages[i]
+        for prev, current, next in self.get_prev_and_next(self.pages):
+            current.prev = prev
+            current.next = next
 
     def posts_sort(self):
         for i in range(len(self.posts)):
