@@ -2,6 +2,8 @@
 
 A static site generator which is written in Python, simple, static and fast! Start a blog using Crotal now!
 
+Homepage: [Crotal.org](http://crotal.org)
+
 ##Installation
 
 via pip:
@@ -19,6 +21,8 @@ via github:
     $ crotal init my_site && cd my_site
     $ crotal generate
     $ crotal server
+
+Now the website is available at http://localhost:8000.
 
 ##Documents
 
