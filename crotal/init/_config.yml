@@ -6,6 +6,8 @@ simple_search: http://google.com/search
 keywords:
 description: A static site generator which is written in Python, super fast, easy to use, and free to all.Start a blog right now using Crotal!
 
+navbar: [HOME: /, Archives: /archive, Categories: /category, About: /about, RSS: /rss]
+
 email:
 
 deploy_default: rsync

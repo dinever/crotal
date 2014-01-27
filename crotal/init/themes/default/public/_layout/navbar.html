@@ -1,14 +1,15 @@
-<a href="/" class="mobile_nav closed">Home</a>
-<a href="/archive/" class="mobile_nav closed">Archives</a>
-<a href="/category/" class="mobile_nav closed">Categories</a>
-<a href="/about/" class="mobile_nav closed">About</a>
-<a href="/rss.xml" class="mobile_nav closed">Rss</a>
+{% for link in site.navbar %}
+{% for item in link %}
+<a href="{{ link[item] }}" class="mobile_nav closed">{{ item }}</a>
+{% endfor %}
+{% endfor %}
+
 <nav id="second-menu" class="clearfix">
-            <ul id="menu-categories" class="nav">
-                <li id="" class="menu-item"><a href="/">Home</a></li>
-                <li id="" class="menu-item"><a href="/archive/">Archives</a></li>
-                <li id="" class="menu-item"><a href="/category/">Categories</a></li>
-                <li id="" class="menu-item"><a href="/about">About</a></li>
-                <li id="" class="menu-item"><a href="/rss.xml">Rss</a></li>
-            </ul>
-        </nav>
+    <ul id="menu-categories" class="nav">
+        {% for link in site.navbar %}
+        {% for item in link %}
+        <li id="" class="menu-item"><a href="{{ link[item] }}" class="mobile_nav closed">{{ item }}</a></li>
+        {% endfor %}
+        {% endfor %}
+    </ul>
+</nav>
