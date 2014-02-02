@@ -9,7 +9,7 @@ def read(fname):
 
 setup(
     name = "crotal",
-    version = "0.5.1",
+    version = "0.5.2",
     packages = find_packages(),
 
     include_package_data = True,
