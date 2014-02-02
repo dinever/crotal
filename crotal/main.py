@@ -23,8 +23,8 @@ def generate_site(config, full):
         os.mkdir('.private/')
     except Exception, e:
         pass
-    copy_dir('public/', '.private')
     copy_dir('themes/' + config.theme + '/public', '.private')
+    copy_dir('public/', '.private')
 
     view = Views(config, dir, full)
     view.get_posts()

@@ -1,4 +1,4 @@
-url: http://localhost:8000
+url: crotal.org
 title: Crotal
 subtitle: A static site generator written in Python.
 author: user
@@ -6,7 +6,7 @@ simple_search: http://google.com/search
 keywords:
 description: A static site generator which is written in Python, super fast, easy to use, and free to all.Start a blog right now using Crotal!
 
-navbar: [HOME: /, Archives: /archive, Categories: /category, About: /about, RSS: /rss]
+navbar: [Home: /, Archives: /archive, Categories: /category, About: /about, RSS: /rss.xml]
 
 email:
 
@@ -29,7 +29,7 @@ excerpt_link: "More &rarr;"  # "Continue reading" link text at the bottom of exc
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [_asides/about.html, _asides/recent_post.html]
+default_asides: [asides/about.html, asides/recent_post.html]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 

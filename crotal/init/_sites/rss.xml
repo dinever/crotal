@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <atom:link rel="hub" href="http://pubsubhubbub.appspot.com" xmlns:atom="http://www.w3.org/2005/Atom"/>
+    <title></title>
+    <generator>Turtpress</generator>
+    <link></link>
+
+        <item>
+      <title>Hello World!</title>
+      <description>Welcome to Crotal, This is the first post, modify or remove it, and start your own blog! Write you post like this: --- title: "Hello, World" date: 2013-04-20 15:10 categories: crotal slug: hello-world --- Welcome to Crotal, This is your first post, modify...</description>
+      <link>/blog/2012/11/25/hello-world</link>
+      <pubDate>2012-11-25 14:07:00 +0800</pubDate>
+      2012-11-20 13:55:00 +0100
+      <guid>/blog/2012/11/25/hello-world</guid>
+    </item>
+      </channel>
+</rss>

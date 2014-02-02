@@ -1,16 +1,18 @@
-{% extends "_layout/base.html" %}
-{% block title %}
-{{ page.title }}
-{% endblock %}
-{% block description %}
-{{ page.html | striptags | truncate(length=255 ,killwords=False)}}
-{% endblock %}
-{% block content %}
-        <article class="post type-post status-publish hentry category-people entry clearfix">
-        <div class="post_content clearfix">
-        <h2 class="title">{{ page.title }}</h2>
-        <hr/>
-            {{ page.html | safe }}
-        </div>
+---
+layout: default
+---
+<div class="left-area">
+    <article class="post type-post status-publish hentry category-people entry clearfix">
+    <div class="post_content clearfix">
+    <h2 class="title">{{ page.title }}</h2>
+    <hr/>
+    {{ page.html | safe }}
+    </div>
     </article>
-{% endblock %}
+</div>
+
+{% if page.comment != False %}
+    {% include "_includes/comments.html" %}
+{% endif %}
+
+{% include "_includes/sidebar.html" %}

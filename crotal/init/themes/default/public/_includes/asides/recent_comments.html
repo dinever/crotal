@@ -1,0 +1,19 @@
+<div class="widget">
+  <h4 class="widgettitle">Rencent Comments</h4>
+  {% if site.comment_system == "disqus" %}
+  <script type="text/javascript" src="http://disqus.com/forums/{{ settings.disqus_short_name }}/recent_comments_widget.js?hide_avatars=1"></script>
+  {% elif site.comment_system == "duoshuo" %}
+    <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="1" data-show-time="1" data-show-admin="1" data-excerpt-length="70"></ul>
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:"您的多说二级域名"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+    {% endif %}
+</div>
+

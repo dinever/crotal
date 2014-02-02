@@ -1,19 +1,23 @@
-{% extends "_layout/base.html" %}
-{% block title %}Index{% endblock %}
-{% block content %}
-{% for post in posts | batch(5) | first%}
-<article class="post type-post status-publish hentry category-people entry clearfix">
-    <p class="meta-info">Posted  by {{ post.author }} on <a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</p>
+---
+layout: default
+title: Index
+---
+<div class="left-area">
+    {% for post in posts | batch(5) | first%}
+    <article class="post type-post status-publish hentry category-people entry clearfix">
+        <p class="meta-info">Posted  by {{ post.author }} on <a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }}</p>
 
-        <div class="post_content clearfix">
-            <h2 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
-            <hr/>
-            {{ post.front_html | safe }}
-            <a href="{{ post.url }}" class="more">{{ site.excerpt_link }}</a>
-        </div>
-    </article>
-{% endfor %}
-{% include '_layout/paginate.html' %}
+            <div class="post_content clearfix">
+                <h2 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+                <hr/>
+                {{ post.front_html | safe }}
+                <a href="{{ post.url }}" class="more">{{ site.excerpt_link }}</a>
+            </div>
+        </article>
+    {% endfor %}
+    {% include '_includes/paginate.html' %}
+</div>
+{% include "_includes/sidebar.html" %}
 
 <script type="text/javascript">
 /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
@@ -27,4 +31,3 @@ var disqus_shortname = '{{ site.disqus_short_name }}'; // required: replace exam
  (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
  }());
 </script>
-{% endblock %}

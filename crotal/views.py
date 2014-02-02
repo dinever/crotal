@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
-import os.path, time, json
+import os.path, time, json, re
 
+import yaml
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
 from crotal.models.posts import Post
@@ -8,7 +9,6 @@ from crotal.models.pages import Page
 from crotal.models.categories import Category
 from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
 
-private_dir = '.private/'
 
 class Views():
     def __init__(self, config, dir, full):
@@ -17,6 +17,7 @@ class Views():
         self.dir = dir
         self.posts_dir = self.dir + '/source/posts/'
         self.pages_dir = self.dir + '/source/pages/'
+        self.template_dir = self.dir + '/.private/'
         self.posts = []
         self.pages = []
         self.page_number = 0
@@ -24,8 +25,8 @@ class Views():
         self.templates_path = []
         self.templates = [] #html files start not with '_'
         self.other_files = [] #html files start with '_'
-        os.path.walk(repr(private_dir)[1:-1], self.processDirectory, None)
-        self.j2_env = Environment(loader=FileSystemLoader(private_dir), trim_blocks=True, extensions=[MarkdownExtension])
+        os.path.walk(repr(self.template_dir)[1:-1], self.processDirectory, None)
+        self.j2_env = Environment(loader=FileSystemLoader(self.template_dir), trim_blocks=True, extensions=[MarkdownExtension])
         self.post_template = self.j2_env.get_template('_layout/post.html')
         if full:
             self.db = {'posts':{}, 'pages':{}}
@@ -40,8 +41,8 @@ class Views():
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
             file_path = dirname + '/' + filename
-            file_relative_path = file_path.replace(private_dir, '')
-            if not file_path.replace(private_dir, '').startswith('_'):
+            file_relative_path = file_path.replace(self.template_dir, '')
+            if not file_path.replace(self.template_dir, '').startswith('_'):
                 if filename.endswith('.html'):
                     self.templates_path.append(file_relative_path)
                 elif filename.endswith('.xml'):
@@ -54,6 +55,26 @@ class Views():
     def get_templates(self):
         pass
 
+    def get_full_template_content(self, layout_content, parameter):
+        header = ''
+        template_info = {}
+        if layout_content.startswith("---"):
+            get_header = re.compile(r'---[\s\S]*?---')
+            header = get_header.findall(layout_content)[0]
+            layout_content = layout_content.replace(header, '', 1)
+            header = header.replace('---','')
+            template_info = yaml.load(header)
+        parameter = dict(parameter.items() + template_info.items())
+        rendered = self.j2_env.from_string(layout_content).render(**parameter)
+        if header != '':
+            parameter['content'] = rendered
+            if parameter['layout'].endswith(".html"):
+                template_layout_content = open(self.template_dir + '_layout/' + parameter['layout'], 'r').read().decode('utf8')
+            else:
+                template_layout_content = open(self.template_dir + '_layout/' + parameter['layout'] + '.html', 'r').read().decode('utf8')
+            rendered = self.get_full_template_content(template_layout_content, parameter)
+        return rendered
+
     def save(self, posts, categories):
         '''
         Save rendered files except posts.
@@ -64,7 +85,9 @@ class Views():
             except Exception:
                 pass
         for item in self.templates_path:
-            rendered = self.j2_env.get_template(item).render(posts = posts, site = self.config, categories = categories, current_page = 1, page_number = self.page_number, pages = self.pages)
+            template_layout_content = open(self.template_dir + item, 'r').read().decode('utf8')
+            parameter = dict(posts = posts, site = self.config, categories = categories, current_page = 1, page_number = self.page_number, pages = self.pages)
+            rendered = self.get_full_template_content(template_layout_content, parameter)
             open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
         self.save_index_pages()
 
@@ -133,6 +156,15 @@ class Views():
         self.posts_sort()
         self.page_number = len(self.posts)/5 + 1
 
+    def save_posts(self, posts):
+        '''
+        Save posts .html files.
+        '''
+        post_layout_content = open(self.template_dir + '_layout/' + 'post.html', 'r').read().decode('utf8')
+        for post in posts:
+            self.save_post_file(post, post_layout_content, self.dir + '/_sites/')
+
+
     def get_pages(self):
         '''
         Get pages from pages directory
@@ -142,8 +174,9 @@ class Views():
         pages_dict = {}
         for dirpath, dirnames, filenames in os.walk(self.pages_dir):
             for filename in filenames:
-                file_path = os.path.join(dirpath, filename)
-                pages_filenames.append(file_path.replace(self.pages_dir, ''))
+                if not filename.startswith('.'):
+                    file_path = os.path.join(dirpath, filename)
+                    pages_filenames.append(file_path.replace(self.pages_dir, ''))
         db_filenames = [] # db_filenames is a list of the filenames read from db.json
 
         if 'pages' in self.db:
@@ -216,28 +249,36 @@ class Views():
         '''
         Save posts .html files.
         '''
+        post_layout_content = open(self.template_dir + '_layout/' + 'post.html', 'r').read().decode('utf8')
         for post in posts:
-            self.save_post_file(post, self.dir + '/_sites/')
+            self.save_post_file(post, post_layout_content, self.dir + '/_sites/')
 
     def save_pages(self, pages):
         '''
         Save pages .html file
         '''
+        page_layout_content = open(self.template_dir + '_layout/' + 'page.html', 'r').read().decode('utf8')
         for page in pages:
-            self.save_page_file(page, self.dir + '/_sites')
+            if page.layout != "page":
+                if page.layout.endswith(".html"):
+                    page_layout_content = open(self.template_dir + '_layout/' + page.layout, 'r').read().decode('utf8')
+                else:
+                    page_layout_content = open(self.template_dir + '_layout/' + page.layout + '.html', 'r').read().decode('utf8')
+            self.save_page_file(page, page_layout_content, self.dir + '/_sites')
 
-    def save_post_file(self, post, dir):
+    def save_post_file(self, post, post_layout_content, dir):
+        parameter = dict(post= post, posts = self.posts, site = self.config, categories = self.categories, current_page = 1, page_number = self.page_number, pages = self.pages)
         if not os.path.exists(dir + post.url):
             os.makedirs(dir + post.url)
-        rendered = self.post_template.render(post = post, posts = self.posts, site = self.config, pages = self.pages)
-        open(dir + post.url + '/index.html', 'w+').write(rendered.encode('utf8'))
+        file_content = self.get_full_template_content(post_layout_content, parameter)
+        open(dir + post.url + '/index.html', 'w+').write(file_content.encode('utf8'))
 
-    def save_page_file(self, page, dir):
-        page_template = self.j2_env.get_template('_layout/' + page.layout)
+    def save_page_file(self, page, page_layout_content, dir):
+        parameter = dict(page = page, posts = self.posts, site = self.config, categories = self.categories, current_page = 1, page_number = self.page_number, pages = self.pages)
         if not os.path.exists(dir + page.url):
             os.makedirs(dir + page.url)
-        rendered = page_template.render(page = page, pages = self.pages, site = self.config, posts = self.posts)
-        open(dir + page.url + '/index.html', 'w+').write(rendered.encode('utf8'))
+        file_content = self.get_full_template_content(page_layout_content, parameter)
+        open(dir + page.url + '/index.html', 'w+').write(file_content.encode('utf8'))
 
     def save_index_pages(self):
         '''

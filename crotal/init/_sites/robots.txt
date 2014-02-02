@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+Disallow: /blog/page/
+Disallow: /tags/
+Sitemap: crotal.org/sitemap.xml

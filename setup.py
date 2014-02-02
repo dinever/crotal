@@ -4,10 +4,12 @@ import sys
 
 from setuptools import setup, find_packages
 
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name = "crotal",
-    version = "0.4.0",
+    version = "0.5.0",
     packages = find_packages(),
 
     include_package_data = True,
@@ -24,5 +26,6 @@ setup(
     author = "Dinever",
     author_email = 'dingpeixuan911@gmail.com',
     url = "http://github.com/dinever/crotal",
-    description = 'A static site generator written in python.',
+    description = 'A static site generator written in python, Simple, Static and Fast.',
+    long_description = read('README'),
 )

@@ -4,7 +4,7 @@ title: "Hello World!"
 date: 2012-11-25 14:07
 slug: hello-world
 categories: linux
-description: [root@linux115 spool]# service postfix start启动 postfix： [失败]
+description: Welcome to Crotal, This is the first post, modify or remove it, and start your own blog!
 ---
 
 Welcome to Crotal, This is the first post, modify or remove it, and start your own blog!
@@ -25,9 +25,9 @@ Welcome to Crotal, This is your first post, modify or remove it, and start your 
 Add a picture like this:
 
 ```markdown
-![octocat](/images/Octocat.jpg)
+![octocat](/images/crotal.png)
 ```
 
-![octocat](/images/Octocat.jpg)
+![octocat](/images/crotal.png)
 
 Check the <a href="http://crotal.org/docs/" target="_blank">documents</a> for more information.

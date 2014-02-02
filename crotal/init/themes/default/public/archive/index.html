@@ -1,11 +1,8 @@
-{% extends "_layout/base.html" %}
-{% block title %}
-Archives
-{% endblock %}
-{% block content %}
-
-{% for post in posts %}
-{% endfor %}
+---
+layout: default
+title: Blog Archive
+---
+<div class="left-area">
 {% set this_year = 0 %}
 {% for post in posts %}
 {% set this_month = post.pub_time.strftime('%b') %}
@@ -17,15 +14,14 @@ Archives
     {% else %}
     {% endif %}
 <div class="archives">
-    <div id="articles-content">
-        <article class="post clearfix">
+    <div class="archives-content">
             <p class="meta-info">{{ post.pub_time.strftime('%b %d') }} , {% for category in post.categories %}{{ category }} {% endfor %}</p>
             <h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
-        </article>
     </div>
 
 </div>
 {% endfor %}
+</div>
 
+{% include "_includes/sidebar.html" %}
 
-{% endblock %}

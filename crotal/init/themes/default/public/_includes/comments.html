@@ -1,0 +1,5 @@
+{% if site.comment_system == "disqus" %}
+{% include "_includes/disqus.html" %}
+{% elif site.comment_system == "duoshuo" %}
+{% include "_includes/duoshuo.html" %}
+{% endif %}
