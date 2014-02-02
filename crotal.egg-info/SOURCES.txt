@@ -20,16 +20,6 @@ crotal.egg-info/requires.txt
 crotal.egg-info/top_level.txt
 crotal/init/_config.yml
 crotal/init/_sites/index.html
-crotal/init/_sites/robots.txt
-crotal/init/_sites/rss.xml
-crotal/init/_sites/sitemap.xml
-crotal/init/_sites/about/index.html
-crotal/init/_sites/archive/index.html
-crotal/init/_sites/blog/2012/11/25/hello-world/index.html
-crotal/init/_sites/category/index.html
-crotal/init/_sites/css/pygments.css
-crotal/init/_sites/css/style.css
-crotal/init/_sites/images/crotal.png
 crotal/init/public/robots.txt
 crotal/init/public/rss.xml
 crotal/init/public/sitemap.xml
