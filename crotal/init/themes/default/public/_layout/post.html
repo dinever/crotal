@@ -6,7 +6,7 @@ layout: default
     <p class="meta-info">Posted  by {{ post.author }} on <a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }} </p>
 
     <div class="post_content clearfix">
-        <h2 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+        <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
         <hr/>
         {{ post.html | safe }}
     </div>
