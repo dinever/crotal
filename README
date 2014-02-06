@@ -1,0 +1,26 @@
+Home Page:
+
+http://crotal.org
+
+GitHub:
+
+http://github.com/dinever/crotal
+
+(Please star for it)
+
+Installation:
+
+::
+
+    $ sudo pip install crotal
+
+Usage:
+
+::
+
+    $ crotal init new_site
+    $ cd new_site
+    $ crotal generate
+    $ crotal server
+
+Then you can browse the site at http://localhost:8000
