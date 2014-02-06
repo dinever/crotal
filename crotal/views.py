@@ -284,9 +284,10 @@ class Views():
         '''
         Generate pagnition like 'http://localhost:8000/blog/page/2/'
         '''
-        index_template = self.j2_env.get_template('index.html')
         for i in range(1, self.page_number):
             if not os.path.exists(self.dir + '/_sites/blog/page/' + str(i+1)):
                 os.makedirs(self.dir + '/_sites/blog/page/' + str(i+1))
-            rendered = index_template.render(posts = self.posts[i*5:(i+1)*5], site = self.config, current_page = i+1, page_number = self.page_number)
-            open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(rendered.encode('utf8'))
+            index_template = open(self.template_dir + 'index.html' , 'r+').read().decode('utf8')
+            parameter = dict(posts = self.posts[i*5:(i+1)*5], site = self.config, current_page = i+1, page_number = self.page_number)
+            file_content = self.get_full_template_content(index_template, parameter)
+            open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(file_content.encode('utf8'))
