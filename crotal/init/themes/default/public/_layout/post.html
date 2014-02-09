@@ -4,7 +4,6 @@ layout: default
 <div class="left-area">
 <article class="post entry clearfix">
     <p class="meta-info">Posted  by {{ post.author }} on <a href="{{ post.url }}">{{ post.pub_time.strftime('%b %d,%Y') }} </p>
-
     <div class="post_content clearfix">
         <h1 class="title"><a href="{{ post.url }}">{{ post.title }}</a></h1>
         <hr/>
@@ -12,10 +11,11 @@ layout: default
     </div>
 </article>
 
+<article class="post entry clearfix">
 {% if post.comment != False %}
     {% include "_includes/comments.html" %}
 {% endif %}
-
+</article>
 </div>
 
 {% include "_includes/sidebar.html" %}
