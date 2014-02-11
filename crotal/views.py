@@ -154,7 +154,7 @@ class Views():
             posts_dict[filename] = { 'last_mod_time': last_mod_time, 'content': post_dict }
         self.db['posts'] = posts_dict
         self.posts_sort()
-        self.page_number = len(self.posts)/5 + 1
+        self.page_number = len(self.posts)/5
 
     def save_posts(self, posts):
         '''
