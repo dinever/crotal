@@ -80,6 +80,12 @@ duoshuo_short_name:
 # Google Analytics
 google_analytics_tracking_id:
 
+# Clicky
+clicky_tracking_id:
+
+# Woopra
+woopra_tracking_site:
+
 # Facebook Like
 facebook_like: false
 

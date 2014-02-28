@@ -2,17 +2,31 @@
 {% include "_includes/google_plus_one.html" %}
 {% include "_includes/twitter_sharing.html" %}
 {% if site.google_analytics_tracking_id %}
-    <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '{{ site.google_analytics_tracking_id }}']);
-    _gaq.push(['_trackPageview']);
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', '{{ site.google_analytics_tracking_id }}']);
+_gaq.push(['_trackPageview']);
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-    </script>
-{% elif site.clicky_tracking_id %}
-    <script type="text/javascript">try{ clicky.init({{ site.clicky_tracking_id }}); }catch(e){}</script>
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+{% endif %}
+{% if site.clicky_tracking_id %}
+<script type="text/javascript">try{ clicky.init({{ site.clicky_tracking_id }}); }catch(e){}</script>
+{% endif %}
+{% if site.woopra_tracking_site %}
+<script>
+(function(){
+    var t,i,e,n=window,o=document,a=arguments,s="script",r=["config","track","identify","visit","push","call"],c=function(){var t,i=this;for(i._e=[],t=0;r.length>t;t++)(function(t){i[t]=function(){return i._e.push([t].concat(Array.prototype.slice.call(arguments,0))),i}})(r[t])};for(n._w=n._w||{},t=0;a.length>t;t++)n._w[a[t]]=n[a[t]]=n[a[t]]||new c;i=o.createElement(s),i.async=1,i.src="//static.woopra.com/js/w.js",e=o.getElementsByTagName(s)[0],e.parentNode.insertBefore(i,e)
+})("woopra");
+
+woopra.config({
+domain: '{{ site.woopra_tracking_site }}',
+    idle_timeout: 1800000
+});
+woopra.track();
+</script>
 {% endif %}
