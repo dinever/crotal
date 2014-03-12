@@ -35,7 +35,8 @@ def create_post(config):
         post.pub_time = dt.strftime("%Y-%m-%d %H:%M")
         new_post = SAMPLE % (post.title, post.pub_time, post.slug)
         file_title = dt.strftime("%Y-%m-%d") + '-' + post.slug + '.markdown'
-        open('source/posts/' + file_title, 'w+').write(new_post)
+        target = os.path.normpath(os.path.join('source/posts', file_title))
+        open(target, 'w+').write(new_post)
     else:
         usage()
 
