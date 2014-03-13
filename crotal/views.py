@@ -282,7 +282,7 @@ class Views():
 
     def save_post_file(self, post, post_layout_content, dir):
         parameter = dict(post= post, posts = self.posts, site = self.config, categories = self.categories, current_page = 1, page_number = self.page_number, pages = self.pages)
-        dname = os.path.join(dir, post.url)
+        dname = os.path.join(dir, post.url.strip("/\\"))
         if not os.path.exists(dname):
             os.makedirs(dname)
         file_content = self.get_full_template_content(post_layout_content, parameter)
@@ -290,7 +290,7 @@ class Views():
 
     def save_page_file(self, page, page_layout_content, dir):
         parameter = dict(page = page, posts = self.posts, site = self.config, categories = self.categories, current_page = 1, page_number = self.page_number, pages = self.pages)
-        dname = os.path.join(dir, page.url)
+        dname = os.path.join(dir, page.url.strip("/\\"))
         if not os.path.exists(dname):
             os.makedirs(dname)
         file_content = self.get_full_template_content(page_layout_content, parameter)
