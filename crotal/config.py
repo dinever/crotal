@@ -1,4 +1,5 @@
 import yaml
+import os.path
 
 class Config():
     '''
@@ -6,7 +7,7 @@ class Config():
     '''
     def __init__(self, dir):
         self.dir = dir
-        self.config_yml = open(self.dir + '/_config.yml', 'r').read()
+        self.config_yml = open(os.path.join(self.dir, '_config.yml'), 'r').read()
         self.config = yaml.load(self.config_yml)
         for item in self.config:
             setattr(self, item, self.config[item])

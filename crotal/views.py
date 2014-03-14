@@ -15,9 +15,9 @@ class Views():
         self.config = config
         self.db = {}
         self.dir = dir
-        self.posts_dir = self.dir + '/source/posts/'
-        self.pages_dir = self.dir + '/source/pages/'
-        self.template_dir = self.dir + '/.private/'
+        self.posts_dir = os.path.normpath(os.path.join(self.dir, 'source/posts'))
+        self.pages_dir = os.path.normpath(os.path.join(self.dir, 'source/pages'))
+        self.template_dir = os.path.normpath(os.path.join(self.dir, '.private'))
         self.posts = []
         self.pages = []
         self.page_number = 0
@@ -40,9 +40,9 @@ class Views():
 
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
-            file_path = dirname + '/' + filename
-            file_relative_path = file_path.replace(self.template_dir, '')
-            if not file_path.replace(self.template_dir, '').startswith('_'):
+            file_path = os.path.join(dirname, filename)
+            file_relative_path = os.path.relpath(file_path, self.template_dir)
+            if not file_relative_path.startswith('_'):
                 if filename.endswith('.html'):
                     self.templates_path.append(file_relative_path)
                 elif filename.endswith('.xml'):
@@ -68,10 +68,10 @@ class Views():
         rendered = self.j2_env.from_string(layout_content).render(**parameter)
         if header != '':
             parameter['content'] = rendered
-            if parameter['layout'].endswith(".html"):
-                template_layout_content = open(self.template_dir + '_layout/' + parameter['layout'], 'r').read().decode('utf8')
-            else:
-                template_layout_content = open(self.template_dir + '_layout/' + parameter['layout'] + '.html', 'r').read().decode('utf8')
+            fname = os.path.normpath(os.path.join(self.template_dir, '_layout/', parameter['layout']))
+            if not parameter['layout'].endswith(".html"):
+                fname += '.html'
+            template_layout_content = open(fname, 'r').read().decode('utf8')
             rendered = self.get_full_template_content(template_layout_content, parameter)
         return rendered
 
@@ -79,16 +79,26 @@ class Views():
         '''
         Save rendered files except posts.
         '''
-        for item in self.other_files:
+        def md(pth):
             try:
-                os.mkdir(self.dir + '/' + '_sites/' + item)
+                os.makedirs(pth)
             except Exception:
                 pass
+        
+        for item in self.other_files:
+            md(os.path.normpath(os.path.join(self.dir, "_sites/", item)))
+            
         for item in self.templates_path:
-            template_layout_content = open(self.template_dir + item, 'r').read().decode('utf8')
+            input_name = os.path.normpath(os.path.join(self.template_dir, item))
+            template_layout_content = open(input_name, 'r').read().decode('utf8')
+            
             parameter = dict(posts = posts, site = self.config, categories = categories, current_page = 1, page_number = self.page_number, pages = self.pages)
             rendered = self.get_full_template_content(template_layout_content, parameter)
-            open(self.dir + '/_sites/' + item, 'w+').write(rendered.encode('utf8'))
+            
+            output_name = os.path.normpath(os.path.join(self.dir, "_sites/", item))
+            md(os.path.dirname(output_name))
+            open(output_name, 'w+').write(rendered.encode('utf8'))
+        
         self.save_index_pages()
 
     def get_new_filenames(self, filenames, db_filenames, source_type):
@@ -96,9 +106,9 @@ class Views():
         old_filenames = list(set(db_filenames) - (set(db_filenames) - set(filenames)))
         for filename in old_filenames:
             if source_type == 'posts':
-                last_mod_time = os.path.getmtime(self.posts_dir + filename)
+                last_mod_time = os.path.getmtime(os.path.join(self.posts_dir, filename))
             else:
-                last_mod_time = os.path.getmtime(self.pages_dir + filename)
+                last_mod_time = os.path.getmtime(os.path.join(self.pages_dir, filename))
             last_mod_time_in_db = self.db[source_type][filename]['last_mod_time']
             if last_mod_time != last_mod_time_in_db:
                 new_filenames.append(filename)
@@ -135,11 +145,11 @@ class Views():
             post_dict = post_tmp.__dict__.copy()
             post_dict['pub_time'] = time.mktime(post_dict['pub_time'].timetuple())
             post_dict.pop('config', None)
-            last_mod_time = os.path.getmtime(self.posts_dir + filename)
+            last_mod_time = os.path.getmtime(os.path.join(self.posts_dir, filename))
             posts_dict[filename] = { 'last_mod_time': last_mod_time, 'content': post_dict }
         for filename in new_filenames:
             post_tmp = Post(self.config)
-            post_tmp.save(open(self.posts_dir  + filename, 'r').read().decode('utf8'))
+            post_tmp.save(open(os.path.join(self.posts_dir, filename), 'r').read().decode('utf8'))
             self.posts.append(post_tmp)
             for category in post_tmp.categories:
                 if self.categories.has_key(category):
@@ -150,7 +160,7 @@ class Views():
             post_dict = post_tmp.__dict__.copy()
             post_dict['pub_time'] = time.mktime(post_dict['pub_time'].timetuple())
             post_dict.pop('config', None)
-            last_mod_time = os.path.getmtime(self.posts_dir + filename)
+            last_mod_time = os.path.getmtime(os.path.join(self.posts_dir, filename))
             posts_dict[filename] = { 'last_mod_time': last_mod_time, 'content': post_dict }
         self.db['posts'] = posts_dict
         self.posts_sort()
@@ -160,9 +170,10 @@ class Views():
         '''
         Save posts .html files.
         '''
-        post_layout_content = open(self.template_dir + '_layout/' + 'post.html', 'r').read().decode('utf8')
+        input_file = os.path.normpath(os.path.join(self.template_dir, '_layout/', 'post.html'))
+        post_layout_content = open(input_file, 'r').read().decode('utf8')
         for post in posts:
-            self.save_post_file(post, post_layout_content, self.dir + '/_sites/')
+            self.save_post_file(post, post_layout_content, os.path.join(self.dir, '_sites'))
 
 
     def get_pages(self):
@@ -176,7 +187,8 @@ class Views():
             for filename in filenames:
                 if not filename.startswith('.'):
                     file_path = os.path.join(dirpath, filename)
-                    pages_filenames.append(file_path.replace(self.pages_dir, ''))
+                    rel_file = os.path.relpath(file_path, self.pages_dir)
+                    pages_filenames.append(rel_file)
         db_filenames = [] # db_filenames is a list of the filenames read from db.json
 
         if 'pages' in self.db:
@@ -198,20 +210,20 @@ class Views():
             page_dict = page_tmp.__dict__.copy()
             page_dict['pub_time'] = time.mktime(page_dict['pub_time'].timetuple())
             page_dict.pop('config', None)
-            last_mod_time = os.path.getmtime(self.pages_dir + filename)
+            last_mod_time = os.path.getmtime(os.path.join(self.pages_dir, filename))
             pages_dict[filename] = { 'last_mod_time': last_mod_time, 'content': page_dict }
 
         for filename in new_filenames:
-            file_path = os.path.join(self.dir + filename)
+            file_path = os.path.join(self.dir, filename)
             page_tmp = Page(self.config)
-            page_tmp.save(open(self.pages_dir + filename, 'r').read().decode('utf8'))
+            page_tmp.save(open(os.path.join(self.pages_dir, filename), 'r').read().decode('utf8'))
             self.pages.append(page_tmp)
             for category in page_tmp.categories:
                 categories_tmp.append(category)
             page_dict = page_tmp.__dict__.copy()
             page_dict['pub_time'] = time.mktime(page_dict['pub_time'].timetuple())
             page_dict.pop('config', None)
-            last_mod_time = os.path.getmtime(self.pages_dir + filename)
+            last_mod_time = os.path.getmtime(os.path.join(self.pages_dir, filename))
             pages_dict[filename] = { 'last_mod_time': last_mod_time, 'content': page_dict }
         self.pages_sort()
         self.db['pages'] = pages_dict
@@ -249,45 +261,51 @@ class Views():
         '''
         Save posts .html files.
         '''
-        post_layout_content = open(self.template_dir + '_layout/' + 'post.html', 'r').read().decode('utf8')
+        input_file = os.path.normpath(os.path.join(self.template_dir, '_layout/', 'post.html'))
+        post_layout_content = open(input_file, 'r').read().decode('utf8')
         for post in posts:
-            self.save_post_file(post, post_layout_content, self.dir + '/_sites/')
+            self.save_post_file(post, post_layout_content, os.path.join(self.dir, '_sites'))
 
     def save_pages(self, pages):
         '''
         Save pages .html file
         '''
-        page_layout_content = open(self.template_dir + '_layout/' + 'page.html', 'r').read().decode('utf8')
+        input_file = os.path.normpath(os.path.join(self.template_dir, '_layout/', 'page.html'))
+        page_layout_content = open(input_file, 'r').read().decode('utf8')
         for page in pages:
             if page.layout != "page":
-                if page.layout.endswith(".html"):
-                    page_layout_content = open(self.template_dir + '_layout/' + page.layout, 'r').read().decode('utf8')
-                else:
-                    page_layout_content = open(self.template_dir + '_layout/' + page.layout + '.html', 'r').read().decode('utf8')
-            self.save_page_file(page, page_layout_content, self.dir + '/_sites')
+                fname = os.path.normpath(os.path.join(self.template_dir, '_layout/', page.layout))
+                if not page.layout.endswith(".html"):
+                    fname += ".html"
+                page_layout_content = open(fname, 'r').read().decode('utf8')
+            self.save_page_file(page, page_layout_content, os.path.join(self.dir, '_sites'))
 
     def save_post_file(self, post, post_layout_content, dir):
         parameter = dict(post= post, posts = self.posts, site = self.config, categories = self.categories, current_page = 1, page_number = self.page_number, pages = self.pages)
-        if not os.path.exists(dir + post.url):
-            os.makedirs(dir + post.url)
+        dname = os.path.join(dir, post.url.strip("/\\"))
+        if not os.path.exists(dname):
+            os.makedirs(dname)
         file_content = self.get_full_template_content(post_layout_content, parameter)
-        open(dir + post.url + '/index.html', 'w+').write(file_content.encode('utf8'))
+        open(os.path.join(dname, 'index.html'), 'w+').write(file_content.encode('utf8'))
 
     def save_page_file(self, page, page_layout_content, dir):
         parameter = dict(page = page, posts = self.posts, site = self.config, categories = self.categories, current_page = 1, page_number = self.page_number, pages = self.pages)
-        if not os.path.exists(dir + page.url):
-            os.makedirs(dir + page.url)
+        dname = os.path.join(dir, page.url.strip("/\\"))
+        if not os.path.exists(dname):
+            os.makedirs(dname)
         file_content = self.get_full_template_content(page_layout_content, parameter)
-        open(dir + page.url + '/index.html', 'w+').write(file_content.encode('utf8'))
+        open(os.path.join(dname, 'index.html'), 'w+').write(file_content.encode('utf8'))
 
     def save_index_pages(self):
         '''
         Generate pagnition like 'http://localhost:8000/blog/page/2/'
         '''
         for i in range(1, self.page_number):
-            if not os.path.exists(self.dir + '/_sites/blog/page/' + str(i+1)):
-                os.makedirs(self.dir + '/_sites/blog/page/' + str(i+1))
-            index_template = open(self.template_dir + 'index.html' , 'r+').read().decode('utf8')
+            dname = os.path.normpath(os.path.join(self.dir, '_sites/blog/page/', str(i+1)))
+            
+            if not os.path.exists(dname):
+                os.makedirs(dname)
+            index_template = open(os.path.join(self.template_dir, 'index.html') , 'r+').read().decode('utf8')
             parameter = dict(posts = self.posts[i*5:(i+1)*5], site = self.config, current_page = i+1, page_number = self.page_number)
             file_content = self.get_full_template_content(index_template, parameter)
-            open(self.dir + '/_sites/blog/page/' + str(i+1) + '/index.html', 'w+').write(file_content.encode('utf8'))
+            open(os.path.join(dname, 'index.html'), 'w+').write(file_content.encode('utf8'))

@@ -94,7 +94,7 @@ class Post():
 
     def escape_keywords(self, word):
         return {
-            'year': self.pub_time.strftime('%G'),
+            'year': self.pub_time.strftime('%Y'),
             'month': self.pub_time.strftime('%m'),
             'day': self.pub_time.strftime('%d'),
             'title': str(self.slug),

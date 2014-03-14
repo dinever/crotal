@@ -10,11 +10,11 @@ dir = os.getcwd()
 
 def generate_site(config, full):
     try:
-        shutil.rmtree(dir + '/_sites/')
+        shutil.rmtree(os.path.join(dir, '_sites'))
     except Exception, e:
         pass
     start = timeit.default_timer()
-    copy_dir('themes/' + config.theme + '/static', '_sites')
+    copy_dir(os.path.join('themes', config.theme, 'static'), '_sites')
     copy_dir('static', '_sites')
     copydir_time = timeit.default_timer()
     print '{0:20} in {1:3.3f} seconds'.format('Static Files Copied', copydir_time - start)
@@ -23,7 +23,7 @@ def generate_site(config, full):
         os.mkdir('.private/')
     except Exception, e:
         pass
-    copy_dir('themes/' + config.theme + '/public', '.private')
+    copy_dir(os.path.join('themes', config.theme, 'public'), '.private')
     copy_dir('public/', '.private')
 
     view = Views(config, dir, full)
@@ -47,7 +47,7 @@ def generate_site(config, full):
     print str(len(view.posts)) + ' posts published.'
 
     try:
-        shutil.rmtree(dir + '/.private/')
+        shutil.rmtree(os.path.join(dir, '.private'))
     except Exception, e:
         pass
 
