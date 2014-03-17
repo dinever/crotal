@@ -1,6 +1,6 @@
-#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
+import os
 import sys
 from crotal.models.posts import Post
 from crotal.plugins.pinyin.pinyin import PinYin
