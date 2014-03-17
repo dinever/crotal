@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from crotal.copy_dir import copy_dir
 
+
 def git_deploy(config):
     '''
     I'm still working on this.
@@ -15,14 +16,17 @@ def git_deploy(config):
     deploy_branch = "master"
     os.chdir(deploy_dir)
     if not hasattr(config, 'deploy_branch'):
-        setup_github_pages();
+        setup_github_pages()
     os.system("git add .")
     os.system("git add --all *")
-    message = "Site updated at %s" % datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
+    message = "Site updated at %s" % datetime.strftime(
+        datetime.now(),
+        "%Y-%m-%d %H:%M:%S")
     print message
     print "Github Pages deploy complete"
     os.system("git commit -m '%s'" % message)
-    os.system("git push origin %s --force" % deploy_branch )
+    os.system("git push origin %s --force" % deploy_branch)
+
 
 def setup_github_pages():
     deploy_branch = "master"

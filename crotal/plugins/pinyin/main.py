@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from pinyin import PinYin
+from .pinyin import PinYin
 
 test = PinYin()
 test.load_word()

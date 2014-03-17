@@ -6,11 +6,13 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 dir = os.getcwd()
 
+
 class RequestHandler(SimpleHTTPRequestHandler):
+
     def translate_path(self, path):
 
         ROUTES = (
-            ['', dir +'/_sites'],
+            ['', dir + '/_sites'],
         )
         root = os.getcwd()
 
@@ -20,8 +22,8 @@ class RequestHandler(SimpleHTTPRequestHandler):
                 root = rootdir
                 break
 
-        path = path.split('?',1)[0]
-        path = path.split('#',1)[0]
+        path = path.split('?', 1)[0]
+        path = path.split('#', 1)[0]
         path = posixpath.normpath(urllib.unquote(path))
         words = path.split('/')
         words = filter(None, words)
@@ -35,6 +37,7 @@ class RequestHandler(SimpleHTTPRequestHandler):
             path = os.path.join(path, word)
 
         return path
+
 
 def main():
     BaseHTTPServer.test(RequestHandler, BaseHTTPServer.HTTPServer)

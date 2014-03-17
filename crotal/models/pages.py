@@ -5,6 +5,7 @@ from markdown import markdown
 import yaml
 from crotal.plugins.pinyin.pinyin import PinYin
 
+
 class Page():
 
     def __init__(self, config):
@@ -29,7 +30,7 @@ class Page():
         self.header = get_header.findall(content)[0]
         self.content = content.replace(self.header, '', 1)
         self.save_html()
-        self.header = self.header.replace('---','')
+        self.header = self.header.replace('---', '')
         post_info = yaml.load(self.header)
         for item in post_info:
             '''
@@ -38,17 +39,19 @@ class Page():
             if item is tags, save it to post.tags as a list, too.
             '''
             if item == 'date':
-                pub_time = datetime.strptime(post_info['date'],"%Y-%m-%d %H:%M")
+                pub_time = datetime.strptime(
+                    post_info['date'],
+                    "%Y-%m-%d %H:%M")
                 setattr(self, 'pub_time', pub_time)
             elif item == 'categories' or item == 'tags':
-                if type(post_info[item]) == str:
+                if isinstance(post_info[item], str):
                     setattr(self, item, post_info[item].split(','))
-                elif type(post_info[item]) == list:
+                elif isinstance(post_info[item], list):
                     setattr(self, item, post_info[item])
                 else:
                     setattr(self, item, [])
             elif item == 'title' or item == 'slug':
-                if type(item) is int:
+                if isinstance(item, int):
                     setattr(self, item, str(post_info[item]))
                 else:
                     setattr(self, item, post_info[item])
@@ -56,8 +59,13 @@ class Page():
                 setattr(self, item, post_info[item])
 
         if not hasattr(self, 'order'):
-            self.order = 1000;
+            self.order = 1000
 
     def save_html(self):
-        self.html = markdown(self.content, extensions=['fenced_code','codehilite','tables'])
+        self.html = markdown(
+            self.content,
+            extensions=[
+                'fenced_code',
+                'codehilite',
+                'tables'])
         self.front_html = self.html.split('<!--more-->')[0]

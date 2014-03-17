@@ -5,6 +5,7 @@ from markdown import markdown
 import yaml
 from crotal.plugins.pinyin.pinyin import PinYin
 
+
 class Post():
 
     def __init__(self, config):
@@ -33,7 +34,7 @@ class Post():
         self.header = get_header.findall(content)[0]
         self.content = content.replace(self.header, '', 1)
         self.save_html()
-        self.header = self.header.replace('---','')
+        self.header = self.header.replace('---', '')
         post_info = yaml.load(self.header)
         for item in post_info:
             '''
@@ -42,27 +43,29 @@ class Post():
             if item is tags, save it to post.tags as a list, too.
             '''
             if item == 'date':
-                pub_time = datetime.strptime(post_info['date'],"%Y-%m-%d %H:%M")
+                pub_time = datetime.strptime(
+                    post_info['date'],
+                    "%Y-%m-%d %H:%M")
                 setattr(self, 'pub_time', pub_time)
             elif item == 'categories' or item == 'tags':
-                if type(post_info[item]) == str:
+                if isinstance(post_info[item], str):
                     setattr(self, item, post_info[item].split(','))
-                elif type(post_info[item]) == list:
+                elif isinstance(post_info[item], list):
                     setattr(self, item, post_info[item])
                 else:
                     setattr(self, item, [])
             elif item == 'title' or item == 'slug':
-                if type(item) is int:
+                if isinstance(item, int):
                     setattr(self, item, str(post_info[item]))
                 else:
                     setattr(self, item, post_info[item])
             else:
                 setattr(self, item, post_info[item])
 
-        if not post_info.has_key('author'):
+        if 'author' not in post_info:
             self.author = self.config.author
 
-        if not post_info.has_key('slug'):
+        if 'slug' not in post_info:
             '''
             if there is key "slug" in post_info, use it as the url.
             if there isn't, we generate post url from title.
@@ -70,7 +73,7 @@ class Post():
             '''
             slug = PinYin()
             slug.load_word()
-            self.slug = slug.hanzi2pinyin_split(string = self.title, split="-")
+            self.slug = slug.hanzi2pinyin_split(string=self.title, split="-")
         self.generate_url()
 
     def generate_url(self):
@@ -87,7 +90,8 @@ class Post():
             will be generated to a url like 'crotal.org/post/2013/11/hello-world/'
             '''
             if item.startswith(':'):
-                self.url = self.url + '/' + self.escape_keywords(item.replace(':',''))
+                self.url = self.url + '/' + \
+                    self.escape_keywords(item.replace(':', ''))
             else:
                 self.url = self.url + '/' + item
         self.url = self.url.decode('utf8')
@@ -101,5 +105,10 @@ class Post():
         }[word]
 
     def save_html(self):
-        self.html = markdown(self.content, extensions=['fenced_code','codehilite','tables'])
+        self.html = markdown(
+            self.content,
+            extensions=[
+                'fenced_code',
+                'codehilite',
+                'tables'])
         self.front_html = self.html.split('<!--more-->')[0]

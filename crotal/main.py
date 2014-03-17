@@ -1,17 +1,20 @@
-import os, sys, timeit
+import os
+import sys
+import timeit
 import shutil
 
-import config
+from . import config
 from crotal.views import Views
 from crotal.copy_dir import copy_dir
 from crotal.config import Config
 
 dir = os.getcwd()
 
+
 def generate_site(config, full):
     try:
         shutil.rmtree(os.path.join(dir, '_sites'))
-    except Exception, e:
+    except Exception as e:
         pass
     start = timeit.default_timer()
     copy_dir(os.path.join('themes', config.theme, 'static'), '_sites')
@@ -21,7 +24,7 @@ def generate_site(config, full):
 
     try:
         os.mkdir('.private/')
-    except Exception, e:
+    except Exception as e:
         pass
     copy_dir(os.path.join('themes', config.theme, 'public'), '.private')
     copy_dir('public/', '.private')
@@ -48,8 +51,9 @@ def generate_site(config, full):
 
     try:
         shutil.rmtree(os.path.join(dir, '.private'))
-    except Exception, e:
+    except Exception as e:
         pass
+
 
 def usage():
     print 'Usage:'
@@ -60,12 +64,13 @@ def usage():
     print 'to start the server:     crotal server'
     print 'to deploy the site:      crotal deploy'
 
+
 def main():
-    flag = False #flag indicates whether the _config.yml file is loaded.
+    flag = False  # flag indicates whether the _config.yml file is loaded.
     try:
         config = Config(dir)
         flag = True
-    except Exception, e:
+    except Exception as e:
         pass
 
     if flag:

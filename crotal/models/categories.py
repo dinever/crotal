@@ -1,5 +1,6 @@
-from pages import Page
-from posts import Post
+from .pages import Page
+from .posts import Post
+
 
 class Category():
 

@@ -18,6 +18,7 @@ description: %s
 ---
 """
 
+
 def create_page(config):
     flag = 0
     if len(sys.argv) == 1:
@@ -28,7 +29,11 @@ def create_page(config):
         slug = pinyin.hanzi2pinyin_split(string=title, split="-")
         dt = datetime.now()
         date = dt.strftime("%Y-%m-%d %H:%M")
-        target = os.path.normpath(os.path.join("source/pages", slug + '.markdown'))
+        target = os.path.normpath(
+            os.path.join(
+                "source/pages",
+                slug +
+                '.markdown'))
         open(target, 'w+').write(SAMPLE % (title, date, url, description))
         print 'You can check browse the page by ' + config.url + '/' + url + ' After generating the site.'
 

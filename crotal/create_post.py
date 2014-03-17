@@ -15,10 +15,12 @@ slug: %s
 
 """
 
+
 def usage():
     print 'Usage:'
     print 'crotal new_post "you title here"'
     print '#You post will be created in _posts/'
+
 
 def create_post(config):
     flag = 0
@@ -28,7 +30,7 @@ def create_post(config):
         post = Post(config)
         pinyin = PinYin()
         pinyin.load_word()
-        string = sys.argv[1] #Assume that argv[1] is the title user inputed.
+        string = sys.argv[1]  # Assume that argv[1] is the title user inputed.
         post.title = string
         post.slug = pinyin.hanzi2pinyin_split(string=string, split="-")
         dt = datetime.now()
