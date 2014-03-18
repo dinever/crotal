@@ -1,8 +1,10 @@
 import os
+import time
 import posixpath
 import urllib
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
+from threading import Thread
 
 dir = os.getcwd()
 
@@ -39,8 +41,19 @@ class RequestHandler(SimpleHTTPRequestHandler):
         return path
 
 
+class ServerThread(Thread):
+
+    def run(self):
+        BaseHTTPServer.test(RequestHandler, BaseHTTPServer.HTTPServer)
+
+
 def main():
-    BaseHTTPServer.test(RequestHandler, BaseHTTPServer.HTTPServer)
+    serverThread = ServerThread()
+    serverThread.daemon = True
+    serverThread.start()
+    while True:
+        time.sleep(1)
+
 
 if __name__ == '__main__':
     main()
