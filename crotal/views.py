@@ -426,6 +426,7 @@ class Views():
     def save_page_file(self, page, page_layout_content, dir):
         parameter = dict(
             page=page,
+            title=page.title,
             posts=self.posts,
             site=self.config,
             categories=self.categories,
@@ -445,7 +446,7 @@ class Views():
         '''
         Generate pagnition like 'http://localhost:8000/blog/page/2/'
         '''
-        for i in range(1, self.page_number):
+        for i in range(1, self.page_number+1):
             dname = os.path.normpath(
                 os.path.join(self.dir, '_sites/blog/page/', str(i + 1)))
 
