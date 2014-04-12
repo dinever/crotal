@@ -4,6 +4,7 @@ import shutil
 
 from crotal.controller import Controller
 from crotal.reporter import *
+from crotal.remove_dir import remove_dir
 
 reporter = Reporter()
 
@@ -47,6 +48,8 @@ class Generator:
         save_posts_time = timeit.default_timer()
         # print '{0:20} in {1:3.3f} seconds'.format('Posts saved', save_posts_time - save_other_files_time)
         controller.save_db()
+        remove_dir(os.path.join(dir, '_sites'))
+
         # print '{0:20} in {1:3.3f} seconds'.format('Site Generated', save_posts_time - start)
         reporter.info_report('%d posts generated.' % len(controller.post_collector.posts))
         reporter.info_report('%d pages generated.' % len(controller.page_collector.pages))

@@ -7,6 +7,9 @@ class Reporter:
     def exit(self):
         sys.exit()
 
+    def empty_folder_remove(self, file_path):
+        self.warning_report('Empty floder removed: %s' % file_path)
+
     def db_create_new_key(self, source_type):
         self.warning_report('db.json doesn\'t have key %s' % source_type,
             'key %s created in db.json.' % source_type)
