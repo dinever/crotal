@@ -1,15 +1,16 @@
 import re
+import sys
 from datetime import datetime
 
 from markdown import markdown
 import yaml
 from crotal.plugins.pinyin.pinyin import PinYin
 
-
 class Post():
 
-    def __init__(self, config):
+    def __init__(self, config, filename=None):
         self.config = config
+        self.filename = filename
         self.header = ''
         self.title = ''
         self.pub_time = datetime
@@ -22,17 +23,24 @@ class Post():
         self.url = ''
         self.draft = False
 
-    def get_from_db(self, content):
+    def parse_from_db(self, content):
         for key in content:
             if key == 'pub_time':
                 setattr(self, key, datetime.fromtimestamp(content[key]))
             else:
                 setattr(self, key, content[key])
 
-    def save(self, content):
+    def check_illegal(self, content, filename=None):
         get_header = re.compile(r'---[\s\S]*?---')
-        self.header = get_header.findall(content)[0]
-        self.content = content.replace(self.header, '', 1)
+        try:
+            self.header = get_header.findall(content)[0]
+            self.content = content.replace(self.header, '', 1)
+            return True
+        except:
+            return False
+
+
+    def parse(self):
         self.save_html()
         self.header = self.header.replace('---', '')
         post_info = yaml.load(self.header)
@@ -48,7 +56,7 @@ class Post():
                     "%Y-%m-%d %H:%M")
                 setattr(self, 'pub_time', pub_time)
             elif item == 'categories' or item == 'tags':
-                if isinstance(post_info[item], str):
+                if isinstance(post_info[item], str) or isinstance(post_info[item], unicode):
                     setattr(self, item, post_info[item].split(','))
                 elif isinstance(post_info[item], list):
                     setattr(self, item, post_info[item])

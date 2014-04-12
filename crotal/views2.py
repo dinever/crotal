@@ -10,58 +10,58 @@ from jinja2.environment import Environment
 from crotal.models.posts import Post
 from crotal.models.pages import Page
 from crotal.models.categories import Category
-from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
+from crotal.reporter import Reporter
+from crotal.db import Database
 
+reporter = Reporter()
 
 class Views():
 
-    def __init__(self, config, dir, full):
+    def __init__(self, config, dir, full=False):
         self.config = config
-        self.db = {}
-        self.dir = dir
+        self.database = Database(full)
+        self.current_dir = dir
         self.posts_dir = os.path.normpath(
             os.path.join(
-                self.dir,
-                'source/posts'))
+                self.current_dir, 'source', 'posts'))
         self.pages_dir = os.path.normpath(
             os.path.join(
-                self.dir,
-                'source/pages'))
+                self.current_dir, 'source', 'pages'))
+        self.template_original_dir = os.path.normpath(
+                os.path.join(
+                    self.current_dir,
+                    'themes',
+                    config.theme,
+                    'public'
+                    )
+                )
         self.template_dir = os.path.normpath(
-            os.path.join(
-                self.dir,
-                '.private'))
+                os.path.join(
+                    self.current_dir,
+                    'themes',
+                    config.theme,
+                    'public'
+                    )
+                )
         self.posts = []
+        self.new_posts = []
+        self.removed_posts = []
         self.pages = []
+        self.new_pages = []
         self.page_number = 0
         self.categories = {}
-        self.templates_path = []
         self.templates = []  # html files start not with '_'
+        self.templates_path = []
         self.other_files = []  # html files start with '_'
-        os.path.walk(
-            repr(
-                self.template_dir)[
-                1:-
-                1],
-            self.processDirectory,
-            None)
+        os.path.walk(repr(self.template_dir)[1:-1],
+                     self.processDirectory,
+                     None)
         self.j2_env = Environment(
             loader=FileSystemLoader(
                 self.template_dir),
             trim_blocks=True,
             extensions=[MarkdownExtension])
         self.post_template = self.j2_env.get_template('_layout/post.html')
-        if full:
-            self.db = {'posts': {}, 'pages': {}}
-        else:
-            try:
-                self.db = json.loads(
-                    open(
-                        'db.json',
-                        'r').read().encode('utf8'))
-            except Exception as e:
-                print 'Generating the full site...Please be patient :)'
-                self.db = {'posts': {}, 'pages': {}}
 
     def processDirectory(self, args, dirname, filenames):
         for filename in filenames:
@@ -106,10 +106,26 @@ class Views():
                 parameter)
         return rendered
 
-    def save(self, posts, categories):
+    def save(self):
         '''
         Save rendered files except posts.
         '''
+        new_filenames, old_filenames, removed_filenames = \
+            self.detect_new_filenames('templates')
+
+        for filename in new_filenames:
+            file_path = os.path.join(
+                    self.template_dir,
+                    filename)
+            last_mod_time = os.path.getmtime(
+                file_path)
+            template_layout_content = open(
+                file_path,
+                'r').read().decode('utf8')
+            self.database.db['templates'][filename] = {
+                'last_mod_time': last_mod_time,
+                'content': template_layout_content}
+
         def md(pth):
             try:
                 os.makedirs(pth)
@@ -117,21 +133,19 @@ class Views():
                 pass
 
         for item in self.other_files:
-            md(os.path.normpath(os.path.join(self.dir, "_sites/", item)))
+            md(os.path.normpath(os.path.join(self.current_dir, "_sites/", item)))
 
-        for item in self.templates_path:
+        for item in old_filenames:
             input_name = os.path.normpath(
                 os.path.join(
                     self.template_dir,
                     item))
-            template_layout_content = open(
-                input_name,
-                'r').read().decode('utf8')
+            template_layout_content = self.database.db['templates'][item]['content']
 
             parameter = dict(
-                posts=posts,
+                posts=self.posts,
                 site=self.config,
-                categories=categories,
+                categories=self.categories,
                 current_page=1,
                 page_number=self.page_number,
                 pages=self.pages)
@@ -141,7 +155,7 @@ class Views():
 
             output_name = os.path.normpath(
                 os.path.join(
-                    self.dir,
+                    self.current_dir,
                     "_sites/",
                     item))
             md(os.path.dirname(output_name))
@@ -149,50 +163,67 @@ class Views():
 
         self.save_index_pages()
 
-    def get_new_filenames(self, filenames, db_filenames, source_type):
+    def detect_new_filenames(self, source_type):
+        filenames = [] # filenames is a list of the markdown file's Name
+                       # from the posts' directory
+        if source_type == 'posts':
+            files_dir = self.posts_dir
+        elif source_type == 'pages':
+            files_dir = self.pages_dir
+        elif source_type == 'templates':
+            files_dir = self.template_dir
+
+        if source_type != 'templates':
+            for filename in os.listdir(files_dir):
+                if not filename.startswith('.'):
+                    filenames.append(filename)
+        else:
+            filenames = self.templates_path
+        db_filenames = []
+
+        if not self.database.db.has_key(source_type):
+            reporter.db_create_new_key(source_type)
+            self.database.db[source_type] = {}
+
+        for db_filename in self.database.db[source_type]:
+            db_filenames.append(db_filename.encode('utf8'))
+
         new_filenames = list(set(filenames) - set(db_filenames))
         old_filenames = list(
             set(db_filenames) - (set(db_filenames) - set(filenames)))
+        removed_filenames = list(set(db_filenames) - set(filenames))
+
         for filename in old_filenames:
-            if source_type == 'posts':
-                last_mod_time = os.path.getmtime(
-                    os.path.join(
-                        self.posts_dir,
-                        filename))
-            else:
-                last_mod_time = os.path.getmtime(
-                    os.path.join(
-                        self.pages_dir,
-                        filename))
-            last_mod_time_in_db = self.db[
+            last_mod_time = os.path.getmtime(
+                os.path.join(
+                    files_dir,
+                    filename))
+            last_mod_time_in_db = self.database.db[
                 source_type][filename]['last_mod_time']
             if last_mod_time != last_mod_time_in_db:
                 new_filenames.append(filename)
                 old_filenames.remove(filename)
-        return new_filenames, old_filenames
+        return new_filenames, old_filenames, removed_filenames
 
     def get_posts(self):
         '''
         Get posts from markdown files
         '''
-        filenames = [
-        ]  # filenames is a list of the markdown file's name from the posts' directory
-        for filename in os.listdir(self.posts_dir):
-            if not filename.startswith('.'):
-                filenames.append(filename)
-
-        # db_filenames is a list of the filenames read from db.json
-        db_filenames = []
-        for db_filename in self.db['posts']:
-            db_filenames.append(db_filename.encode('utf8'))
-        new_filenames, old_filenames = self.get_new_filenames(
-            filenames, db_filenames, 'posts')
+        new_filenames, old_filenames, removed_filenames = \
+            self.detect_new_filenames('posts')
         categories_tmp = {}
         post_content = {}
         posts_dict = {}
+
+        for filename in removed_filenames:
+            post_content = self.database.get_post_content(filename)
+            post_tmp = Post(filename, self.config)
+            post_tmp.get_from_db(post_content)
+            self.removed_posts.append(post_tmp)
+
         for filename in old_filenames:
-            post_content = dict(self.db['posts'][filename]['content'])
-            post_tmp = Post(self.config)
+            post_content = self.database.get_post_content(filename)
+            post_tmp = Post(filename, self.config)
             post_tmp.get_from_db(post_content)
             self.posts.append(post_tmp)
             for category in post_tmp.categories:
@@ -212,8 +243,9 @@ class Views():
             posts_dict[filename] = {
                 'last_mod_time': last_mod_time,
                 'content': post_dict}
+
         for filename in new_filenames:
-            post_tmp = Post(self.config)
+            post_tmp = Post(filename, self.config)
             post_tmp.save(
                 open(
                     os.path.join(
@@ -221,6 +253,7 @@ class Views():
                         filename),
                     'r').read().decode('utf8'))
             self.posts.append(post_tmp)
+            self.new_posts.append(post_tmp)
             for category in post_tmp.categories:
                 if category in self.categories:
                     self.categories[category].add_post(post_tmp)
@@ -238,27 +271,20 @@ class Views():
             posts_dict[filename] = {
                 'last_mod_time': last_mod_time,
                 'content': post_dict}
-        self.db['posts'] = posts_dict
+        self.database.set_posts()
         self.posts_sort()
         self.page_number = len(self.posts) / 5
 
-    def save_posts(self, posts):
-        '''
-        Save posts .html files.
-        '''
-        input_file = os.path.normpath(
-            os.path.join(
-                self.template_dir,
-                '_layout/',
-                'post.html'))
-        post_layout_content = open(input_file, 'r').read().decode('utf8')
-        for post in posts:
-            self.save_post_file(
-                post,
-                post_layout_content,
+    def upsert_posts(self, filename):
+        post_tmp = Post(filename, self.config)
+        post_tmp.save(
+            open(
                 os.path.join(
-                    self.dir,
-                    '_sites'))
+                    self.posts_dir,
+                    filename),
+                'r').read().decode('utf8'))
+        for post in self.posts:
+            print post.filename
 
     def get_pages(self):
         '''
@@ -267,28 +293,13 @@ class Views():
         categories_tmp = []
         pages_filenames = []
         pages_dict = {}
-        for dirpath, dirnames, filenames in os.walk(self.pages_dir):
-            for filename in filenames:
-                if not filename.startswith('.'):
-                    file_path = os.path.join(dirpath, filename)
-                    rel_file = os.path.relpath(file_path, self.pages_dir)
-                    pages_filenames.append(rel_file)
-        # db_filenames is a list of the filenames read from db.json
-        db_filenames = []
 
-        if 'pages' in self.db:
-            pass
-        else:
-            self.db['pages'] = {}
-        for db_filename in self.db['pages']:
-            db_filenames.append(db_filename.encode('utf8'))
-
-        new_filenames, old_filenames = self.get_new_filenames(
-            pages_filenames, db_filenames, 'pages')
+        new_filenames, old_filenames, removed_filenames = \
+            self.detect_new_filenames('pages')
 
         for filename in old_filenames:
-            page_content = dict(self.db['pages'][filename]['content'])
-            page_tmp = Page(self.config)
+            page_content = dict(self.database.db['pages'][filename]['content'])
+            page_tmp = Page(filename, self.config)
             page_tmp.get_from_db(page_content)
             self.pages.append(page_tmp)
             for category in page_tmp.categories:
@@ -306,8 +317,8 @@ class Views():
                 'content': page_dict}
 
         for filename in new_filenames:
-            file_path = os.path.join(self.dir, filename)
-            page_tmp = Page(self.config)
+            file_path = os.path.join(self.current_dir, filename)
+            page_tmp = Page(filename, self.config)
             page_tmp.save(
                 open(
                     os.path.join(
@@ -329,10 +340,10 @@ class Views():
                 'last_mod_time': last_mod_time,
                 'content': page_dict}
         self.pages_sort()
-        self.db['pages'] = pages_dict
+        self.database.db['pages'] = pages_dict
 
     def save_db(self):
-        db_to_save = json.dumps(self.db)
+        db_to_save = json.dumps(self.database.db)
         open('db.json', 'w+').write(db_to_save.encode('utf8'))
 
     def get_prev_and_next(self, iterable):
@@ -360,7 +371,7 @@ class Views():
                 if self.posts[i].pub_time > self.posts[j].pub_time:
                     self.posts[i], self.posts[j] = self.posts[j], self.posts[i]
 
-    def save_posts(self, posts):
+    def save_posts(self):
         '''
         Save posts .html files.
         '''
@@ -370,15 +381,22 @@ class Views():
                 '_layout/',
                 'post.html'))
         post_layout_content = open(input_file, 'r').read().decode('utf8')
-        for post in posts:
+        for post in self.new_posts:
             self.save_post_file(
                 post,
                 post_layout_content,
                 os.path.join(
-                    self.dir,
+                    self.current_dir,
                     '_sites'))
 
-    def save_pages(self, pages):
+    def remove_posts(self):
+        site_dir = os.path.join(self.current_dir, '_sites')
+        for post in self.removed_posts:
+            dname = os.path.join(site_dir, post.url.strip("/\\"))
+            filename = os.path.join(dname, 'index.html')
+            os.remove(filename)
+
+    def save_pages(self):
         '''
         Save pages .html file
         '''
@@ -388,7 +406,7 @@ class Views():
                 '_layout/',
                 'page.html'))
         page_layout_content = open(input_file, 'r').read().decode('utf8')
-        for page in pages:
+        for page in self.pages:
             if page.layout != "page":
                 fname = os.path.normpath(
                     os.path.join(
@@ -402,10 +420,10 @@ class Views():
                 page,
                 page_layout_content,
                 os.path.join(
-                    self.dir,
+                    self.current_dir,
                     '_sites'))
 
-    def save_post_file(self, post, post_layout_content, dir):
+    def save_post_file(self, post, post_layout_content, site_dir):
         parameter = dict(
             post=post,
             posts=self.posts,
@@ -414,7 +432,7 @@ class Views():
             current_page=1,
             page_number=self.page_number,
             pages=self.pages)
-        dname = os.path.join(dir, post.url.strip("/\\"))
+        dname = os.path.join(site_dir, post.url.strip("/\\"))
         if not os.path.exists(dname):
             os.makedirs(dname)
         file_content = self.get_full_template_content(
@@ -423,17 +441,16 @@ class Views():
         open(os.path.join(dname, 'index.html'),
              'w+').write(file_content.encode('utf8'))
 
-    def save_page_file(self, page, page_layout_content, dir):
+    def save_page_file(self, page, page_layout_content, site_dir):
         parameter = dict(
             page=page,
-            title=page.title,
             posts=self.posts,
             site=self.config,
             categories=self.categories,
             current_page=1,
             page_number=self.page_number,
             pages=self.pages)
-        dname = os.path.join(dir, page.url.strip("/\\"))
+        dname = os.path.join(site_dir, page.url.strip("/\\"))
         if not os.path.exists(dname):
             os.makedirs(dname)
         file_content = self.get_full_template_content(
@@ -446,9 +463,9 @@ class Views():
         '''
         Generate pagnition like 'http://localhost:8000/blog/page/2/'
         '''
-        for i in range(1, self.page_number+1):
+        for i in range(1, self.page_number):
             dname = os.path.normpath(
-                os.path.join(self.dir, '_sites/blog/page/', str(i + 1)))
+                os.path.join(self.current_dir, '_sites/blog/page/', str(i + 1)))
 
             if not os.path.exists(dname):
                 os.makedirs(dname)

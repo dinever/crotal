@@ -8,8 +8,9 @@ from crotal.plugins.pinyin.pinyin import PinYin
 
 class Page():
 
-    def __init__(self, config):
+    def __init__(self, filename, config):
         self.config = config
+        self.filename = filename
         self.header = ''
         self.title = ''
         self.pub_time = datetime
@@ -18,7 +19,7 @@ class Page():
         self.url = ''
         self.draft = False
 
-    def get_from_db(self, content):
+    def parse_from_db(self, content):
         for key in content:
             if key == 'pub_time':
                 setattr(self, key, datetime.fromtimestamp(content[key]))
