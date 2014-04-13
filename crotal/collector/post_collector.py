@@ -3,10 +3,9 @@ import time
 
 from ..models.posts import Post
 from ..models.others import Category, Tag, Archive
-from ..reporter import Reporter
+from .. import reporter
 from ..collector import Collector
 
-reporter = Reporter()
 
 class PostCollector(Collector):
     def __init__(self, current_dir, database, config):

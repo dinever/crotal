@@ -1,7 +1,6 @@
 import json
-from crotal.reporter import Reporter
+from crotal import reporter
 
-reporter = Reporter()
 
 class Database:
     def __init__(self, full=False):
@@ -44,4 +43,3 @@ class Database:
     def save(self):
         db_to_save = json.dumps(self.db)
         open('db.json', 'w+').write(db_to_save.encode('utf8'))
-

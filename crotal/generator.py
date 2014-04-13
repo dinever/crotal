@@ -3,10 +3,8 @@ import timeit
 import shutil
 
 from crotal.controller import Controller
-from crotal.reporter import *
+from crotal import reporter
 from crotal.remove_dir import remove_dir
-
-reporter = Reporter()
 
 dir = os.getcwd()
 

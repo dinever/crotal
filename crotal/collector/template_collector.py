@@ -1,10 +1,9 @@
 import os
 import time
 
-from crotal.reporter import Reporter
-from crotal.collector import Collector
+from .. import reporter
+from ..collector import Collector
 
-reporter = Reporter()
 
 class TemplateCollector(Collector):
     def __init__(self, current_dir, database, config):

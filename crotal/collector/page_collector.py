@@ -1,12 +1,11 @@
 import os
 import time
 
-from crotal.models.pages import Page
-from crotal.models.categories import Category
-from crotal.reporter import Reporter
-from crotal.collector import Collector
+from ..models.pages import Page
+from ..models.categories import Category
+from .. import reporter
+from ..collector import Collector
 
-reporter = Reporter()
 
 class PageCollector(Collector):
     def __init__(self, current_dir, database, config):

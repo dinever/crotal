@@ -12,16 +12,12 @@ import sys
 import timeit
 import argparse
 
-from . import config
-from crotal.config import Config
-from crotal.reporter import Reporter
+from crotal.config import config
+from crotal import reporter
 from crotal.generator import Generator
 
 __version__ = "0.7.0"
 
-dir = os.getcwd()
-
-reporter = Reporter()
 generator = Generator()
 
 def parse_arguments(argv):
@@ -57,6 +53,7 @@ def parse_arguments(argv):
 
 
 def main():
+    global config
     args = parse_arguments(sys.argv)
     sub_command = sys.argv[1]
     if sub_command == 'init':
@@ -65,7 +62,7 @@ def main():
         init_site(site_name)
     else:
         try:
-            config = Config(dir)
+            config = config
         except Exception as e:
             reporter.no_site_dected()
         if sub_command == 'generate':

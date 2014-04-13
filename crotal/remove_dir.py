@@ -1,9 +1,7 @@
 #! /usr/bin/env python
 import os, sys
 
-from crotal.reporter import Reporter
-
-reporter = Reporter()
+from crotal import reporter
 
 def remove_dir(path):
     if not os.path.isdir(path):

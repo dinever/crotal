@@ -12,6 +12,7 @@ from watchdog.events import PatternMatchingEventHandler
 
 from crotal.config import Config
 from crotal.controller import Controller
+from crotal import reporter
 
 current_dir = os.getcwd()
 config = Config(current_dir)
@@ -110,6 +111,7 @@ def main():
     observer.schedule(PostsHandler(), path=posts_dir, recursive=True)
     observer.schedule(PagesHandler(), path=pages_dir, recursive=True)
     observer.start()
+    reporter.info_report('Server started.')
     while True:
         time.sleep(1)
 

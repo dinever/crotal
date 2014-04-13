@@ -1,6 +1,19 @@
 import yaml
 import os.path
+import os
 
+from crotal import reporter
+
+class config(object):
+    version = '0.7.0'
+
+try:
+    config_yml = open(os.path.join(os.getcwd(), '_config.yml'), 'r').read()
+except Exception as e:
+    reporter.no_site_dected()
+config_dict = yaml.load(config_yml)
+for item in config_dict:
+    setattr(config, item, config_dict[item])
 
 class Config():
 

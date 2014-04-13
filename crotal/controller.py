@@ -7,14 +7,13 @@ from crotal.copy_dir import copy_dir
 from crotal.models.posts import Post
 from crotal.models.pages import Page
 from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
-from crotal.reporter import Reporter
+from crotal import reporter
 from crotal.collector.post_collector import PostCollector
 from crotal.collector.page_collector import PageCollector
 from crotal.collector.template_collector import TemplateCollector
 from crotal.template_engine import Engine
 from crotal.db import Database
 
-reporter = Reporter()
 
 class Controller():
 
