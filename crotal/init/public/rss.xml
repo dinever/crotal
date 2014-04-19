@@ -9,7 +9,7 @@
     {% for post in posts %}
     <item>
       <title>{{ post.title }}</title>
-      <description>{{ post.html | striptags | truncate(length=255 ,killwords=True)}}</description>
+      <description>{{ post.html | striptags | escape | truncate(length=255 ,killwords=True)}}</description>
       <link>{{ site.site_url }}{{ post.url }}</link>
       <pubDate>{{ post.pub_time}} +0800</pubDate>
       2012-11-20 13:55:00 +0100
