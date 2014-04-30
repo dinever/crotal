@@ -11,6 +11,7 @@ navbar: [Home: /, Archives: /archive, Categories: /category, About: /about, RSS:
 email:
 
 deploy_default: rsync
+# if you want to deploy to a local folder, just leave ip empty
 ip: root@8.8.8.8
 deploy_dir: /var/www/test
 
