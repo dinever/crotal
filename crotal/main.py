@@ -55,6 +55,20 @@ def generate_site(config, full):
         pass
 
 
+def deploy(config):
+    if config.deploy_default == 'rsync':
+        from crotal import rsync
+        rsync.rsync_deploy(str(dir) + '/_sites/', config)
+    elif config.deploy_default == 'git':
+        from crotal import git
+        git.git_deploy(config)
+    elif config.deploy_default == 'scp':
+        from crotal import scp
+        scp.scp_deploy(str(dir) + '/_sites/', config)
+    else:
+        print 'Only support rsync, git and scp for now.'
+
+
 def usage():
     print 'Usage:'
     print 'to init a new site:      crotal init you_site_name'
@@ -97,14 +111,7 @@ def main():
                 from crotal import create_post
                 create_post.create_post(config)
             elif sys.argv[1] == 'deploy':
-                if config.deploy_default == 'rsync':
-                    from crotal import rsync
-                    rsync.rsync_deploy(str(dir) + '/_sites/', config)
-                elif config.deploy_default == 'git':
-                    from crotal import git
-                    git.git_deploy(config)
-                else:
-                    print 'Only support rsync for now.'
+                deploy(config)
             else:
                 usage()
         else:
