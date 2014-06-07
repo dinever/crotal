@@ -5,24 +5,21 @@ from ..models.posts import Post
 from ..models.others import Category, Tag, Archive
 from .. import reporter
 from ..collector import Collector
+from crotal.config import config
 
 
 class PostCollector(Collector):
-    def __init__(self, current_dir, database, config):
-        Collector.__init__(self)
+    def __init__(self, database, config):
+        super(PostCollector, self).__init__()
         self.config = config
         self.database = database
-        self.current_dir = current_dir
-        self.posts_dir = os.path.normpath(
-            os.path.join(
-                self.current_dir, 'source', 'posts'))
         self.posts = []
         self.new_posts = []
         self.removed_posts = []
         self.categories = {}
         self.tags = {}
         self.archives = []
-        self.posts_files = self.process_directory(self.posts_dir)
+        self.posts_files = self.process_directory(config.posts_dir)
         self.page_number = 0
 
     def run(self):
@@ -86,7 +83,7 @@ class PostCollector(Collector):
     def parse_old_posts(self, filenames):
         for filename in filenames:
             post_content = self.database.get_item_content('posts', filename)
-            post_tmp = Post(self.config, filename=filename)
+            post_tmp = Post(filename=filename)
             post_tmp.parse_from_db(post_content)
             self.posts.append(post_tmp)
             post_dict = post_tmp.__dict__.copy()
@@ -94,9 +91,7 @@ class PostCollector(Collector):
                 post_dict['pub_time'].timetuple())
             post_dict.pop('config', None)
             last_mod_time = os.path.getmtime(
-                os.path.join(
-                    self.posts_dir,
-                    filename))
+                os.path.join(filename))
             post_dict_in_db = {
                 'last_mod_time': last_mod_time,
                 'content': post_dict}
@@ -104,8 +99,8 @@ class PostCollector(Collector):
 
     def parse_new_posts(self, filenames):
         for filename in filenames:
-            post_tmp = Post(self.config, filename=filename)
-            file_content = open(os.path.join(self.posts_dir, filename),'r')\
+            post_tmp = Post(filename=filename)
+            file_content = open(os.path.join(filename),'r')\
                 .read().decode('utf8')
             if not post_tmp.check_illegal(file_content, filename=filename):
                 # If the post_content is not illegal, pass it.
@@ -120,35 +115,26 @@ class PostCollector(Collector):
                 post_dict['pub_time'].timetuple())
             post_dict.pop('config', None)
             last_mod_time = os.path.getmtime(
-                os.path.join(
-                    self.posts_dir,
-                    filename))
+                os.path.join(filename))
             post_dict_in_db = {
                 'last_mod_time': last_mod_time,
                 'content': post_dict}
             self.database.set_item('posts', filename, post_dict_in_db)
 
-    def remove_posts(self):
-        site_dir = os.path.join(self.current_dir, '_sites')
-        for post in self.removed_posts:
-            dname = os.path.join(site_dir, post.url.strip("/\\"))
+    def parse_removed_posts(self, filenames):
+        for filename in filenames:
+            post_content = self.database.get_item_content('posts', filename)
+            post_tmp = Post(filename=filename)
+            post_tmp.parse_from_db(post_content)
+            self.database.remove_item('posts', filename)
+            self.removed_posts.append(post_tmp)
+            dname = os.path.join(config.publish_dir, post_tmp.url.strip("/\\"))
             filename = os.path.join(dname, 'index.html')
             try:
                 os.remove(filename)
             except Exception, e:
-                reporter.failed_to_remove_file('post', post.title)
+                reporter.failed_to_remove_file('post', post_tmp.title)
 
-    def parse_removed_posts(self, filenames):
-        site_dir = os.path.join(self.current_dir, '_sites')
-        for filename in filenames:
-            post_content = self.database.get_item_content('posts', filename)
-            post_tmp = Post(self.config, filename=filename)
-            post_tmp.parse_from_db(post_content)
-            self.database.remove_item('posts', filename)
-            self.removed_posts.append(post_tmp)
-            dname = os.path.join(site_dir, post_tmp.url.strip("/\\"))
-            filename = os.path.join(dname, 'index.html')
-            os.remove(filename)
 
     def posts_sort(self):
         self.posts.sort(key=lambda c:c.pub_time)

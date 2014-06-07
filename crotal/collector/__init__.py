@@ -4,6 +4,7 @@ from threading import Thread
 class Collector(Thread):
 
     def process_directory(self, directory):
+        print directory
         '''
         This method returns the list of all the source files in the directory
         indicated. Notice that filename started with '-' or '.' will not be
@@ -12,12 +13,13 @@ class Collector(Thread):
         filenames = []
         for dir_, _, files in os.walk(directory):
             for filename in files:
-                relDir = os.path.relpath(dir_, directory)
-                relFile = os.path.join(relDir, filename)
-                absoluteFile = os.path.join(dir_, filename)
-                if relFile.startswith('_') is False and \
+                relative_dir = os.path.relpath(dir_, directory)
+                relative_file = os.path.join(relative_dir, filename)
+                absolute_file = os.path.join(dir_, filename)
+                if relative_file.startswith('_') is False and \
                         filename.startswith('.') is False:
-                    filenames.append(absoluteFile)
+                    filepath = os.path.join(directory, relative_file)
+                    filenames.append(filepath)
         return filenames
 
     def detect_new_filenames(self, source_type):

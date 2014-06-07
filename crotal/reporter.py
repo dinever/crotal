@@ -37,8 +37,8 @@ def warning_report(message, plus_message=None):
         print colored('key', 'green'), \
             colored(plus_message, 'blue')
 
-def info_report(message, plus_message=None):
-    print colored('[info]', 'green'), \
+def info_report(message, plus_message=None, info='info'):
+    print colored('['+info+']', 'green'), \
         colored(message)
     if plus_message:
         print colored('key', 'green'), \

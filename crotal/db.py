@@ -1,5 +1,7 @@
 import json
+
 from crotal import reporter
+from crotal.config import config
 
 
 class Database:
@@ -14,7 +16,7 @@ class Database:
 
     def get_database_content(self):
         self.db = json.loads(open(
-                'db.json', 'r').read().encode('utf8'))
+                config.db_path, 'r').read().encode('utf8'))
 
     def init_new_database(self):
         self.db = {'posts': {}, 'pages': {}, 'templates': {}}
@@ -42,4 +44,4 @@ class Database:
 
     def save(self):
         db_to_save = json.dumps(self.db)
-        open('db.json', 'w+').write(db_to_save.encode('utf8'))
+        open(config.db_path, 'w+').write(db_to_save.encode('utf8'))

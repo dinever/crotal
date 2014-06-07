@@ -1,9 +1,10 @@
 import os
 from datetime import datetime
 from crotal.copy_dir import copy_dir
+from crotal.config import config
 
 
-def git_deploy(config):
+def git_deploy():
     '''
     I'm still working on this.
     '''

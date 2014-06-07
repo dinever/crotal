@@ -8,8 +8,7 @@ from crotal.plugins.pinyin.pinyin import PinYin
 
 class Page():
 
-    def __init__(self, filename, config):
-        self.config = config
+    def __init__(self, filename):
         self.filename = filename
         self.header = ''
         self.title = ''

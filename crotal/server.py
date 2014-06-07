@@ -10,26 +10,24 @@ from threading import Thread
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-from crotal.config import Config
+from crotal.config import config
 from crotal.controller import Controller
+from crotal.generator import Generator
 from crotal import reporter
 
-current_dir = os.getcwd()
-config = Config(current_dir)
+current_dir = config.base_dir
 
 css_dir = os.path.join(current_dir, 'themes', config.theme, 'static', 'css')
 js_dir = os.path.join(current_dir, 'themes', config.theme, 'static', 'js')
-posts_dir = os.path.join(current_dir, 'source', 'posts')
-pages_dir = os.path.join(current_dir, 'source', 'pages')
 
 ROUTES = (
     ['/css', css_dir],
     ['/js', js_dir],
-    ['', current_dir + '/_sites'],
+    ['', config.publish_dir],
 )
 
-controller = Controller(config, current_dir)
-controller.copy_static_files()
+generator = Generator()
+controller = Controller()
 
 class RequestHandler(SimpleHTTPRequestHandler):
 
@@ -65,51 +63,36 @@ class ServerThread(Thread):
         del sys.argv[0]
         BaseHTTPServer.test(RequestHandler, BaseHTTPServer.HTTPServer)
 
-class PostsHandler(PatternMatchingEventHandler):
+class ChangeHandler(PatternMatchingEventHandler):
     patterns = ["*.html", "*.markdown", "*.md"]
 
+    def __init__(self):
+        super(ChangeHandler, self).__init__()
+
     def process(self, event):
-        controller.get_posts()
-        controller.get_pages()
-        controller.get_templates()
-        controller.save()
-        controller.save_posts()
-        controller.save_db()
-        print event.src_path, event.event_type  # print now only for degug
+        generator.generate_site(silent=True)
 
     def on_modified(self, event):
+        reporter.info_report(event.src_path, info='update')
         self.process(event)
 
     def on_created(self, event):
+        reporter.info_report(event.src_path, info='create')
         self.process(event)
 
     def on_deleted(self, event):
+        reporter.info_report(event.src_path, info='delete')
         self.process(event)
-
-
-class PagesHandler(PatternMatchingEventHandler):
-    patterns = ["*.html", "*.markdown", "*.md"]
-
-    def process(self, event):
-        print event.src_path, event.event_type  # print now only for degug
-
-    def on_modified(self, event):
-        self.process(event)
-
-    def on_created(self, event):
-        self.process(event)
-
-    def on_deleted(self, event):
-        self.process(event)
-
 
 def main():
+    generator.generate_site(silent=True)
     serverThread = ServerThread()
     serverThread.daemon = True
     serverThread.start()
     observer = Observer()
-    observer.schedule(PostsHandler(), path=posts_dir, recursive=True)
-    observer.schedule(PagesHandler(), path=pages_dir, recursive=True)
+    observer.schedule(ChangeHandler(), path=config.posts_dir, recursive=True)
+    observer.schedule(ChangeHandler(), path=config.pages_dir, recursive=True)
+    observer.schedule(ChangeHandler(), path=config.templates_dir, recursive=True)
     observer.start()
     reporter.info_report('Server started.')
     while True:

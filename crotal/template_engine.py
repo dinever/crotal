@@ -4,18 +4,18 @@ import yaml
 
 from jinja2 import FileSystemLoader
 from jinja2.environment import Environment
+
 from crotal.plugins.markdown.jinja_markdown import MarkdownExtension
+from crotal.config import config
 
 
 class Engine:
     '''
     Engine uses Jinja2 Template Engine to render template files.
     '''
-    def __init__(self, template_dir):
-        self.template_dir = template_dir
+    def __init__(self):
         self.j2_env = Environment(
-            loader=FileSystemLoader(
-                self.template_dir),
+            loader=FileSystemLoader(config.templates_dir),
             trim_blocks=True,
             extensions=[MarkdownExtension])
 
@@ -33,8 +33,7 @@ class Engine:
         if header != '':
             parameter['content'] = rendered
             fname = os.path.normpath(
-                os.path.join(
-                    self.template_dir,
+                os.path.join(config.templates_dir,
                     '_layout/',
                     parameter['layout']))
             if not parameter['layout'].endswith(".html"):

@@ -1,31 +1,20 @@
 import os
-import time
 
-from .. import reporter
-from ..collector import Collector
+from crotal.collector import Collector
+from crotal.config import config
 
 
 class TemplateCollector(Collector):
-    def __init__(self, current_dir, database, config):
+    def __init__(self, database):
         Collector.__init__(self)
-        self.config = config
         self.database = database
-        self.current_dir = current_dir
-        self.template_dir = os.path.normpath(
-                os.path.join(
-                    self.current_dir,
-                    'themes',
-                    config.theme,
-                    'public'
-                    )
-                )
         self.templates = {}
         self.removed_templates = []
         self.templates_files = []
         self.new_templates = {}
         self.other_template_files = []
         self.templates_files = []
-        self.process_directory(self.template_dir)
+        self.process_directory(config.templates_dir)
 
     def process_directory(self, directory):
         for dir_, _, files in os.walk(directory):
@@ -77,13 +66,10 @@ class TemplateCollector(Collector):
             template_layout_content = open(
                 filename,
                 'r').read().decode('utf8')
-            last_mod_time = os.path.getmtime(
-                os.path.join(
-                    self.template_dir,
-                    filename))
+            last_mod_time = os.path.getmtime(filename)
             self.templates[filename] = template_layout_content
             self.new_templates[filename] = template_layout_content
 
     def parse_removed_templates(self, filenames):
         for filename in filenames:
-            self.removed_templates.append(filename)
+            self.database.remove_item('templates', filename)

@@ -2,10 +2,10 @@
 # -*- coding:utf-8 -*-
 
 import os
-import sys
-from crotal.views import Views
-from crotal.plugins.pinyin.pinyin import PinYin
 from datetime import datetime
+
+from crotal.plugins.pinyin.pinyin import PinYin
+from crotal.config import config
 
 author = 'dinever'
 
@@ -18,9 +18,7 @@ description: %s
 ---
 """
 
-
-def create_page(config):
-    flag = 0
+def create_page():
     title = raw_input('Page Title:')
     url = raw_input('Page URL(For example, /foo/bar/):')
     description = raw_input('Page Description:')
@@ -29,10 +27,8 @@ def create_page(config):
     dt = datetime.now()
     date = dt.strftime("%Y-%m-%d %H:%M")
     target = os.path.normpath(
-        os.path.join(
-            "source/pages",
-            slug +
-            '.markdown'))
+        config.pages_dir,
+            slug + '.markdown'))
     open(target, 'w+').write(SAMPLE % (title, date, url, description))
     print 'You can browse the page by ' + config.url + url + ' After generating the site.'
 

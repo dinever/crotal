@@ -1,9 +1,9 @@
 import os
 
+from crotal.config import config
 
-def rsync_deploy(dir, config):
+
+def rsync_deploy():
     print 'Deploying by Rsync ...'
-    os.system("rsync -avz %s %s:%s" % (dir, config.ip, config.deploy_dir))
-
-if __name__ == '__main__':
-    rsync_deploy(dir)
+    print config.deploy_dir
+    os.system("rsync -avz %s %s:%s" % (config.publish_dir, config.ip, config.deploy_dir))

@@ -20,7 +20,7 @@ def copy_dir(src_dir, tar_dir):
 
 class FileCopier(Collector):
 
-    def __init__(self, current_dir, database, config):
+    def __init__(self, current_dir, database):
         self.current_dir = current_dir
         self.database = database
         self.current_dir = current_dir

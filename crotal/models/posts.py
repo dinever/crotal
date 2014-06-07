@@ -1,15 +1,14 @@
 import re
-import sys
 from datetime import datetime
 
 from markdown import markdown
 import yaml
 from crotal.plugins.pinyin.pinyin import PinYin
+from crotal.config import config
 
 class Post():
 
-    def __init__(self, config, filename=None):
-        self.config = config
+    def __init__(self, filename=None):
         self.filename = filename
         self.header = ''
         self.title = ''
@@ -46,9 +45,10 @@ class Post():
         post_info = yaml.load(self.header)
         for item in post_info:
             '''
-            if item is date, convert it to datetime object, then save it to post.pub_time.
-            if item is categories, to save it to post.categories as a list.
-            if item is tags, save it to post.tags as a list, too.
+            If item is date, convert it to datetime object, then save it to post.pub_time.
+            If item is categories, to save it to post.categories as a list.
+            If item is tags, save it to post.tags as a list, too.
+            Sorry for making this such complex.
             '''
             if item == 'date':
                 pub_time = datetime.strptime(
@@ -71,7 +71,7 @@ class Post():
                 setattr(self, item, post_info[item])
 
         if 'author' not in post_info:
-            self.author = self.config.author
+            self.author = config.author
 
         if 'slug' not in post_info:
             '''
@@ -85,7 +85,7 @@ class Post():
         self.generate_url()
 
     def generate_url(self):
-        for item in self.config.permalink.split('/'):
+        for item in config.permalink.split('/'):
             '''
             Save the post url, refering to the permalink in the config file.
             The permalink is seperated into servel parts from '/'.
