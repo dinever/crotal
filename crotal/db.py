@@ -5,7 +5,7 @@ from crotal import settings
 from crotal import logger
 
 
-class Database:
+class Database(object):
     def __init__(self, full=False):
         if not os.path.exists(settings.DB_PATH) or full:
             self.db = {'posts': {}, 'pages': {}, 'templates': {}, 'static': {}, 'theme_static': {}}
