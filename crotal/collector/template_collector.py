@@ -57,7 +57,7 @@ class TemplateCollector(Collector):
 
     def parse_old_templates(self, filenames):
         for filename in filenames:
-            self.templates[filename] = self.database.get_item_content('templates', filename)
+            self.templates[filename] = self.database.get_item('templates', filename)['content']
 
     def parse_new_templates(self, filenames):
         for filename in filenames:

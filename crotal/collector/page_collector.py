@@ -26,7 +26,7 @@ class PageCollector(Collector):
 
     def parse_old_pages(self, filename_list):
         for filename in filename_list:
-            page_content = self.database.get_item_content('pages', filename)
+            page_content = self.database.get_item('pages', filename)['content']
             page_tmp = Page(filename)
             page_tmp.parse_from_db(page_content)
             self.pages.append(page_tmp)
@@ -44,7 +44,7 @@ class PageCollector(Collector):
     def parse_new_pages(self, filename_list):
         for filename in filename_list:
             try:
-                page_content = self.database.get_item_content('pages', filename)
+                page_content = self.database.get_item('pages', filename)['content']
                 page_tmp = Page(filename=filename)
                 page_tmp.parse_from_db(page_content)
                 dname = os.path.join(settings.PUBLISH_DIR, page_tmp.url.strip("/\\"))
@@ -74,7 +74,7 @@ class PageCollector(Collector):
 
     def parse_removed_pages(self, filename_list):
         for filename in filename_list:
-            page_content = self.database.get_item_content('pages', filename)
+            page_content = self.database.get_item('pages', filename)['content']
             page_tmp = Page(filename)
             page_tmp.parse_from_db(page_content)
             self.database.remove_item('pages', filename)

@@ -82,7 +82,7 @@ class PostCollector(Collector):
 
     def parse_old_posts(self, filenames):
         for filename in filenames:
-            post_content = self.database.get_item_content('posts', filename)
+            post_content = self.database.get_item('posts', filename)['content']
             post_tmp = Post(filename=filename)
             post_tmp.parse_from_db(post_content)
             self.posts.append(post_tmp)
@@ -100,7 +100,7 @@ class PostCollector(Collector):
     def parse_new_posts(self, filenames):
         for filename in filenames:
             try:
-                post_content = self.database.get_item_content('posts', filename)
+                post_content = self.database.get_item('posts', filename)['content']
                 post_tmp = Post(filename=filename)
                 post_tmp.parse_from_db(post_content)
                 dname = os.path.join(settings.PUBLISH_DIR, post_tmp.url.strip("/\\"))
@@ -135,7 +135,7 @@ class PostCollector(Collector):
 
     def parse_removed_posts(self, filenames):
         for filename in filenames:
-            post_content = self.database.get_item_content('posts', filename)
+            post_content = self.database.get_item('posts', filename)['content']
             post_tmp = Post(filename=filename)
             post_tmp.parse_from_db(post_content)
             self.database.remove_item('posts', filename)

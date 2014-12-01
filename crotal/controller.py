@@ -60,7 +60,7 @@ class Controller(object):
     def post_or_page_title_modified(self):
         for post in self.post_collector.new_posts:
             try:
-                post_title = self.database.get_item_content('posts', post.filename)['title']
+                post_title = self.database.get_item('posts', post.filename)['content']['title']
             except:
                 return True  # New posts added.
             if post.title != post_title:

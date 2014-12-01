@@ -6,8 +6,12 @@ from crotal import logger
 
 
 class Database(object):
+    """
+    Database is the interface to the file db.json.
+    source_type includes 'posts', 'pages', 'templates', 'static', 'theme_static'.
+    """
     def __init__(self, full=False):
-        if not os.path.exists(settings.DB_PATH) or full:
+        if full or not os.path.exists(settings.DB_PATH):
             self.db = {'posts': {}, 'pages': {}, 'templates': {}, 'static': {}, 'theme_static': {}}
         else:
             self.db = json.loads(open(
@@ -21,8 +25,8 @@ class Database(object):
         else:
             return self.db[source_type]
 
-    def get_item_content(self, source_type, filename):
-        return self.db[source_type][filename]['content']
+    def get_item(self, source_type, filename):
+        return self.db[source_type][filename]
 
     def set_item(self, source_type, filename, item_dict):
         self.db[source_type][filename] = item_dict
