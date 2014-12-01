@@ -32,9 +32,9 @@ class Database(object):
         self.db[source_type][filename] = item_dict
 
     def remove_item(self, source_type, filename):
-        try:
-            del self.db[source_type][filename]
-        except KeyError:
+        if filename in self.db[source_tyep]:
+            def self.db[source_type][filename]
+        else:
             logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(filename, source_type))
 
     def save(self):
