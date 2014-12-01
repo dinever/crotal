@@ -1,0 +1,29 @@
+<link href='http://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" /><title>{% if post %}{{ post.title }}{% elif page %}{{ page.title }}{% elif title %}{{ title }}{% else %}{{ site.title }}{% endif %} | {{ site.title }}</title>
+<meta name="author" content="{{ site.author }}">
+<meta name="description" content="{% if post %}{% if post.description %}{{ post.description }}{% else %}{{ post.html | striptags | truncate(length=255 ,killwords=False)}}{% endif %}{% elif page %}{% if page.description %}{{ page.description }}{% else %}{{ page.html | striptags | truncate(length=255 ,killwords=False)}}{% endif %}{% else %}{{ site.description }}{% endif %}">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta property="og:site_name" content="">
+<!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css" />-->
+<link rel="stylesheet" href="/css/bootstrap.css" type="text/css">
+<link rel="stylesheet" href="/css/blog.css" type="text/css">
+<link rel="stylesheet" href="/css/pygments.css" type="text/css">
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+{% if site.google_analytics %}
+    <script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script><script async="" type="text/javascript" src="//dineversblog.disqus.com/count.js"></script>
+{% endif %}
+{% if site.comment_system == "disqus" %}
+    <script async="" type="text/javascript" src="//{{ site.disqus_short_name }}.disqus.com/count.js"></script>
+{% endif %}
+
+</head>

@@ -3,10 +3,9 @@ from datetime import datetime
 
 from markdown import markdown
 import yaml
-from crotal.plugins.pinyin.pinyin import PinYin
 
 
-class Page():
+class Page(object):
 
     def __init__(self, filename):
         self.filename = filename
@@ -58,8 +57,13 @@ class Page():
             else:
                 setattr(self, item, post_info[item])
 
+        self.generate_url()
         if not hasattr(self, 'order'):
             self.order = 1000
+
+    def generate_url(self):
+        if self.url.startswith('/'):
+            self.url = self.url[1:]
 
     def save_html(self):
         self.html = markdown(

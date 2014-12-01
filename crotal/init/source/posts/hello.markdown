@@ -1,9 +1,10 @@
 ---
 layout: post
 title: "Hello World!"
-date: 2012-11-25 14:07
+date: 2012-01-1 00:00
 slug: hello-world
-categories: linux
+categories: welcome
+tags: Hello, World
 description: Welcome to Crotal, This is the first post, modify or remove it, and start your own blog!
 ---
 

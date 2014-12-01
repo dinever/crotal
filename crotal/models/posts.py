@@ -3,10 +3,13 @@ from datetime import datetime
 
 from markdown import markdown
 import yaml
-from crotal.plugins.pinyin.pinyin import PinYin
-from crotal.config import config
 
-class Post():
+from crotal import logger
+from crotal.plugins.pinyin.pinyin import PinYin
+from crotal import settings
+
+
+class Post(object):
 
     def __init__(self, filename=None):
         self.filename = filename
@@ -51,9 +54,13 @@ class Post():
             Sorry for making this such complex.
             '''
             if item == 'date':
-                pub_time = datetime.strptime(
-                    post_info['date'],
-                    "%Y-%m-%d %H:%M")
+                try:
+                    pub_time = datetime.strptime(
+                        post_info['date'], "%Y-%m-%d %H:%M")
+                except Exception, e:
+                    logger.error("Time data for post '{0}' does not match format '%Y-%m-%d %H:%M'".format(self.filename) +
+                                 "Use current time instead.")
+                    pub_time = datetime.now()
                 setattr(self, 'pub_time', pub_time)
             elif item == 'categories' or item == 'tags':
                 if isinstance(post_info[item], str) or isinstance(post_info[item], unicode):
@@ -71,7 +78,7 @@ class Post():
                 setattr(self, item, post_info[item])
 
         if 'author' not in post_info:
-            self.author = config.author
+            self.author = settings.author
 
         if 'slug' not in post_info:
             '''
@@ -85,24 +92,24 @@ class Post():
         self.generate_url()
 
     def generate_url(self):
-        for item in config.permalink.split('/'):
-            '''
-            Save the post url, refering to the permalink in the config file.
-            The permalink is seperated into servel parts from '/'.
-            If one part of it startswith ':', then we should find whether there
-                is attribute with the same name in the post.
-            If not, we regard it as a string
+        '''
+        Save the post url, refering to the permalink in the config file.
+        The permalink is seperated into servel parts from '/'.
+        If one part of it startswith ':', then we should find whether there
+            is attribute with the same name in the post.
+        If not, we regard it as a string
 
-            example:
-            post/:year/:month/:title
-            will be generated to a url like 'crotal.org/post/2013/11/hello-world/'
-            '''
+        example:
+        post/:year/:month/:title
+        will be generated to a url like 'crotal.org/post/2013/11/hello-world/'
+        '''
+        for item in settings.permalink.split('/'):
             if item.startswith(':'):
-                self.url = self.url + '/' + \
-                    self.escape_keywords(item.replace(':', ''))
+                self.url = self.url + \
+                    self.escape_keywords(item.replace(':', '')) + '/'
             else:
-                self.url = self.url + '/' + item
-        self.url = self.url.decode('utf8')
+                self.url = self.url + item + '/'
+        self.url = '/' + self.url.decode('utf8')
 
     def escape_keywords(self, word):
         return {

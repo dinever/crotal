@@ -1,17 +1,17 @@
 import os
+
 import time
 
-from ..models.posts import Post
-from ..models.others import Category, Tag, Archive
-from .. import reporter
-from ..collector import Collector
-from crotal.config import config
+from crotal.models.posts import Post
+from crotal.models.others import Category, Tag, Archive
+from crotal.collector import Collector
+from crotal import logger
+from crotal import settings
 
 
 class PostCollector(Collector):
-    def __init__(self, database, config):
+    def __init__(self, database):
         super(PostCollector, self).__init__()
-        self.config = config
         self.database = database
         self.posts = []
         self.new_posts = []
@@ -19,14 +19,14 @@ class PostCollector(Collector):
         self.categories = {}
         self.tags = {}
         self.archives = []
-        self.posts_files = self.process_directory(config.posts_dir)
+        self.posts_files = self.process_directory(settings.POSTS_DIR)
         self.page_number = 0
 
     def run(self):
-        new_filenames, old_filenames, removed_filenames = self.detect_new_filenames('posts')
+        new_filenames, old_filenames, removed_filenames = self.detect_new_filename_list('posts')
+        self.parse_removed_posts(removed_filenames)
         self.parse_old_posts(old_filenames)
         self.parse_new_posts(new_filenames)
-        self.parse_removed_posts(removed_filenames)
         self.posts_sort()
         self.collect_others()
         self.save_others()
@@ -99,12 +99,24 @@ class PostCollector(Collector):
 
     def parse_new_posts(self, filenames):
         for filename in filenames:
+            try:
+                post_content = self.database.get_item_content('posts', filename)
+                post_tmp = Post(filename=filename)
+                post_tmp.parse_from_db(post_content)
+                dname = os.path.join(settings.PUBLISH_DIR, post_tmp.url.strip("/\\"))
+                filepath = os.path.join(dname, 'index.html')
+                try:
+                    os.remove(filepath)
+                except Exception, e:
+                    logger.warn("Field to remove file: '{0}".format(post_tmp.title))
+            except Exception, e:
+                pass
             post_tmp = Post(filename=filename)
             file_content = open(os.path.join(filename),'r')\
                 .read().decode('utf8')
             if not post_tmp.check_illegal(file_content, filename=filename):
                 # If the post_content is not illegal, pass it.
-                reporter.source_illegal('post', filename)
+                logger.warn("This post doesn't have a correct format: '{0}".format(filename))
                 continue
             else:
                 post_tmp.parse()
@@ -128,12 +140,12 @@ class PostCollector(Collector):
             post_tmp.parse_from_db(post_content)
             self.database.remove_item('posts', filename)
             self.removed_posts.append(post_tmp)
-            dname = os.path.join(config.publish_dir, post_tmp.url.strip("/\\"))
-            filename = os.path.join(dname, 'index.html')
+            dname = os.path.join(settings.PUBLISH_DIR, post_tmp.url.strip("/\\"))
+            filepath = os.path.join(dname, 'index.html')
             try:
-                os.remove(filename)
+                os.remove(filepath)
             except Exception, e:
-                reporter.failed_to_remove_file('post', post_tmp.title)
+                logger.warn("Field to remove file: '{0}".format(post_tmp.title))
 
 
     def posts_sort(self):

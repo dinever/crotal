@@ -1,0 +1,26 @@
+<header class="navbar navbar-default topnav" role="banner">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/" id="logo">{{ site.title }}</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right " id="nav">
+                {% for link in site.navbar %}
+                {% for item in link %}
+                {% if item == title %}
+                <li><a class="blog-nav-item active" href="{{ link[item] }}">{{ item }}</a></li>
+                {% else %}
+                <li><a class="blog-nav-item" href="{{ link[item] }}">{{ item }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</header>

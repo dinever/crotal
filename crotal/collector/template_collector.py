@@ -1,7 +1,7 @@
 import os
 
 from crotal.collector import Collector
-from crotal.config import config
+from crotal import settings
 
 
 class TemplateCollector(Collector):
@@ -14,7 +14,7 @@ class TemplateCollector(Collector):
         self.new_templates = {}
         self.other_template_files = []
         self.templates_files = []
-        self.process_directory(config.templates_dir)
+        self.process_directory(settings.TEMPLATES_DIR)
 
     def process_directory(self, directory):
         for dir_, _, files in os.walk(directory):
@@ -30,7 +30,7 @@ class TemplateCollector(Collector):
                     self.templates_files.append(absoluteFile)
 
     def run(self):
-        new_filenames, old_filenames, removed_filenames = self.detect_new_filenames('templates')
+        new_filenames, old_filenames, removed_filenames = self.detect_new_filename_list('templates')
         new_other_template_filenames = list(set(self.other_template_files) - set(old_filenames))
         if new_other_template_filenames != []:
             new_filenames = list(set(self.templates_files) - set(self.other_template_files))

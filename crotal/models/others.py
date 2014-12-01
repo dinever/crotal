@@ -1,4 +1,3 @@
-from .posts import Post
 from datetime import datetime
 import math
 
@@ -11,6 +10,9 @@ class Category():
 
     def add_post(self, post):
         self.posts.append(post)
+
+    def __str__(self):
+        return self.title.encode('utf8')
 
 
 class Tag():

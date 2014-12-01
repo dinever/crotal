@@ -16,6 +16,10 @@ date: %s
 url: %s
 description: %s
 ---
+
+## A demo page!
+
+This is a demo page.
 """
 
 def create_page():
@@ -26,9 +30,9 @@ def create_page():
     slug = pinyin.hanzi2pinyin_split(string=title, split="-")
     dt = datetime.now()
     date = dt.strftime("%Y-%m-%d %H:%M")
-    target = os.path.normpath(
+    target = os.path.join(
         config.pages_dir,
-            slug + '.markdown'))
+            slug + '.markdown')
     open(target, 'w+').write(SAMPLE % (title, date, url, description))
     print 'You can browse the page by ' + config.url + url + ' After generating the site.'
 

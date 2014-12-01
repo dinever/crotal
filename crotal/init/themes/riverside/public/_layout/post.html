@@ -1,0 +1,34 @@
+---
+layout: default
+---
+
+<div class="container innerpage_content">
+  <div class="row">
+
+    <div class="col-sm-12 blog-main">
+      <div class="blog-post box">
+        <p class="blog-post-meta"><i>in</i> {% for category in post.categories%}{{ category }} {% endfor %}<i> by </i>{{ post.author }}<i> - {{ post.pub_time.strftime('%b %d, %Y') }}</i></p>
+        <h2 class="blog-post-title">{{ post.title }}</h2>
+        <hr/>
+        {{ post.html | safe }}
+        <hr/>
+        <div class="author-info">
+          <div class="col-sm-3">
+            <img src="{{ site.author_avatar }}" alt="..." class="img-thumbnail">
+          </div>
+          <div class="col-sm-9">
+            <h4>{{ site.author }}</h4>
+            <small>{{ site.self_description }}</small>
+          </div>
+        </div>
+      </div>
+
+      {% if post.comment != False %}
+      <div class="box">
+        {% include "_includes/comments.html" %}
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>

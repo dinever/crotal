@@ -1,0 +1,25 @@
+---
+layout: default
+title: Archives
+---
+<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+{% set this_year = 0 %}
+{% for post in posts %}
+{% set this_month = post.pub_time.strftime('%b') %}
+
+
+    {% if this_year != post.pub_time.strftime('%Y') %}
+    {% set this_year = post.pub_time.strftime('%Y') %}
+    <hr/>
+    <h2 id="{{this_year}}" class="blog-archives">{{ this_year }}</h2>
+    {% else %}
+    {% endif %}
+    <div class="archives">
+            <h3 class="archives-title"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+            <p class="archives-time">{{ post.pub_time.strftime('%b %d') }}</p>
+    </div>
+{% endfor %}
+</div>
+
+{% include "_includes/sidebar.html" %}
+

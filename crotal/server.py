@@ -10,26 +10,37 @@ from threading import Thread
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-from crotal.config import config
-from crotal.controller import Controller
-from crotal.generator import Generator
-from crotal import reporter
-
-current_dir = config.base_dir
-
-css_dir = os.path.join(current_dir, 'themes', config.theme, 'static', 'css')
-js_dir = os.path.join(current_dir, 'themes', config.theme, 'static', 'js')
+from crotal import settings
+from crotal.core import Command
+from crotal import logger
+from crotal.version import __version__
 
 ROUTES = (
-    ['/css', css_dir],
-    ['/js', js_dir],
-    ['', config.publish_dir],
+    ['', settings.PUBLISH_DIR],
 )
 
-generator = Generator()
-controller = Controller()
+LOGO = (
+        "________________________________________",
+        "|   ____ ____   ___ _____  _    _      |",
+        "|  / ___|  _ \\ / _ \\_   _|/ \\  | |     |",
+        "| | |   | |_) | | | || | / _ \\ | |     |",
+        "| | |___|  _ <| |_| || |/ ___ \\| |___  |",
+        "|  \____|_| \_\\\\___/ |_/_/   \\_\\_____| |",
+        "|                                      |",
+        "|          Version: {:<6s}             |".format(__version__),
+        "|          Author: Dinever             |",
+        "|______________________________________|",
+        )
+
 
 class RequestHandler(SimpleHTTPRequestHandler):
+
+    def log_request(self, code='-', size='-'):
+        pass
+
+    def log_message(self, format, *args):
+        if args[0] == 404:
+            logger.yellow_text('404', message='Can not get file: {0}'.format(self.path))
 
     def translate_path(self, path):
 
@@ -57,46 +68,85 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
         return path
 
+def test(HandlerClass,
+         ServerClass, protocol="HTTP/1.0"):
+    """Test the HTTP request handler class.
+
+    This runs an HTTP server on port 8000 (or the first command line
+    argument).
+
+    """
+
+    if sys.argv[1:]:
+        port = int(sys.argv[1])
+    else:
+        port = 8000
+    server_address = ('', port)
+
+    HandlerClass.protocol_version = protocol
+    httpd = ServerClass(server_address, HandlerClass)
+
+    sa = httpd.socket.getsockname()
+    for line in LOGO:
+        logger.info(line)
+    print
+
+
+    HELP_INFO = (
+        "Server started in `{0}`'".format(settings.PUBLISH_DIR),
+        "To see your site, visit http://localhost:{0}".format(port),
+        "To shut down Crotal, press <CTRL> + C at any time."
+    )
+    for line in HELP_INFO:
+        logger.info(line)
+    print
+    httpd.serve_forever()
+
 class ServerThread(Thread):
 
     def run(self):
         del sys.argv[0]
-        BaseHTTPServer.test(RequestHandler, BaseHTTPServer.HTTPServer)
+        test(RequestHandler, BaseHTTPServer.HTTPServer)
 
 class ChangeHandler(PatternMatchingEventHandler):
-    patterns = ["*.html", "*.markdown", "*.md"]
+    patterns = ["*.*"]
 
-    def __init__(self):
+    def __init__(self, settings):
+        self.config = settings
         super(ChangeHandler, self).__init__()
 
     def process(self, event):
-        generator.generate_site(silent=True)
+        Command.generate(silent=True)
 
     def on_modified(self, event):
-        reporter.info_report(event.src_path, info='update')
+        logger.green_text('update', event.src_path)
         self.process(event)
 
     def on_created(self, event):
-        reporter.info_report(event.src_path, info='create')
+        logger.green_text('[create] {0}'.format(event.src_path))
         self.process(event)
 
     def on_deleted(self, event):
-        reporter.info_report(event.src_path, info='delete')
+        logger.green_text('[remove] {0}'.format(event.src_path))
         self.process(event)
 
-def main():
-    generator.generate_site(silent=True)
+def main(settings):
+    Command.generate(silent=True)
     serverThread = ServerThread()
     serverThread.daemon = True
     serverThread.start()
     observer = Observer()
-    observer.schedule(ChangeHandler(), path=config.posts_dir, recursive=True)
-    observer.schedule(ChangeHandler(), path=config.pages_dir, recursive=True)
-    observer.schedule(ChangeHandler(), path=config.templates_dir, recursive=True)
+    observer.schedule(ChangeHandler(settings), path=settings.POSTS_DIR, recursive=True)
+    observer.schedule(ChangeHandler(settings), path=settings.PAGES_DIR, recursive=True)
+    observer.schedule(ChangeHandler(settings), path=settings.TEMPLATES_DIR, recursive=True)
+    observer.schedule(ChangeHandler(settings), path=settings.THEME_STATIC_DIR, recursive=True)
     observer.start()
-    reporter.info_report('Server started.')
     while True:
-        time.sleep(1)
+        try:
+            time.sleep(1)
+        except KeyboardInterrupt:
+            logger.info('Server shutting down.')
+            sys.exit()
 
 
 if __name__ == '__main__':

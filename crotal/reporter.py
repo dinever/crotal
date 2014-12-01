@@ -25,9 +25,9 @@ def no_site_dected():
     exit()
 
 def error_report(message, plus_message=None):
-    print colored('[Error]', 'red'), colored(message, 'green')
+    print colored('[Error]', 'red'), colored(message)
     if plus_message:
-        print colored(plus_message, 'green')
+        print colored(plus_message)
     exit()
 
 def warning_report(message, plus_message=None):

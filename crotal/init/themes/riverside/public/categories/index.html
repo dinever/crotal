@@ -1,0 +1,24 @@
+---
+layout: default
+title: Categories
+---
+
+<div class="container innerpage_content">
+  <div class="row">
+
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 box">
+            <h1>Categories</h1>
+            <hr/>
+            {% for category in categories recursive %}
+            <h3 id="{{ category.title | title }}" class="main-title">{{ category.title | title }}</h3>
+            {% for post in category.posts %}
+            <div class="archives">
+              <p class="">{{ post.pub_time.strftime('%b %d, %Y') }} , Posted in {% for tag in post.tags %}<a href="{{ ROOT_PATH }}/tags/#{{ tag | title }}">{{ tag }}</a> {% endfor %}</p>
+              <h4><a href="{{ ROOT_PATH }}{{ post.url }}">{{ post.title }}</a></h4>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        </div>
+  {% include "_includes/sidebar.html" %}
+  </div>
+</div>

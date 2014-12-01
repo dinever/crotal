@@ -1,0 +1,17 @@
+---
+layout: default
+title: Categories
+---
+<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+    {% for category in categories recursive %}
+        <hr/>
+        <h3 id="{{ category.title | title }}" class="main-title">{{ category.title | title }}</h3>
+        {% for post in category.posts %}
+            <div class="archives">
+                <p class="">{{ post.pub_time.strftime('%b %d, %Y') }} , {% for category in post.categories %}{{ category }} {% endfor %}</p>
+                <h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+{% include "_includes/sidebar.html" %}

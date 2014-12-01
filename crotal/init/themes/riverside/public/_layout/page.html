@@ -1,0 +1,23 @@
+---
+layout: default
+---
+
+<div class="container innerpage_content">
+  <div class="row">
+
+<div class="col-sm-12 blog-main box">
+    <article class="post entry clearfix">
+    <div class="post_content clearfix">
+    <h1 class="title">{{ page.title }}</h1>
+    <hr/>
+    {{ page.html | safe }}
+    </div>
+    </article>
+</div>
+
+{% if page.comment == True%}
+    {% include "_includes/comments.html" %}
+{% endif %}
+
+</div>
+</div>

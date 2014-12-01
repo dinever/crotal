@@ -1,0 +1,20 @@
+---
+layout: default
+title: Home
+---
+<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    <hr/>
+    {% for post in posts | batch(5) | first%}
+    <div class="blog-post">
+        <h2 class="blog-post-title"><a href='{{ post.url }}'>{{ post.title }}</a></h2>
+        <p class="blog-post-meta">{{ post.pub_time.strftime('%b %d, %Y') }} by <i>{{ post.author }}</i></p>
+        {{ post.front_html | safe }}
+        <a href="{{ post.url }}" class="btn btn-primary pull-right">{{ site.excerpt_link }}</a>
+    </div>
+
+    {% endfor %}
+    {% include '_includes/paginate.html' %}
+
+</div>
+
+{% include "_includes/sidebar.html" %}

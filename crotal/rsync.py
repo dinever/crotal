@@ -2,7 +2,6 @@ import os
 
 from crotal.config import config
 
-
 def rsync_deploy():
     print 'Deploying by Rsync ...'
     print config.deploy_dir

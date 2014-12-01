@@ -1,0 +1,443 @@
+Submenu*/
+#navigation ul#nav li{
+	position: relative;
+}
+#navigation ul#nav li ul{
+	display: none;
+	position: absolute;
+	width: 200px;
+	background: #f2f2f2;
+	list-style-type: none;
+	padding-left: 0px;
+	z-index: 999;
+}
+#navigation ul#nav li ul li{
+	line-height: 35px;
+	height: 35px;
+	padding-left: 10px;
+}
+#navigation ul#nav li ul li a{
+	color: #999;
+	font-size: 13px;
+    text-transform: uppercase;
+}
+#navigation ul#nav li ul li a:hover{
+	text-decoration: none;
+	color: #000;
+}
+#navigation ul#nav li ul li.active a{
+	color: #D95C5C;	
+}
+#navigation ul#nav li:hover ul{
+	display: block;
+}
+
+
+/*Caurse*/
+#project-extended #project a.left,
+#project-extended #project a.right{
+top: 50%;
+background: #fff;
+height: 30px;
+width: 30px;
+font-size: 20px;
+color: #000;
+margin-top: -15px;
+}
+
+.testimonials-slider .client-comment p{
+font-size: 34px;
+}
+
+/* Common Inner page*/
+.innerpage{
+	background-color: #f6f6f6;	
+}
+.innerpage_content{
+	padding-top: 50px;
+}
+.innerpage_content .title h1{
+	
+}
+/* Common Inner page End*/
+
+/*Style for blog*/
+#k2Container{
+	overflow: hidden;
+}
+.k2wrap{
+	width: 100%;
+}
+hr.new{
+	width: 90px;
+}
+
+/*List item*/
+.k2wrap h2.catItemTitle{
+	margin-top: 5px;
+}
+.k2wrap h2.catItemTitle a{
+	color: #111;
+}
+.k2wrap h2.catItemTitle a:hover{
+	text-decoration: none;
+}
+.k2wrap .catItemView div.catItemCommentsLink{
+	border-right: none;
+	padding-right: 0;
+	margin-right: 0;
+}
+.k2wrap .catItemView div.catItemHeader span.catItemDateCreated {
+	font-size: 13px;
+	font-style: italic;
+}
+.k2wrap .catItemView div.catItemCommentsLink a{
+	font-size: 13px;
+	font-style: italic;
+	color: #999;
+}
+.k2wrap .catItemView .bellow_titile{
+	padding-bottom: 10px;
+}
+.k2wrap .catItemView .featured-img img{
+	padding-bottom: 20px;
+}
+.k2wrap .catItemView .catItemIntroText{
+	padding-top: 0px;
+	padding-bottom: 3px;
+}
+.k2wrap .catItemView .catItemIntroText p{
+	margin-bottom: 10px;
+}
+.k2wrap .catItemView .catItemIntroText iframe,
+.k2wrap .catItemView .catItemIntroText object{
+	padding-bottom: 15px;
+}
+.k2wrap .catItemView .catItemReadMore a{
+	font-weight: bold;
+	font-size: 15px;
+}
+.k2wrap .catItemView .catItemTagsBlock{
+	padding-top: 15px;
+	border-bottom: none;
+}
+.k2wrap .catItemView .catItemTagsBlock ul li a{
+	background: #e1e1e1;
+	padding: 6px 10px;
+	color: #959595;
+}
+.k2wrap .catItemView .catItemTagsBlock ul li a:hover{
+	color:#fff;
+	text-align:center;
+	text-decoration: none;
+}
+.k2wrap div.itemContainer {
+margin-bottom: 30px;
+}
+.k2wrap .catItemView .catItemIntroText iframe,
+.k2wrap .catItemView .catItemIntroText object,
+.genericItemIntroText iframe,
+.genericItemIntroText object,
+.tagItemIntroText iframe,
+.tagItemIntroText object{
+	width: 100%;
+}
+
+.right div.k2CalendarBlock table.calendar td.calendarDateLinked a{
+	background: #eee;
+}
+/*Style for blog End*/
+
+
+/*Style for sidebar*/
+
+.right .moduletable{
+	margin-bottom: 40px;
+}
+.right .moduletable h3{
+	padding-bottom: 10px;
+	margin-bottom: 14px;
+	text-align: left;
+	text-transform: uppercase;
+	font-size: 18px;
+	font-family: "Lato",Helvetica,Arial,sans-serif;
+	color: #292929;
+	font-weight: 500;
+}
+
+/*Search module*/
+.right .k2SearchBlock input{
+	width: 100%;
+	background: #fff;
+	height: 46px;
+	padding: 10px 16px;
+	font-size: 18px;
+	line-height: 1.33;
+	border-radius: 6px;
+	background-color: #fff!important;
+	border-color: #ececec;
+	border-width: 1px;
+	box-shadow: none;
+	-webkit-box-shadow: none;	
+	width: 100%;
+	border-style: solid;
+	color: #ccc;
+}
+
+.right .k2ItemsBlock ul,
+.right .k2ItemsBlock ul li{
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+	background: none;
+	border-color: #dbdbdb;
+}
+
+
+/*Calendar K2*/
+.right div.k2CalendarBlock{
+	height: 200px;
+}
+.right div.k2CalendarBlock table.calendar{
+	width: 100%;
+}
+table.calendar tr td{
+	color: #8F8F8F;
+}
+table.calendar tr td.calendarTodayLinked a{
+color:#fff;
+}
+.right div.k2TagCloudBlock a{
+	background: #e1e1e1;
+	padding: 6px 10px;
+	display: inline-block;
+	color: #959595;
+	cursor: pointer;
+	margin: 0 3px 3px 0;
+	font-size: 100%!important;
+	float: left;
+
+}
+.right div.k2TagCloudBlock a:hover{
+padding: 6px 10px;
+}
+
+.right .k2ArchivesBlock ul,
+.right .k2ArchivesBlock ul li{
+	padding-left: 0;
+	list-style-type: none;
+}
+.right a:hover{
+	text-decoration: none;
+}
+.k2Pagination ul{
+	padding-left: 0;
+}
+.k2Pagination ul li{
+	margin: 0px 5px;
+}
+.k2Pagination ul li a{
+	display: inline-block;
+	padding: 8px 12px;
+	margin-bottom: 15px;
+	background-color: #fff;
+	border-radius: 4px;
+	cursor: pointer;
+	color: #999;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	transition: all .3s ease;
+}
+
+.k2Pagination .pagenav{
+	padding: 8px 12px;
+	background-color: #fff;
+	border-radius: 4px;
+	display: inline-block;
+	margin-bottom: 6px;
+}
+
+.k2Pagination a.pagenav{
+	color: #999;
+}
+
+div.itemView{
+	border-bottom: none;
+}
+div.itemBackToTop{
+	padding-top: 5px;
+}
+.itemView .itemIntroText{
+	font-weight: normal;
+}
+.itemView .itemIntroText p{
+	margin-bottom: 0;
+}
+.itemView div.itemContentFooter{
+	margin: 0px 0 4px 0;
+	border-top: 0;
+}
+
+.itemView .itemTagsBlock{
+	padding-top: 15px;
+	border-bottom: none;
+}
+.itemView .itemTagsBlock ul li{
+	margin: 0px 0px 15px 3px!important;
+	float: left;
+
+}
+.itemView .itemTagsBlock ul li a{
+	background: #e1e1e1;
+	padding: 6px 10px;
+	color: #959595;
+}
+.itemView .itemTagsBlock ul li a:hover{
+	color:#fff;
+	text-align:center;
+	text-decoration: none;
+}
+.itemView div.itemLinks{
+	margin-top: 0;
+}
+
+.itemView .itemComments{
+	background: transparent;
+	border: none;
+	padding: 0;
+}
+
+.itemView ul.itemCommentsList li{
+	background: transparent;
+}
+
+.itemView #comment-form input.inputbox{
+	height: 46px;
+	padding: 10px 16px;
+	font-size: 18px;
+	line-height: 1.33;
+	border-radius: 6px;
+	background-color: #fff!important;
+	border-color: #ececec;
+	border-width: 1px;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border-style: solid;
+}
+
+
+
+div.itemCommentsForm form label{
+	color: #888;
+	padding-bottom: 4px;
+}
+.itemView #comment-form textarea{
+	border-radius: 6px;
+	background-color: #fff!important;
+	border-color: #ececec;
+	border-width: 1px;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	border-style: solid;
+	width: 100%;
+}
+
+div.itemComments ul.itemCommentsList li span.commentDate,
+div.itemComments ul.itemCommentsList li span.commentAuthorName{
+	color: #999;
+	font-weight: normal;
+}
+div.itemComments ul.itemCommentsList li p{
+	margin-bottom: 7px;
+}
+
+.itemView #comment-form input.button{
+	text-transform: uppercase;
+	width: auto;
+	font-style: normal;
+	background: transparent;
+	border: 2px solid #d0d0d0;
+	text-shadow: none;
+	padding: 10px 20px;
+	letter-spacing: .20em;
+	margin-top: 20px;
+	cursor: pointer;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	
+}
+
+.itemView .itemIntroText iframe,
+.itemView .itemIntroText object{
+	width: 100%;
+}
+div.itemCommentsForm form span#formLog{
+	margin: 5px 0px 0px 0px;
+	padding: 0;
+}
+div.catItemTagsBlock ul.catItemTags li{
+	float: left;
+	margin: 0px 5px 15px 0px;
+}
+
+/*genericView*/
+.genericView .componentheadinginnerpage{
+	background: #e1e1e1;
+	padding: 10px;
+	margin-top: 2px;
+	margin-bottom: 20px;
+	font-weight: bold;
+}
+h2.genericItemTitle a{
+	color: #333;
+}
+h2.genericItemTitle a:hover{
+	text-decoration: none;
+}
+.genericItemDateCreated{
+	color: #999;
+}
+.genericItemIntroText p{
+	margin-bottom: 0;
+}
+/*genericView end*/
+
+/*Tag*/
+.tagView h2.tagItemTitle a{
+	color: #333;
+}
+.tagView h2.tagItemTitle a:hover{
+	text-decoration: none;
+}
+.tagView .tagItemIntroText p{
+	margin-bottom: 0;
+}
+
+
+/*Tag end*/
+
+@media (max-width: 450px){
+	.itemView #comment-form input.inputbox{
+		width: 100%;
+	}
+}
+@media (max-width: 767px){
+	.bellow_titile .text-right{
+		
+			text-align: left;
+			float: left;
+		
+	}
+	.itemView  span.itemDateModified{
+		float: left;
+		width: 100%;
+		text-align: left;
+	}
+}
+@media (min-width: 768px) and (max-width: 992px){
+	.nav>li>a{
+		padding: 15px 12px;
+	}
+}

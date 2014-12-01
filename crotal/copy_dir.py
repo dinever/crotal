@@ -30,12 +30,8 @@ class FileCopier(Collector):
         new_filenames, old_filenames, removed_filenames = self.detect_new_filenames('static')
         self.parse_new_filenames(new_filenames, src_dir, tar_dir)
         self.parse_removed_files(removed_filenames, src_dir)
-        print new_filenames
-        print old_filenames
-        print removed_filenames
         for filename in new_filenames:
             dir_path = os.path.dirname(filename)
-            print dir_path
         """for item in os.listdir(src_dir):
             srcFile = os.path.join(src_dir, item)
             tarFile = os.path.join(tar_dir, item)
@@ -71,7 +67,6 @@ class FileCopier(Collector):
 
     def parse_removed_files(self, filenames, src_dir):
         for filename in filenames:
-            print filename
             self.database.remove_item('static', filename)
             os.remove(filename)
 

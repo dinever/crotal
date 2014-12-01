@@ -1,30 +1,22 @@
+import os
 import json
 
-from crotal import reporter
-from crotal.config import config
+from crotal import settings
+from crotal import logger
 
 
 class Database:
     def __init__(self, full=False):
-        if full is True:
-            self.init_new_database()
+        if not os.path.exists(settings.DB_PATH) or full:
+            self.db = {'posts': {}, 'pages': {}, 'templates': {}, 'static': {}, 'theme_static': {}}
         else:
-            try:
-                self.get_database_content()
-            except Exception as e:
-                self.init_new_database()
-
-    def get_database_content(self):
-        self.db = json.loads(open(
-                config.db_path, 'r').read().encode('utf8'))
-
-    def init_new_database(self):
-        self.db = {'posts': {}, 'pages': {}, 'templates': {}}
+            self.db = json.loads(open(
+                settings.DB_PATH, 'r').read().encode('utf8'))
 
     def load(self, source_type):
-        if not self.db.has_key(source_type):
+        if not source_type in self.db:
             self.db[source_type] = {}
-            reporter.db_create_new_key(source_type)
+            logger.warning('New key "{0}" created.'.format(source_type))
             return {}
         else:
             return self.db[source_type]
@@ -33,15 +25,13 @@ class Database:
         return self.db[source_type][filename]['content']
 
     def set_item(self, source_type, filename, item_dict):
-        try:
-            self.db[source_type][filename] = item_dict
-        except Exception, e:
-            self.db[source_type] = {}
-            self.db[source_type][filename] = item_dict
+        self.db[source_type][filename] = item_dict
 
     def remove_item(self, source_type, filename):
-        del self.db[source_type][filename]
+        try:
+            del self.db[source_type][filename]
+        except KeyError:
+            logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(filename, source_type))
 
     def save(self):
-        db_to_save = json.dumps(self.db)
-        open(config.db_path, 'w+').write(db_to_save.encode('utf8'))
+        open(settings.DB_PATH, 'w+').write(json.dumps(self.db).encode('utf8'))

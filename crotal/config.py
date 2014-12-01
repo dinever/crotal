@@ -1,5 +1,4 @@
 import yaml
-import os.path
 import os
 
 from crotal import reporter
