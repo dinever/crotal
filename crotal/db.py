@@ -32,7 +32,7 @@ class Database(object):
         self.db[source_type][filename] = item_dict
 
     def remove_item(self, source_type, filename):
-        if filename in self.db[source_tyep]:
+        if filename in self.db[source_type]:
             del self.db[source_type][filename]
         else:
             logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(filename, source_type))
