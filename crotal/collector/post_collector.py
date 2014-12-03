@@ -55,7 +55,7 @@ class PostCollector(Collector):
 
     def collect_tags(self):
         '''
-        Collect the tags in a sigle post object.
+        Collect the tags in a single post object.
         '''
         for post in self.posts:
             if hasattr(post, 'tags'):
@@ -106,10 +106,10 @@ class PostCollector(Collector):
                 post_tmp.parse_from_db(post_content)
                 dname = os.path.join(settings.PUBLISH_DIR, post_tmp.url.strip("/\\"))
                 filepath = os.path.join(dname, 'index.html')
-                try:
+                if os.path.exists(filepath):
                     os.remove(filepath)
-                except Exception, e:
-                    logger.warn("Field to remove file: '{0}".format(post_tmp.title))
+                else:
+                    logger.warning("Field to remove file: '{0}".format(post_tmp.title))
             except Exception, e:
                 pass
             post_tmp = Post(filename=filename)
@@ -117,7 +117,7 @@ class PostCollector(Collector):
                 .read().decode('utf8')
             if not post_tmp.check_illegal(file_content, filename=filename):
                 # If the post_content is not illegal, pass it.
-                logger.warn("This post doesn't have a correct format: '{0}".format(filename))
+                logger.warning("This post doesn't have a correct format: '{0}".format(filename))
                 continue
             else:
                 post_tmp.parse()
@@ -146,7 +146,7 @@ class PostCollector(Collector):
             try:
                 os.remove(filepath)
             except Exception, e:
-                logger.warn("Field to remove file: '{0}".format(post_tmp.title))
+                logger.warning("Field to remove file: '{0}".format(post_tmp.title))
 
 
     def posts_sort(self):
