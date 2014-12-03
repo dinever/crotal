@@ -50,10 +50,10 @@ class PageCollector(Collector):
                 page_tmp.parse_from_db(page_content)
                 dname = os.path.join(settings.PUBLISH_DIR, page_tmp.url.strip("/\\"))
                 filepath = os.path.join(dname, 'index.html')
-                try:
+                if os.path.exists(filepath):
                     os.remove(filepath)
-                except Exception, e:
-                    logger.warn("Field to remove file: '{0}".format(page_tmp.title))
+                else:
+                    logger.warning("Field to remove file: '{0}".format(page_tmp.title))
             except Exception, e:
                 pass
             page_tmp = Page(filename)
@@ -85,7 +85,7 @@ class PageCollector(Collector):
             try:
                 os.remove(filepath)
             except:
-                logger.warn("Field to remove file: '{0}".format(page_tmp.title))
+                logger.warning("Field to remove file: '{0}".format(page_tmp.title))
 
     def pages_sort(self):
         for i in range(len(self.pages)):
