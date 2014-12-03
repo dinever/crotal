@@ -26,7 +26,7 @@ class Database(object):
             return self.db[source_type]
 
     def get_item(self, source_type, filename):
-        return self.db[source_type][filename]
+        return self.db[source_type].get(filename, {'content': None})
 
     def set_item(self, source_type, filename, item_dict):
         self.db[source_type][filename] = item_dict

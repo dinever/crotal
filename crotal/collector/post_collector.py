@@ -100,18 +100,16 @@ class PostCollector(Collector):
 
     def parse_new_posts(self, filename_list):
         for filename in filename_list:
-            try:
-                post_content = self.database.get_item('posts', filename)['content']
+            post_content = self.database.get_item('posts', filename)['content']
+            if post_content:
                 post_tmp = Post(filename=filename)
                 post_tmp.parse_from_db(post_content)
-                dname = os.path.join(settings.PUBLISH_DIR, post_tmp.url.strip("/\\"))
-                filepath = os.path.join(dname, 'index.html')
-                if os.path.exists(filepath):
-                    os.remove(filepath)
+                dir_name = os.path.join(settings.PUBLISH_DIR, post_tmp.url.strip("/\\"))
+                file_path = os.path.join(dir_name, 'index.html')
+                if os.path.exists(file_path):
+                    os.remove(file_path)
                 else:
                     logger.warning("Field to remove file: '{0}".format(post_tmp.title))
-            except Exception, e:
-                pass
             post_tmp = Post(filename=filename)
             file_content = open(os.path.join(filename),'r')\
                 .read().decode('utf8')
