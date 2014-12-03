@@ -23,10 +23,11 @@ class PostCollector(Collector):
         self.page_number = 0
 
     def run(self):
-        new_filenames, old_filenames, removed_filenames = self.detect_new_filename_list('posts')
-        self.parse_removed_posts(removed_filenames)
-        self.parse_old_posts(old_filenames)
-        self.parse_new_posts(new_filenames)
+        new_filename_list, old_filename_list, removed_filename_list = \
+            self.detect_new_filename_list('posts')
+        self.parse_removed_posts(removed_filename_list)
+        self.parse_old_posts(old_filename_list)
+        self.parse_new_posts(new_filename_list)
         self.posts_sort()
         self.collect_others()
         self.save_others()
@@ -80,8 +81,8 @@ class PostCollector(Collector):
         for tag in self.tags.values():
             tag.save()
 
-    def parse_old_posts(self, filenames):
-        for filename in filenames:
+    def parse_old_posts(self, filename_list):
+        for filename in filename_list:
             post_content = self.database.get_item('posts', filename)['content']
             post_tmp = Post(filename=filename)
             post_tmp.parse_from_db(post_content)
@@ -97,8 +98,8 @@ class PostCollector(Collector):
                 'content': post_dict}
             self.database.set_item('posts', filename, post_dict_in_db)
 
-    def parse_new_posts(self, filenames):
-        for filename in filenames:
+    def parse_new_posts(self, filename_list):
+        for filename in filename_list:
             try:
                 post_content = self.database.get_item('posts', filename)['content']
                 post_tmp = Post(filename=filename)
@@ -133,8 +134,8 @@ class PostCollector(Collector):
                 'content': post_dict}
             self.database.set_item('posts', filename, post_dict_in_db)
 
-    def parse_removed_posts(self, filenames):
-        for filename in filenames:
+    def parse_removed_posts(self, filename_list):
+        for filename in filename_list:
             post_content = self.database.get_item('posts', filename)['content']
             post_tmp = Post(filename=filename)
             post_tmp.parse_from_db(post_content)

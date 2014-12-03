@@ -18,10 +18,11 @@ class PageCollector(Collector):
         self.pages_files = self.process_directory(settings.PAGES_DIR)
 
     def run(self):
-        new_filenames, old_filenames, removed_filenames = self.detect_new_filename_list('pages')
-        self.parse_removed_pages(removed_filenames)
-        self.parse_old_pages(old_filenames)
-        self.parse_new_pages(new_filenames)
+        new_filename_list, old_filename_list, removed_filename_list = \
+            self.detect_new_filename_list('pages')
+        self.parse_removed_pages(removed_filename_list)
+        self.parse_old_pages(old_filename_list)
+        self.parse_new_pages(new_filename_list)
         self.pages_sort()
 
     def parse_old_pages(self, filename_list):

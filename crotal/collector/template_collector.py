@@ -30,17 +30,19 @@ class TemplateCollector(Collector):
                     self.templates_files.append(absoluteFile)
 
     def run(self):
-        new_filenames, old_filenames, removed_filenames = self.detect_new_filename_list('templates')
-        new_other_template_filenames = list(set(self.other_template_files) - set(old_filenames))
-        if new_other_template_filenames != []:
-            new_filenames = list(set(self.templates_files) - set(self.other_template_files))
-            old_filenames = []
+        new_filename_list, old_filename_list, removed_filename_list = \
+            self.detect_new_filename_list('templates')
+        new_other_template_filename_list = \
+            list(set(self.other_template_files) - set(old_filename_list))
+        if new_other_template_filename_list:
+            new_filename_list = list(set(self.templates_files) - set(self.other_template_files))
+            old_filename_list = []
         else:
-            new_filenames = list(set(new_filenames) - set(self.other_template_files))
-            old_filenames = list(set(old_filenames) - set(self.other_template_files))
-        self.parse_old_templates(old_filenames)
-        self.parse_new_templates(new_filenames)
-        self.parse_removed_templates(removed_filenames)
+            new_filename_list = list(set(new_filename_list) - set(self.other_template_files))
+            old_filename_list = list(set(old_filename_list) - set(self.other_template_files))
+        self.parse_old_templates(old_filename_list)
+        self.parse_new_templates(new_filename_list)
+        self.parse_removed_templates(removed_filename_list)
         self.set_db()
 
     def set_db(self):
