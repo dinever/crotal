@@ -120,6 +120,7 @@ class Command(object):
             file_title = now.strftime("%Y-%m-%d") + '-' + slug + '.markdown'
             file_path = os.path.join(settings.POSTS_DIR, file_title)
             open(os.path.join(settings.BASE_DIR, file_path), 'w+').write(new_post)
+            logger.success(' '.join([file_path, 'created.']))
 
     @staticmethod
     def create_page():
