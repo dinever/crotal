@@ -42,7 +42,7 @@ class PostCollector(Collector):
 
     def collect_categories(self):
         '''
-        Collect the categories in a sigle post object.
+        Collect the categories in a single post object.
         '''
         for post in self.posts:
             if hasattr(post, 'categories'):
@@ -68,7 +68,7 @@ class PostCollector(Collector):
 
     def collect_archives(self, post): # TODO
         '''
-        Collect the archives in a sigle post object.
+        Collect the archives in a single post object.
         (This method has not been used)
         '''
         Archive(post.pub_time)
