@@ -95,10 +95,10 @@ class FileCopier(Collector):
 
 def load_config_file():
     try:
-        config_yml = open(settings.CONFIG_PATH, 'r').read()
+        _config.yml = open(settings.CONFIG_PATH, 'r').read()
     except Exception:
-        logger.error('No "config.yml" file found for the current directory.')
+        logger.error('No "_config.yml" file found for the current directory.')
         sys.exit()
-    config_dict = yaml.load(config_yml)
+    config_dict = yaml.load(_config.yml)
     for item in config_dict:
         setattr(settings, item, config_dict[item])

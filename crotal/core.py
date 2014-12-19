@@ -105,7 +105,7 @@ class Command(object):
     @staticmethod
     def create_post():
         if not os.path.exists(settings.CONFIG_PATH):
-            logger.error('No "config.yml" file found for the current directory.')
+            logger.error('No "_config.yml" file found for the current directory.')
             sys.exit()
         if len(sys.argv) != 3:
             logger.error('Please specify the post title.')
@@ -124,7 +124,7 @@ class Command(object):
     @staticmethod
     def create_page():
         if not os.path.exists(settings.CONFIG_PATH):
-            logger.error('No "config.yml" file found for the current directory.')
+            logger.error('No "_config.yml" file found for the current directory.')
             sys.exit()
         title = logger.info_input('Page Title')
         url = logger.info_input('Page URL (.e.g, /foo/bar/):')
