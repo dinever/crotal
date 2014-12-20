@@ -2,6 +2,7 @@
 
 import os
 import sys
+import git
 import yaml
 
 from crotal import logger
@@ -39,6 +40,22 @@ def copy_dir(src_dir, tar_dir):
                 pass
         if os.path.isdir(srcFile):
             copy_dir(srcFile, tarFile)
+
+def init_git_repo(tar_dir):
+    """
+    Creates & init empty repo in `tar_dir'. Also it creates `source' branch
+    and commit initial changes into it.
+    """
+    try:
+        tar_dir = os.path.realpath(tar_dir)
+        repo = git.Repo.init(path=tar_dir)
+        repo.git.checkout(b="source")
+        repo.git.add(tar_dir)
+        repo.git.commit(tar_dir, m="initial commit")
+        logger.info("Git repository initialised")
+    except git.GitCommandError, gitErr:
+        logger.warning(gitErr)
+
 
 class FileCopier(Collector):
 
