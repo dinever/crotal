@@ -2,7 +2,7 @@ import os
 
 BASE_DIR = os.getcwd()
 
-CONFIG_PATH = os.path.join(os.getcwd(), 'config.yml')
+CONFIG_PATH = os.path.join(os.getcwd(), '_config.yml')
 
 POSTS_DIR = os.path.join('source', 'posts')
 
