@@ -43,13 +43,14 @@ def copy_dir(src_dir, tar_dir):
 
 def init_git_repo(tar_dir):
     """
-    Creates & init empty repo in `tar_dir'. Also it creates `source' branch
+    Creates & init empty repo in `tar_dir'. Also it creates `source', `master' branches
     and commit initial changes into it.
     """
     try:
         tar_dir = os.path.realpath(tar_dir)
         repo = git.Repo.init(path=tar_dir)
-        repo.git.checkout(b="source")
+        repo.git.commit(allow_empty=True, m="Created master")
+        repo.git.checkout(orphan="source")
         repo.git.add(tar_dir)
         repo.git.commit(tar_dir, m="initial commit")
         logger.info("Git repository initialised")
