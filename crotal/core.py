@@ -99,8 +99,8 @@ class Command(object):
         curr = os.path.dirname(os.path.abspath(__file__))
         dir = os.path.join(curr, "init")
         utils.copy_dir(dir, site_name)
-        utils.init_git_repo(site_name)
         logger.blue_text(message=LOGO)
+        utils.init_git_repo(site_name)
         logger.success('Site created.')
 
     @staticmethod
