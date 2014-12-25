@@ -1,5 +1,12 @@
 import os
+import re
+
+import fnmatch
 from threading import Thread
+import crotal.logger as logger
+
+file_exts = ["*.*~", "*.swp", "*.swx"]
+EXCLUDE_PATTERN = r'|'.join([fnmatch.translate(pat) for pat in file_exts]) or r'$.'
 
 class Collector(Thread):
 
@@ -12,6 +19,9 @@ class Collector(Thread):
         filename_list = []
         for dir_, _, files in os.walk(directory):
             for filename in files:
+                if re.match(EXCLUDE_PATTERN, filename):
+                    logger.info("skip %s" % filename)
+                    continue
                 relative_dir = os.path.relpath(dir_, directory)
                 relative_file = os.path.join(relative_dir, filename)
                 absolute_file = os.path.join(dir_, filename)
