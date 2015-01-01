@@ -39,6 +39,8 @@ def git_deploy():
 def setup_github_pages():
     try:
         repo = git.Repo(settings.BASE_DIR)
+        committer = git.Actor.committer(repo.config_reader())
+        author = committer.name + " <" + committer.email + ">"
         repo.git.checkout("master")
         copy_dir(settings.PUBLISH_DIR, settings.BASE_DIR)
         repo.git.add(".")
@@ -54,7 +56,7 @@ def setup_github_pages():
                 repo.create_remote("origin", repo_url)
             except git.GitCommandError, giterr:
                 logger.warning(giterr)
-        repo.git.commit(m=message)
+        repo.git.commit(m=message, author=author)
         #Push `source' as well as `master'
         repo.git.push("origin", all=True)
     except Exception, ex:
