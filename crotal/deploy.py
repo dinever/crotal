@@ -1,10 +1,11 @@
 import os
+import git
 
 from datetime import datetime
 
 from crotal.utils import copy_dir
 from crotal import settings
-
+from crotal import logger
 
 def rsync_deploy():
     print 'Deploying by Rsync ...'
@@ -15,31 +16,53 @@ def git_deploy():
     '''
     I'm still working on this.
     '''
+    
+    if not hasattr(settings, 'deploy_branch'):
+        return setup_github_pages()
     try:
-        os.mkdir('.deploy')
+        os.mkdir(settings.DEPLOY_DIR)
     except:
         pass
-    deploy_dir = ".deploy/"
     copy_dir('_sites', '.deploy')
     deploy_branch = "master"
-    os.chdir(deploy_dir)
-    if not hasattr(settings, 'deploy_branch'):
-        setup_github_pages()
-    os.system("git add .")
-    os.system("git add --all *")
+    os.chdir(settings.DEPLOY_DIR)
+    repo = git.Repo.init(".")
+    repo.git.add(".")
     message = "Site updated at %s" % datetime.strftime(
         datetime.now(),
         "%Y-%m-%d %H:%M:%S")
     print message
     print "Github Pages deploy complete"
-    os.system("git commit -m '%s'" % message)
-    os.system("git push origin %s --force" % deploy_branch)
-
+    repo.git.commit(m=message)
+    repo.git.push(force=True, origin=deploy_branch)
 
 def setup_github_pages():
-    deploy_branch = "master"
-    os.system("git init")
-    print "Enter the read/write url for your repository"
-    print "(For example, 'git@github.com:your_username/your_username.github.io)"
-    repo_url = raw_input("Repository url: ")
-    os.system("git remote add origin %s" % repo_url)
+    try:
+        repo = git.Repo(settings.BASE_DIR)
+        committer = git.Actor.committer(repo.config_reader())
+        author = committer.name + " <" + committer.email + ">"
+        repo.git.checkout("master")
+        copy_dir(settings.PUBLISH_DIR, settings.BASE_DIR)
+        repo.git.add(".")
+        repo.git.reset("_sites") #forget `_sites' folder
+        repo.git.reset("db.json") #forget `db.json' too.
+        message = "Site Updated at %s" %\
+                   datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S %Z")
+        if not repo.remotes:
+            print "Enter the read/write url for your repository"
+            print "(For example, 'git@github.com:your_username/your_username.github.io.git)"
+            repo_url = raw_input("Repository url: ")
+            try:
+                repo.create_remote("origin", repo_url)
+            except git.GitCommandError, giterr:
+                logger.warning(giterr)
+        repo.git.commit(m=message, author=author)
+        #Push `source' as well as `master'
+        repo.git.push("origin", all=True)
+    except Exception, ex:
+        logger.warning(ex)
+    else:
+        logger.success("GitHub pages deployed")
+    finally:
+        #Go back to `source'
+        repo.git.checkout("source")

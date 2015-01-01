@@ -5,7 +5,7 @@ simple_search: http://google.com/search
 keywords:
 description: A static site generator which is written in Python, super fast, easy to use, and free to all.Start a blog right now using Crotal!
 author_avatar: /images/avatar.gif  # 200*200 is prefered.
-self_description: Hello World! I'm <b>User</b>. Change this text in <code>config.yml</code> <code>-> self_description</code>.
+self_description: Hello World! I'm <b>User</b>. Change this text in <code>_config.yml</code> <code>-> self_description</code>.
 
 navbar: [Home: /, Archives: /archives, Categories: /categories, Tags: /tags, About: /about, RSS: /rss.xml]
 

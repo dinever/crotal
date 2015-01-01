@@ -100,12 +100,13 @@ class Command(object):
         dir = os.path.join(curr, "init")
         utils.copy_dir(dir, site_name)
         logger.blue_text(message=LOGO)
+        utils.init_git_repo(site_name)
         logger.success('Site created.')
 
     @staticmethod
     def create_post():
         if not os.path.exists(settings.CONFIG_PATH):
-            logger.error('No "config.yml" file found for the current directory.')
+            logger.error('No "_config.yml" file found for the current directory.')
             sys.exit()
         if len(sys.argv) != 3:
             logger.error('Please specify the post title.')
@@ -120,11 +121,12 @@ class Command(object):
             file_title = now.strftime("%Y-%m-%d") + '-' + slug + '.markdown'
             file_path = os.path.join(settings.POSTS_DIR, file_title)
             open(os.path.join(settings.BASE_DIR, file_path), 'w+').write(new_post)
+            logger.success(' '.join([file_path, 'created.']))
 
     @staticmethod
     def create_page():
         if not os.path.exists(settings.CONFIG_PATH):
-            logger.error('No "config.yml" file found for the current directory.')
+            logger.error('No "_config.yml" file found for the current directory.')
             sys.exit()
         title = logger.info_input('Page Title')
         url = logger.info_input('Page URL (.e.g, /foo/bar/):')

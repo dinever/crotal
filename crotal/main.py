@@ -72,7 +72,7 @@ def main():
                 core.Command.generate(full=True, is_preview=False)
                 deploy.rsync_deploy()
             elif settings.deploy_default == 'git':
-                pass
+                deploy.git_deploy()
             else:
                 print 'Only support rsync for now.'
 

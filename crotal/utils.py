@@ -2,6 +2,7 @@
 
 import os
 import sys
+import git
 import yaml
 
 from crotal import logger
@@ -39,6 +40,23 @@ def copy_dir(src_dir, tar_dir):
                 pass
         if os.path.isdir(srcFile):
             copy_dir(srcFile, tarFile)
+
+def init_git_repo(tar_dir):
+    """
+    Creates & init empty repo in `tar_dir'. Also it creates `source', `master' branches
+    and commit initial changes into it.
+    """
+    try:
+        tar_dir = os.path.realpath(tar_dir)
+        repo = git.Repo.init(path=tar_dir)
+        repo.git.commit(allow_empty=True, m="Created master")
+        repo.git.checkout(orphan="source")
+        repo.git.add(tar_dir)
+        repo.git.commit(tar_dir, m="initial commit")
+        logger.info("Git repository initialised")
+    except git.GitCommandError, gitErr:
+        logger.warning(gitErr)
+
 
 class FileCopier(Collector):
 
@@ -95,10 +113,10 @@ class FileCopier(Collector):
 
 def load_config_file():
     try:
-        config_yml = open(settings.CONFIG_PATH, 'r').read()
+        _config_yml = open(settings.CONFIG_PATH, 'r').read()
     except Exception:
-        logger.error('No "config.yml" file found for the current directory.')
+        logger.error('No "_config.yml" file found for the current directory.')
         sys.exit()
-    config_dict = yaml.load(config_yml)
+    config_dict = yaml.load(_config_yml)
     for item in config_dict:
         setattr(settings, item, config_dict[item])

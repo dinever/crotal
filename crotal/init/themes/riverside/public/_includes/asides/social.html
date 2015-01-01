@@ -1,12 +1,12 @@
 <div class="widget">
 <h4 class="widgettitle">Contacts</h4>
 <ul>
-<li><a class="social weibo" href='http://weibo.com/{{ site.weibo_uid }}' target="_blank">Weibo</a></li>
-<li><a class="social google" href='mailto:gmail@gmail.com' target="_blank">Gmail</a></li>
-<li><a class="social facebook" href='http://facebook.com/' target="_blank">Facebook</a></li>
-<li><a class="social twitter" href='http://twitter.com/' target="_blank" >Twitter</a></li>
-<li><a class="social github" href='http://github.com/' target="_blank"      >Github</a></li>
-<li><a class="social instagram" href='http://instagram.com/' target="_blank"   >Instagram</a></li>
-<li><a class="social soundcloud" href='http://soundcloud.com/' target="_blank"  >Soundcloud</a></li>
+	{% if site.weibo_uid %}<li><a class="social weibo" href='http://weibo.com/{{ site.weibo_uid }}' target="_blank">Weibo</a></li> {% endif %}
+	{% if site.email %} <li><a class="social google" href='mailto:{{site.email}}' target="_blank">Gmail</a></li> {% endif %}
+	{% if site.facebook %}<li><a class="social facebook" href='https://facebook.com/{{site.facebook}}' target="_blank">Facebook</a></li>{% endif %}
+	{% if site.twitter_user %}<li><a class="social twitter" href='https://twitter.com/{{site.twitter_user}}' target="_blank" >Twitter</a></li>{% endif %}
+	{% if site.github_user %}<li><a class="social github" href='https://github.com/{{site.github_user}}' target="_blank"      >Github</a></li>{% endif %}
+	{% if site.instagram %}<li><a class="social instagram" href='https://instagram.com/{{site.instagram' target="_blank"   >Instagram</a></li>{% endif %}
+	{% if site.soundcloud %}<li><a class="social soundcloud" href='https://soundcloud.com{{site.soundcloud}}/' target="_blank"  >Soundcloud</a></li>{% endif %}
 </ul>
 </div>
