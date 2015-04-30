@@ -5,4 +5,4 @@ from crotal.loader.base import BaseLoader
 from crotal.loader.page import PageLoader
 from crotal.loader.template import TemplateLoader
 from crotal.loader.post import PostLoader
-from crotal.loader.static import ThemeStaticLoader
+from crotal.loader.static import StaticLoader

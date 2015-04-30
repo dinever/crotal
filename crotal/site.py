@@ -7,12 +7,12 @@ from crotal import db
 from crotal import utils
 from crotal.config import Config
 from crotal.renderer import Renderer
-from crotal.loader import PostLoader, PageLoader, TemplateLoader, ThemeStaticLoader
+from crotal.loader import PostLoader, PageLoader, TemplateLoader, StaticLoader
 
 
 class Site(object):
 
-    LoaderClass = [PostLoader, PageLoader, TemplateLoader, ThemeStaticLoader]
+    LoaderClass = [PostLoader, PageLoader, TemplateLoader, StaticLoader]
 
     def __init__(self, path=os.getcwd(), full=False, output=None):
         self.config = Config(path, output)

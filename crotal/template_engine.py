@@ -38,7 +38,7 @@ class TemplateEngine(object):
         if not filename.endswith('.html'):
             filename += '.html'
         return os.path.normpath(os.path.join(self.config.templates_dir,
-                                      '_layout/', filename))
+                                             '_layout/', filename))
 
     def render(self, file_path, parameter):
         template = self._template_loader.get_template(file_path)

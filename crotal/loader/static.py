@@ -3,14 +3,14 @@ from __future__ import unicode_literals, print_function
 
 import os
 
-from crotal.models import ThemeStatic
+from crotal.models import Static
 from crotal.loader import BaseLoader
 
 
-class ThemeStaticLoader(BaseLoader):
+class StaticLoader(BaseLoader):
     _type = 'static_files'
     _name = 'static_files'
-    _Model = ThemeStatic
+    _Model = Static
 
     @property
     def path(self):

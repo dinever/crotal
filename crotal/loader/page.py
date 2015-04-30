@@ -3,7 +3,6 @@ from __future__ import unicode_literals, print_function
 
 import os
 
-from crotal import logger
 from crotal.loader import BaseLoader
 from crotal.models.page import Page
 

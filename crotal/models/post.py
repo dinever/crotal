@@ -12,7 +12,6 @@ from crotal.plugins.pinyin.pinyin import PinYin
 from crotal.models import Model
 
 
-
 class CheckImagePattern(ImagePattern):
 
     def __init__(self, IMAGE_LINK_RE, md, config):

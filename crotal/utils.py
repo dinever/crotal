@@ -1,5 +1,3 @@
-__author__ = 'dinever'
-
 import os
 import shutil
 

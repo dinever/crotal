@@ -5,7 +5,7 @@ import os
 from crotal.models import Model, Post
 
 
-class ThemeStatic(Model):
+class Static(Model):
 
     def __init__(self, path, config):
         self.path = path
