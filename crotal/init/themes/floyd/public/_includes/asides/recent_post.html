@@ -1,8 +1,0 @@
-<div class="widget recent_posts">
-    <h4 class="widgettitle">Recent Posts</h4>
-    <ul>
-        {% for post in posts | batch(site.recent_posts) | first%}
-        <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-        {% endfor %}
-    </ul>
-</div>

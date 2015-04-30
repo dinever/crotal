@@ -1,5 +1,0 @@
-User-agent: *
-Disallow:
-Disallow: /blog/page/
-Disallow: /tags/
-Sitemap: {{ site.url }}/sitemap.xml

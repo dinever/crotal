@@ -1,0 +1,33 @@
+<%page args="title"/>
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8" /><title>${title()}</title>
+        <meta name="author" content="${ site.author }">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta property="og:site_name" content="">
+        <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css" />-->
+        <link rel="stylesheet" href="${ site.root_path }css/main.css" type="text/css">
+        <link rel="stylesheet" href="${ site.root_path }css/pygments.css" type="text/css">
+
+        <link href='//fonts.googleapis.com/css?family=Titillium+Web:300,400,600' rel='stylesheet' type='text/css'>
+        <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="${ site.root_path }favicon.ico" type="image/x-icon">
+        <link rel="icon" href="${ site.root_path }favicon.ico" type="image/x-icon">
+        <link rel="apple-apple-touch-icon" href="${ site.root_path }apple-touch-icon-iphone-60x60.png">
+        <link rel="apple-apple-touch-icon" sizes="60x60" href="${ site.root_path }apple-touch-icon-ipad-76x76.png">
+        <link rel="apple-apple-touch-icon" sizes="114x114" href="${ site.root_path }apple-touch-icon-iphone-retina-120x120.png">
+        <link rel="apple-apple-touch-icon" sizes="144x144" href="${ site.root_path }apple-touch-icon-ipad-retina-152x152.png">
+        <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+        % if site.google_analytics:
+            <script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>
+        % endif
+</head>

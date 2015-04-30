@@ -1,104 +1,53 @@
-#!/usr/bin/python
+__author__ = 'dinever'
 
 import os
-import sys
-import yaml
+import shutil
 
-from crotal import logger
-from crotal import settings
-from crotal.collector import Collector
 
-def remove_dir(path):
-    if not os.path.isdir(path):
-        return
+def make_dirs(file_path):
+    dir_path = os.path.dirname(file_path)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
 
-    # remove empty sub-folders
-    files = os.listdir(path)
-    for f in files:
-        full_path = os.path.join(path, f)
-        if os.path.isdir(full_path):
-            remove_dir(full_path)
 
-    # if folder empty, delete it
-    files = os.listdir(path)
-    if len(files) == 0:
-        logger.warning("Empty folder removed: '{0}".format(path))
-        os.rmdir(path)
+def copy_file(src_dir, tar_dir):
+    make_dirs(tar_dir)
+    shutil.copyfile(src_dir, tar_dir)
+
 
 def copy_dir(src_dir, tar_dir):
     for item in os.listdir(src_dir):
-        srcFile = os.path.join(src_dir, item)
-        tarFile = os.path.join(tar_dir, item)
+        source_file = os.path.join(src_dir, item)
+        target_file = os.path.join(tar_dir, item)
 
-        if os.path.isfile(srcFile):
-            if os.path.exists(tar_dir) is False:
+        if os.path.isfile(source_file):
+            if not os.path.exists(tar_dir):
                 os.makedirs(tar_dir)
-            if os.path.exists(tar_dir) is False or (os.path.exists(tar_dir) and (os.path.getsize(srcFile))):
-                open(tarFile, "wb").write(open(srcFile, "rb").read())
+            if not os.path.exists(tar_dir) or (os.path.exists(tar_dir) and (os.path.getsize(source_file))):
+                open(target_file, "wb").write(open(source_file, "rb").read())
             else:
                 pass
-        if os.path.isdir(srcFile):
-            copy_dir(srcFile, tarFile)
-
-class FileCopier(Collector):
-
-    def __init__(self, current_dir, database):
-        self.current_dir = current_dir
-        self.database = database
-        self.current_dir = current_dir
-
-    def copy_dir2(self, src_dir, tar_dir):
-        self.static_files = self.process_directory(src_dir)
-        new_filenames, old_filenames, removed_filenames = self.detect_new_filename_list('static')
-        self.parse_new_filenames(new_filenames, src_dir, tar_dir)
-        self.parse_removed_files(removed_filenames, src_dir)
-        for filename in new_filenames:
-            dir_path = os.path.dirname(filename)
-        """for item in os.listdir(src_dir):
-            srcFile = os.path.join(src_dir, item)
-            tarFile = os.path.join(tar_dir, item)
-
-            if os.path.isfile(srcFile):
-                if os.path.exists(tar_dir) is False:
-                    os.makedirs(tar_dir)
-                if os.path.exists(tar_dir) is False or (os.path.exists(tar_dir) and (os.path.getsize(srcFile))):
-                    open(tarFile, "wb").write(open(srcFile, "rb").read())
-                else:
-                    pass
-            if os.path.isdir(srcFile):
-                self.copy_dir(srcFile, tarFile)"""
-
-    def parse_new_filenames(self, filenames, src_dir, tar_dir):
-        for filename in filenames:
-            last_mod_time = os.path.getmtime(
-                os.path.join(
-                    self.current_dir,
-                    filename))
-            static_file_dict_in_db = {
-                'last_mod_time': last_mod_time,
-                }
-            self.database.set_item('static', filename, static_file_dict_in_db)
-            src_file = os.path.join(self.current_dir, src_dir, filename)
-            tar_file = os.path.join(self.current_dir, tar_dir, filename)
-            dir_path = os.path.dirname(tar_file)
-            dname = os.path.join(self.current_dir, dir_path.strip("/\\"))
-            if not os.path.exists(dname):
-                os.makedirs(dname)
-            open(tar_file, "wb").write(open(src_file, "rb").read())
+        if os.path.isdir(source_file):
+            copy_dir(source_file, target_file)
 
 
-    def parse_removed_files(self, filenames, src_dir):
-        for filename in filenames:
-            self.database.remove_item('static', filename)
-            os.remove(filename)
+def output_file(file_path, file_content):
+    make_dirs(file_path)
+    open(file_path, 'w+').write(file_content)
 
 
-def load_config_file():
-    try:
-        config_yml = open(settings.CONFIG_PATH, 'r').read()
-    except Exception:
-        logger.error('No "config.yml" file found for the current directory.')
-        sys.exit()
-    config_dict = yaml.load(config_yml)
-    for item in config_dict:
-        setattr(settings, item, config_dict[item])
+def generate_path(url, output_path='', site_root=''):
+    """
+    Generates a path based on url.
+    :param output_path:
+    Example:
+        >>> generate_path('/category/programming/', output_path='/home/user/', site_root='/demo/')
+        "/home/user/demo/category/programming/index.html"
+    """
+    path = [] if not site_root else [site_root.replace('/', '')]
+    for item in url.split('/'):
+        if item:
+            path.append(item)
+    if '.' not in path[-1] and path[-1].split('.'):
+        path.append('index.html')
+    return os.path.join(output_path, *path)

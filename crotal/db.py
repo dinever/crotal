@@ -1,41 +1,103 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals, print_function
+
+import io
 import os
 import json
 
-from crotal import settings
 from crotal import logger
 
 
 class Database(object):
     """
-    Database is the interface to the file db.json.
-    source_type includes 'posts', 'pages', 'templates', 'static', 'theme_static'.
+    Database is the interface to the file 'db.json'.
+    table includes 'posts', 'pages', 'templates', 'static', 'static'.
     """
-    def __init__(self, full=False):
-        if full or not os.path.exists(settings.DB_PATH):
-            self.db = {'posts': {}, 'pages': {}, 'templates': {}, 'static': {}, 'theme_static': {}}
+    def __init__(self, path, full=False):
+        self._path = path
+        if full or not os.path.exists(path):
+            self.raw_db = {}
         else:
-            self.db = json.loads(open(
-                settings.DB_PATH, 'r').read().encode('utf8'))
+            self.raw_db = json.loads(open(path, 'r').read())
+        self._tables = {}
+        for field in self.raw_db:
+            self._tables[field] = Table(field, content=self.raw_db[field])
 
-    def load(self, source_type):
-        if not source_type in self.db:
-            self.db[source_type] = {}
-            logger.warning('New key "{0}" created.'.format(source_type))
-            return {}
+    def __getitem__(self, table):
+        return self.get_table(table)
+
+    def get_table(self, table):
+        if not table in self._tables:
+            self._tables[table] = Table(table, content={})
+            logger.info('New table "{0}" created.'.format(table))
+            return self._tables[table]
         else:
-            return self.db[source_type]
+            return self._tables[table]
 
-    def get_item(self, source_type, filename):
-        return self.db[source_type].get(filename, {'content': None})
+    def get_item(self, table, filename):
+        return self[table].get(filename, {'content': None})
 
-    def set_item(self, source_type, filename, item_dict):
-        self.db[source_type][filename] = item_dict
+    def set_item(self, table, filename, item_dict):
+        self[table][filename] = item_dict
 
-    def remove_item(self, source_type, filename):
-        if filename in self.db[source_type]:
-            del self.db[source_type][filename]
+    def remove_item(self, table, filename):
+        if filename in self.db[table]:
+            del self[table][filename]
         else:
-            logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(filename, source_type))
+            logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(filename, table))
+
+    def dump(self):
+        json_output = {}
+        for table in self._tables:
+            json_output[table] = self._tables[table].content
+        json_string = json.dumps(json_output, ensure_ascii=False)
+        return json_string
 
     def save(self):
-        open(settings.DB_PATH, 'w+').write(json.dumps(self.db).encode('utf8'))
+        io.open(self._path, 'w+', encoding='utf8').write(self.dump())
+
+
+class Table(object):
+
+    def __init__(self, table_name, content=None):
+        self._table_name = table_name
+        self._mapping = {} if not content else content
+
+    @property
+    def content(self):
+        return self._mapping
+
+    def __repr__(self):
+        return '<%s:%s Keys:%r>' % (
+            self.__class__.__name__,
+            self._table_name,
+            self._mapping.keys()
+        )
+
+    def __getitem__(self, item):
+        return self._mapping.get(item)
+
+    def __contains__(self, key):
+        return key in self._mapping
+
+    def __setitem__(self, key, value):
+        self._mapping[key] = value
+
+    def __delitem__(self, key):
+        """Remove an item from the cache dict.
+        Raise a `KeyError` if it does not exist.
+        """
+        try:
+            del self._mapping[key]
+        except KeyError, e:
+            raise KeyError
+
+    def keys(self):
+        return self._mapping.keys()
+
+    def get(self, key, default=None):
+        """Return an item from the cache dict or `default`"""
+        try:
+            return self[key]
+        except KeyError:
+            return default

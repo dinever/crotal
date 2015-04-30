@@ -1,0 +1,19 @@
+<%inherit file="_layout/default.html"/>
+
+<%def name="title()">${category.name}</%def>
+<%def name="header()"><i class="icon" id="icon-category"></i>category: <em class="page-title-link">${category.name}</em></%def>
+
+% for post in category.posts:
+    % if loop.index % 2 == 0:
+        <div class="article-row">
+    % endif
+
+    <%include file="_includes/article-excerpt.html" args="post=post"/>
+
+    % if loop.index % 2 == 1 or loop.last:
+        </div>
+    % endif
+
+    % endfor
+
+

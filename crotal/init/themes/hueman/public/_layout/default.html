@@ -1,0 +1,24 @@
+<%include file="_includes/head.html" args="title=self.title"/>
+<body>
+    <div id="wrap">
+        <%include file="_includes/header.html"/>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+                            <h1 class="header">${self.header()}</h1>
+                        </div>
+                        <div class="main-body-content">
+                            ${self.body()}
+                        </div>
+                    </section>
+                    <%include file="_includes/sidebar.html" args="categories=categories"/>
+                </div>
+            </div>
+        </div>
+        <%include file="_includes/footer.html"/>
+</body>
+<%include file="_includes/after_footer.html"/>
+<%def name="title()"/>
+<%def name="header()"/>

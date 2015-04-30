@@ -1,0 +1,16 @@
+<%inherit file="_layout/default.html"/>
+
+<%block name="title"><i class="icon" id="icon-archive"></i>Archive: ${archive.datetime.strftime("%Y/%m")}</%block>
+
+% for post in archive.posts:
+    % if loop.index % 2 == 0:
+        <div class="article-row">
+    % endif
+
+    <%include file="_includes/article-excerpt.html" args="post=post"/>
+
+    % if loop.index % 2 == 1 or loop.last:
+        </div>
+    % endif
+
+    % endfor

@@ -8,19 +8,23 @@ usage::
     crotal --help
 
 """
-import os
+from __future__ import unicode_literals, print_function
+
 import sys
-import shutil
 import argparse
 
-from crotal import utils
-from crotal import server
-from crotal import deploy
-from crotal import settings
-from crotal import core
+from crotal.command import Command
 from crotal.version import __version__
 
-def parse_arguments(argv):
+commands = {
+    'generate': Command.generate,
+    'init': Command.init_site,
+    'server': Command.start_server,
+    'new_post': Command.create_post,
+    'new_page': Command.create_page,
+}
+
+def parse_arguments():
     parser = argparse.ArgumentParser(
         description="""A tool to generate static blogs,
         with markdown files.""",
@@ -28,7 +32,7 @@ def parse_arguments(argv):
     )
 
     parser.add_argument('-v', '--version', action='version', version=__version__,
-                        help='Print the pelican version and exit.')
+                        help='Print the Crotal version and exit.')
 
     subparsers = parser.add_subparsers(help='help')
 
@@ -40,41 +44,22 @@ def parse_arguments(argv):
     parser_generate.add_argument('-o', '--output', help='Indicate the directory where you want to place the site generated.', type=str)
 
     parser_server = subparsers.add_parser('server', help='Start the Crotal server.')
-    parser_server.add_argument('port', nargs='?', help='Indicate another port you want to preview the site on.', default=8000)
+    parser_server.add_argument('-p', '--port', help='Indicate another port you want to preview the site on.', default=8000, type=int)
 
     parser_new_post = subparsers.add_parser('new_post', help='Create a new post.')
-    parser_new_post.add_argument('"post_title"', help='Title of the post you want to create.', type=str)
+    parser_new_post.add_argument('post_title', help='Title of the post you want to create.', type=str)
 
     parser_new_page = subparsers.add_parser('new_page', help='Create a new page.')
 
     parser_deploy = subparsers.add_parser('deploy', help='Deploy the site Crotal generated.')
-    return parser.parse_args(argv[1:])
+    return parser.parse_args(sys.argv[1:])
 
 
 def main():
-    args = parse_arguments(sys.argv)
-    sub_command = sys.argv[1]
-    if sub_command == 'init':
-        core.Command.init()
-    else:
-        if sub_command == 'generate':
-            core.Command.generate(full=args.full)
-        elif sub_command == 'server':
-            server.main(settings)
-        elif sub_command == 'new_page':
-            core.Command.create_page()
-        elif sub_command == 'new_post':
-            core.Command.create_post()
-        elif sub_command == 'deploy':
-            utils.load_config_file()
-            if settings.deploy_default == 'rsync':
-                settings.PUBLISH_DIR = settings.DEPLOY_DIR
-                core.Command.generate(full=True, is_preview=False)
-                deploy.rsync_deploy()
-            elif settings.deploy_default == 'git':
-                pass
-            else:
-                print 'Only support rsync for now.'
+    args = parse_arguments()
+    main_command = sys.argv[1]
+    func = commands[main_command]
+    func(**vars(args))
 
 if __name__ == '__main__':
-    pass
+    main()

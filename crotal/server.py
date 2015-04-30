@@ -4,20 +4,17 @@ import time
 import posixpath
 import urllib
 import BaseHTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
 from threading import Thread
+from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-from crotal import settings
-from crotal.core import Command
 from crotal import logger
+from crotal.site import Site
+from crotal.config import Config
 from crotal.version import __version__
 
-ROUTES = (
-    ['', settings.PUBLISH_DIR],
-)
 
 LOGO = (
         "________________________________________",
@@ -28,7 +25,6 @@ LOGO = (
         "|  \____|_| \_\\\\___/ |_/_/   \\_\\_____| |",
         "|                                      |",
         "|          Version: {:<6s}             |".format(__version__),
-        "|          Author: Dinever             |",
         "|______________________________________|",
         )
 
@@ -46,10 +42,10 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
         root = os.getcwd()
 
-        for pattern, rootdir in ROUTES:
+        for pattern, root_dir in RequestHandler.routes:
             if path.startswith(pattern):
                 path = path[len(pattern):]
-                root = rootdir
+                root = root_dir
                 break
 
         path = path.split('?', 1)[0]
@@ -68,78 +64,87 @@ class RequestHandler(SimpleHTTPRequestHandler):
 
         return path
 
-def test(HandlerClass,
-         ServerClass, protocol="HTTP/1.0"):
-    """Test the HTTP request handler class.
-
-    This runs an HTTP server on port 8000 (or the first command line
-    argument).
-
-    """
-
-    if sys.argv[1:]:
-        port = int(sys.argv[1])
-    else:
-        port = 8000
-    server_address = ('', port)
-
-    HandlerClass.protocol_version = protocol
-    httpd = ServerClass(server_address, HandlerClass)
-
-    sa = httpd.socket.getsockname()
-    for line in LOGO:
-        logger.info(line)
-    print
-
-
-    HELP_INFO = (
-        "Server started in `{0}`'".format(settings.PUBLISH_DIR),
-        "To see your site, visit http://localhost:{0}".format(port),
-        "To shut down Crotal, press <CTRL> + C at any time."
-    )
-    for line in HELP_INFO:
-        logger.info(line)
-    print
-    httpd.serve_forever()
 
 class ServerThread(Thread):
 
+    def __init__(self, config, port):
+        self.config = config
+        self.routes = (
+            ['', config.publish_dir],
+        )
+        self.port = port
+        self.help_info = (
+            "Server started in `{0}`'".format(self.config.publish_dir),
+            "To see your site, visit http://localhost:{0}".format(self.port),
+            "To shut down Crotal, press <CTRL> + C at any time."
+        )
+        super(ServerThread, self).__init__()
+
     def run(self):
         del sys.argv[0]
-        test(RequestHandler, BaseHTTPServer.HTTPServer)
+        self._run(RequestHandler, BaseHTTPServer.HTTPServer)
+
+    def _run(self, handler_class,
+         server_class, protocol="HTTP/1.0"):
+        """
+        Test the HTTP request handler class.
+
+        This runs an HTTP server on port 8000 (or the first command line
+        argument).
+
+        """
+
+        server_address = ('', self.port)
+
+        handler_class.protocol_version = protocol
+        handler_class.routes = self.routes
+
+        httpd = server_class(server_address, handler_class)
+
+        for line in self.help_info:
+            logger.info(line)
+        print
+        httpd.serve_forever()
+
 
 class ChangeHandler(PatternMatchingEventHandler):
     patterns = ["*.*"]
 
-    def __init__(self, settings):
-        self.config = settings
-        super(ChangeHandler, self).__init__()
+    def __init__(self, config, site, ignore_patterns=None):
+        self.config = config
+        self.site = site
+        super(ChangeHandler, self).__init__(ignore_patterns=ignore_patterns)
 
     def process(self, event):
-        Command.generate(silent=True)
+        self.site.parse_single_file(event.src_path.decode('utf8'), event.event_type)
 
     def on_modified(self, event):
-        logger.green_text('update', event.src_path)
+        logger.green_text('update', event.src_path.decode('utf8'))
         self.process(event)
 
     def on_created(self, event):
-        logger.green_text('[create] {0}'.format(event.src_path))
+        logger.green_text('create', event.src_path.decode('utf8'))
         self.process(event)
 
     def on_deleted(self, event):
-        logger.green_text('[remove] {0}'.format(event.src_path))
+        logger.green_text('remove', event.src_path.decode('utf8'))
         self.process(event)
 
-def main(settings):
-    Command.generate(silent=True)
-    serverThread = ServerThread()
+
+def start(port, path=os.getcwd()):
+    if not path:
+        sys.exit()
+    site = Site(path)
+    site.generate()
+    config = Config(path)
+    serverThread = ServerThread(config, port)
     serverThread.daemon = True
     serverThread.start()
     observer = Observer()
-    observer.schedule(ChangeHandler(settings), path=settings.POSTS_DIR, recursive=True)
-    observer.schedule(ChangeHandler(settings), path=settings.PAGES_DIR, recursive=True)
-    observer.schedule(ChangeHandler(settings), path=settings.TEMPLATES_DIR, recursive=True)
-    observer.schedule(ChangeHandler(settings), path=settings.THEME_STATIC_DIR, recursive=True)
+    for loader in site.loaders:
+        for path in loader.path:
+            observer.schedule(ChangeHandler(config, site, ignore_patterns=["*/.DS_Store"]),
+                              path=os.path.join(config.base_dir, path), recursive=True)
     observer.start()
     while True:
         try:
@@ -148,6 +153,3 @@ def main(settings):
             logger.info('Server shutting down.')
             sys.exit()
 
-
-if __name__ == '__main__':
-    main()
