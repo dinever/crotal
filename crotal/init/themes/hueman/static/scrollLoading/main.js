@@ -7,13 +7,14 @@
     $(this).wrap('<div class="scrollLoading-wrap"></div>');
   });
   function setScrollLoading(){
-    $('.scrollLoading').scrollLoading();
-    for(var i = 0; i < $('.scrollLoading').length; i++){
-      if($('.scrollLoading')[i].complete){
+    var scrollLoadings = $('.scrollLoading');
+    scrollLoadings.scrollLoading();
+    for(var i = 0; i < scrollLoadings.length; i++){
+      if(scrollLoadings[i].complete){
         $('.scrollLoading').eq(i).unwrap();
       } else {
         $('.scrollLoading').eq(i).load(function(){
-          $(this).unwrap();
+          $(this).parent().unwrap();
         })
       }
     }
