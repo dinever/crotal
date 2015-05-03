@@ -7,7 +7,6 @@ from crotal import logger
 
 
 class BaseLoader(object):
-    _type = 'data'
     _name = ''
 
     modified_file_list = []
@@ -42,7 +41,7 @@ class BaseLoader(object):
         self.classify_files()
         self.load_main_items()
         self.load_extra_items()
-        callback(self.sort_data(self.data_mapping.copy()), self._type)
+        callback(self.sort_data(self.data_mapping.copy()))
 
     def sort_data(self, data):
         return data
@@ -92,7 +91,7 @@ class BaseLoader(object):
         elif event_type == 'deleted':
             self.remove_single_file(file_path)
         self.load_extra_items()
-        callback(self.sort_data(self.data_mapping.copy()), self._type)
+        callback(self.sort_data(self.data_mapping.copy()))
 
     def load_single_file(self, file_path):
         if os.path.basename(file_path).startswith('.'):
@@ -105,7 +104,7 @@ class BaseLoader(object):
             logger.error(message="Incorrect file format: {0}".format(file_path))
 
     def remove_single_file(self, file_path):
-        if file_path in self.data_mapping:
+        if file_path in self.data_mapping[self._name]:
             del self.data_mapping[self._name][file_path]
         del self._table[file_path]
 

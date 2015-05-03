@@ -17,11 +17,7 @@ class Site(object):
     def __init__(self, path=os.getcwd(), full=False, output=None):
         self.config = Config(path, output)
         self.database = db.Database(self.config.db_path, full=full)
-        self.data = {
-            'data': {},
-            'templates': {},
-            'static_files': {}
-        }
+        self.data = {}
         self.site_content = {}
         self.loaders = []
         for Loader in self.LoaderClass:
@@ -29,9 +25,8 @@ class Site(object):
             loader.load(self.update_data)
             self.loaders.append(loader)
 
-    def update_data(self, data, key='data'):
-        if key in self.data:
-            self.data[key].update(data)
+    def update_data(self, data):
+        self.data.update(data)
 
     def generate(self):
         self.render()

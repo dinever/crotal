@@ -10,19 +10,19 @@ from crotal.template_engine import TemplateEngine
 
 class Renderer(object):
 
-    def __init__(self, config, data, templates, static_files):
+    def __init__(self, config, **data):
         self.data = data
         self.config = config
         self.site_content = {}
-        self.templates = templates
-        self.static_files = static_files
+        self.templates = data['templates']
+        self.static_files = data['static_files']
         self.variables = data.copy()
         self.variables.update({
             'site': self.config,
             'sidebar': True,
             'max_page': 5,
         })
-        self.template_engine = TemplateEngine(self.config, templates)
+        self.template_engine = TemplateEngine(self.config, self.templates)
 
     def _layout_file(self, filename):
         if not filename.endswith('.html'):
