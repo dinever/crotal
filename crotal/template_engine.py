@@ -1,21 +1,45 @@
 import os
 
+from mako.template import Template
 from mako.lookup import TemplateLookup
+
+from crotal import logger
 
 
 class Lookup(TemplateLookup):
 
     def adjust_uri(self, uri, relativeto):
+        """
+        Override `adjust_uri` so that we can locate template from absolute uri.
+        """
+        self.calling_uri = relativeto
         return uri
+
+    def get_template(self, uri):
+        """
+        Override `get_template` so that it returns a `error template` when lookup
+        failed to locate the template.
+        """
+        if uri in self._collection:
+            return self._collection[uri]
+        else:
+            error_message = "template not found: {0}, calling by: {1}".format(uri, self.calling_uri)
+            logger.error(error_message)
+            error_template = Template(text=error_message)
+            self.put_template(uri, Template(text=error_message))
+            return error_template
 
 
 class TemplateLoader(object):
 
     def __init__(self, config, mapping):
+        """
+        This is a wrap for the Lookup object.
+        """
         self.mapping = mapping
         self.config = config
         self.lookup = Lookup(output_encoding='utf-8', filesystem_checks=False)
-        for path, template in mapping.iteritems():
+        for path, template in self.mapping.iteritems():
             self.lookup.put_string(os.path.relpath(path, self.config.templates_dir), template.content)
 
     def get_template(self, file_path):
@@ -27,7 +51,7 @@ class TemplateLoader(object):
 
 class TemplateEngine(object):
     """
-    Engine uses Jinja2 Template Engine to render template files.
+    Engine uses Mako Template Engine to render template files.
     """
     def __init__(self, config, template_mapping):
         self.config = config
