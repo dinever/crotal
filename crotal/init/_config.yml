@@ -3,7 +3,7 @@ subtitle: Do one thing, do it well.
 author: John Doe
 simple_search: http://google.com/search
 description: A static site generator which is written in Python, easy to use, and free to all. Start a blog right now using Crotal!
-url: http://dinever.com # url of your site
+url: http://your-url-here.com # url of your site
 root_path: / # If publishing to a subdirectory as in http://site.com/project set 'root: /project/'
 
 navbar: [Home: '', Archives: archives, About: about]
