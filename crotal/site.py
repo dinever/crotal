@@ -17,9 +17,9 @@ class Site(object):
     def __init__(self, path=os.getcwd(), full=False, output=None):
         self.config = Config(path, output)
         if full:
-            self.database = db.Database.from_file(self.config.db_path)
-        else:
             self.database = db.Database(dict(), self.config.db_path)
+        else:
+            self.database = db.Database.from_file(self.config.db_path)
         self.data = {}
         self.site_content = {}
         self.loaders = []
