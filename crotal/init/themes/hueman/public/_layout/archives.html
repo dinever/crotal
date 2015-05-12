@@ -1,6 +1,7 @@
 <%inherit file="_layout/default.html"/>
 
-<%block name="title"><i class="icon" id="icon-archive"></i>Archive: ${archive.datetime.strftime("%Y/%m")}</%block>
+<%block name="title">Archive: ${archive.datetime.strftime("%Y/%m")}</%block>
+<%def name="header()"><i class="icon" id="icon-archive"></i>Archive: ${archive.datetime.strftime("%Y/%m")}</%def>
 
 % for post in archive.posts:
     % if loop.index % 2 == 0:
