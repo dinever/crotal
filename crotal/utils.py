@@ -1,5 +1,8 @@
 import os
+import time
 import shutil
+
+from crotal import logger
 
 
 def make_dirs(file_path):
@@ -49,3 +52,13 @@ def generate_path(url, output_path='', site_root=''):
     if '.' not in path[-1] and path[-1].split('.'):
         path.append('index.html')
     return os.path.join(output_path, *path)
+
+
+def stop_watch(func):
+    def count_func_time(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        logger.info("Execution Time of {0}: {1:.2f} seconds".format(func.__name__, end - start))
+        return result
+    return count_func_time
