@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function
 
 import os
+import md5
 
 from crotal import db
 from crotal import utils
@@ -57,8 +58,12 @@ class Site(object):
         self.site_content = renderer.run()
 
     def write(self):
+        digest_table = self.database.get_table('digest')
         for path in self.site_content:
-            utils.output_file(os.path.join(self.config.publish_dir, path), self.site_content[path])
+            digest = md5.md5(self.site_content[path]).hexdigest()
+            if digest != digest_table.get(path):
+                utils.output_file(os.path.join(self.config.publish_dir, path), self.site_content[path])
+                digest_table[path] = digest
 
     def save(self):
         self.database.save()
