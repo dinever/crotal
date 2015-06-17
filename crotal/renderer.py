@@ -15,7 +15,7 @@ class Renderer(object):
         self.config = config
         self.site_content = {}
         self.templates = data['templates']
-        self.static_files = data['static_files']
+        self.static_files = []
         self.variables = data.copy()
         self.variables.update({
             'site': self.config,
@@ -36,12 +36,13 @@ class Renderer(object):
         return v
 
     def render_static(self):
-        for path, static_file in self.static_files.iteritems():
+        for path, static_file in self.data['static_files'].iteritems():
             source_path = os.path.join(self.config.base_dir, path)
             path = utils.generate_path(static_file.url,
                                        output_path=self.config.publish_dir,
                                        site_root=self.config.root_path
                                        )
+            self.static_files.append(path)
             utils.copy_file(source_path, path)
 
     def render_template(self):
@@ -49,8 +50,8 @@ class Renderer(object):
             rel_path = os.path.relpath(template.path, self.config.templates_dir)
             if not rel_path.startswith('_'):
                 content = self.template_engine.render(template.path, self.variables)
-                output_path = os.path.join(self.config.root_path.replace('/', ''), rel_path)
-                self.site_content[output_path] = content
+                path = utils.generate_path(rel_path, output_path=self.config.publish_dir, site_root=self.config.root_path)
+                self.site_content[path] = content
 
     def render_post(self):
         layout_file = self._layout_file('post.html')
@@ -126,4 +127,4 @@ class Renderer(object):
                 function = getattr(self, name)
                 if ismethod(function):
                     function()
-        return self.site_content
+        return self.site_content, self.static_files

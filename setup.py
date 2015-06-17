@@ -23,7 +23,7 @@ setup(
     package_data = {
         'crotal' : [ '*.data' ]
     },
-    install_requires = ['mako','markdown==2.3.1','PyYAML==3.10','Pygments==1.6', 'clint==0.4.1', 'watchdog==0.8.1'],
+    install_requires = ['mako','markdown>=2.3.1','PyYAML>=3.10','Pygments>=1.6', 'clint>=0.4.1', 'watchdog>=0.8.1'],
     author = "Dinever",
     author_email = 'dingpeixuan911@gmail.com',
     url = "http://github.com/dinever/crotal",

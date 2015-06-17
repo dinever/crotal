@@ -53,6 +53,11 @@ class ImgExtExtension(Extension):
         img_ext = ImgExtractor(md)
         md.treeprocessors.add('imgext', img_ext, '>inline')
 
+MARKDOWN_EXTENSION_CONFIG = \
+    {
+        'codehilite': {},
+    }
+
 
 class Post(Model):
 
@@ -64,7 +69,7 @@ class Post(Model):
         self.raw_categories = self.__class__.generate_list(categories)
         self.tags = []
         self.raw_tags = self.__class__.generate_list(tags)
-        md = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'tables', ImgExtExtension()])
+        md = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'tables', ImgExtExtension()], extension_configs=MARKDOWN_EXTENSION_CONFIG)
         md.config = config
         md.inlinePatterns['image_link'] = CheckImagePattern(IMAGE_LINK_RE, md, config)
         self.content = md.convert(content)
@@ -72,11 +77,11 @@ class Post(Model):
         self.front_content = self.content.split('<!--more-->')[0]
         self.author = extras['author'] if 'author' in extras else config.author
         if slug:
-            self.slug = slug
+            self.slug = slug.replace('.', '')
         else:
             pinyin = PinYin()
             pinyin.load_word()
-            self.slug = pinyin.hanzi2pinyin_split(string=self.title, split='-').lower()
+            self.slug = pinyin.hanzi2pinyin_split(string=self.title, split='-').lower().replace('.', '')
         self.url = self.generate_url(config.permalink)
         for name, value in extras.iteritems():
             setattr(self, name, value)

@@ -23,9 +23,8 @@ class Config(object):
         self.static_dir = os.path.join('static')
 
         self.db_path = os.path.join(self.base_dir, 'db.json')
-        self.publish_dir = os.path.join(self.base_dir, 'preview')
         if output:
-            self.output_dir = os.path.join(self.working_dir, output)
+            self.publish_dir = os.path.join(self.base_dir, output)
         else:
             self.publish_dir = os.path.join(self.base_dir, 'preview')
         self.deploy_dir = os.path.join(self.base_dir, 'deploy')

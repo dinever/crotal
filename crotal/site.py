@@ -15,7 +15,7 @@ class Site(object):
 
     LoaderClass = [PostLoader, PageLoader, TemplateLoader, StaticLoader]
 
-    def __init__(self, path=os.getcwd(), full=False, output=None):
+    def __init__(self, path=os.getcwd(), full=False, output='preview'):
         self.config = Config(path, output)
         if full:
             self.database = db.Database(dict(), self.config.db_path)
@@ -23,6 +23,7 @@ class Site(object):
             self.database = db.Database.from_file(self.config.db_path)
         self.data = {}
         self.site_content = {}
+        self.static_files = []
         self.loaders = []
         for Loader in self.LoaderClass:
             loader = Loader(self.database, self.config)
@@ -55,14 +56,15 @@ class Site(object):
 
     def render(self):
         renderer = Renderer(self.config, **self.data)
-        self.site_content = renderer.run()
+        self.site_content, self.static_files = renderer.run()
 
     def write(self):
         digest_table = self.database.get_table('digest')
         for path in self.site_content:
             digest = md5.md5(self.site_content[path]).hexdigest()
-            if digest != digest_table.get(path):
-                utils.output_file(os.path.join(self.config.publish_dir, path), self.site_content[path])
+            output_path = os.path.join(self.config.publish_dir, path)
+            if not os.path.exists(output_path) or digest != digest_table.get(path):
+                utils.output_file(output_path, self.site_content[path])
                 digest_table[path] = digest
 
     def save(self):

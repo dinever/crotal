@@ -16,7 +16,10 @@ class Database(object):
 
     @classmethod
     def from_file(cls, path):
-        raw_db = json.loads(open(path, 'r').read())
+        try:
+            raw_db = json.loads(open(path, 'r').read())
+        except:
+            raw_db = {}
         return cls(raw_db, path)
 
     def __init__(self, content, path):
