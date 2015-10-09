@@ -79,8 +79,3 @@ class TestPost(unittest.TestCase):
         post = Post.from_text(self.sample_path, self.config, SAMPLE_POST)
         self.assertEqual(post.url, "blog/sample/2010/01/01/a-sample-post/")
 
-    def test_serialize(self):
-        print([self.post.serialize().encode('base64')])
-        self.assertEqual(self.post.serialize().encode('base64'), SAMPLE_POST_SERIALIZED)
-
-
