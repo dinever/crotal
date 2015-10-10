@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 
 import os
 import time
+import zipfile
 from datetime import datetime
 
 from crotal import utils
@@ -89,10 +90,10 @@ class Command(object):
     @staticmethod
     def init_site(site_name='crotal'):
         curr = os.path.dirname(os.path.abspath(__file__))
-        site_dir = os.path.join(curr, "init")
-        utils.copy_dir(site_dir, site_name)
-        logger.blue_text(message=LOGO)
-        logger.success('Site created.')
+        sample_site = zipfile.ZipFile(os.path.join(curr, "init", "sample_site.zip"))
+        if not os.path.exists(os.path.join(os.path.curdir, site_name)):
+            os.mkdir(site_name)
+        sample_site.extractall(path=os.path.join(os.path.curdir, site_name))
 
     @staticmethod
     def start_server(port):
@@ -138,6 +139,3 @@ class Command(object):
         config = Command.load_config(Command.locate_base_dir())
         deployer = Deployer(config)
         deployer.deploy()
-
-
-
