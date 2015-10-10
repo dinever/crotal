@@ -1036,7 +1036,6 @@ a.article-title:hover {
 .article-entry {
   color: #555;
   font-size: 18px;
-  font-weight: 300;
   line-height: 1.6em;
 }
 .article-entry:before,
@@ -1516,14 +1515,9 @@ a.article-title:hover {
 }
 .article-entry pre,
 .article-entry .highlight {
-  background: #2d2d2d;
   margin: 0px;
   padding: 15px 20px;
-  border-style: solid;
-  border-color: #ddd;
-  border-width: 1px 0;
   overflow: auto;
-  color: #ccc;
   line-height: 22.400000000000002px;
 }
 .article-entry .highlight .gutter pre,

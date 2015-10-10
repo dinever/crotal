@@ -22,6 +22,7 @@ commands = {
     'server': Command.start_server,
     'new_post': Command.create_post,
     'new_page': Command.create_page,
+    'deploy': Command.deploy,
 }
 
 def parse_arguments():

@@ -11,6 +11,7 @@ from crotal import server
 from crotal import logger
 from crotal.site import Site
 from crotal.config import Config
+from crotal.deploy import Deployer
 from crotal.version import __version__
 from crotal.plugins.pinyin.pinyin import PinYin
 
@@ -74,8 +75,8 @@ class Command(object):
                 current_dir = os.path.dirname(current_dir)
 
     @staticmethod
-    def load_config():
-        return Config(Command.locate_base_dir())
+    def load_config(output):
+        return Config(Command.locate_base_dir(), output)
 
     @staticmethod
     def generate(full=False, output=None):
@@ -131,4 +132,12 @@ class Command(object):
         file_path = os.path.join(config.pages_dir, "{0}.markdown".format(slug))
         open(os.path.join(config.base_dir, file_path), 'w+').write(page)
         logger.success('You can browse the page by {0} After generating the site.'.format(url))
+
+    @staticmethod
+    def deploy():
+        config = Command.load_config('deploy')
+        deployer = Deployer(config)
+        deployer.deploy()
+
+
 
