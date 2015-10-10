@@ -22,4 +22,3 @@ class TestUtils(unittest.TestCase):
     def test_generate_path_without_root(self):
         path = utils.generate_path('/category/programming/')
         self.assertEqual(path, os.path.join('category', 'programming', 'index.html'))
-

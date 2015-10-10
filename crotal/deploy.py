@@ -12,6 +12,8 @@ class Deployer(object):
     def deploy(self):
         if (self.deploy_method == "git"):
             self.git_deploy()
+        if (self.deploy_method == "rsync"):
+            self.rsync()
 
     def git_deploy(self):
         git_remote = self.config.git_repository
@@ -26,3 +28,9 @@ class Deployer(object):
         os.system("git add --all *")
         os.system("git commit -m {0}".format("\"Crotal commit.\""))
         os.system("git push origin master")
+
+    def rsync(self):
+        print self.config.publish_dir
+        os.system("rsync -avz {0}\/* {1}:{2}".format(self.config.publish_dir,
+                                                  self.config.ip,
+                                                  self.config.remote_dir))

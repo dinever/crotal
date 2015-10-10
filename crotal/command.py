@@ -2,7 +2,6 @@
 from __future__ import unicode_literals, print_function
 
 import os
-import sys
 import time
 from datetime import datetime
 
@@ -14,6 +13,7 @@ from crotal.config import Config
 from crotal.deploy import Deployer
 from crotal.version import __version__
 from crotal.plugins.pinyin.pinyin import PinYin
+
 
 LOGO = \
 """  ____ ____   ___ _____  _    _
@@ -104,7 +104,7 @@ class Command(object):
 
     @staticmethod
     def create_post(post_title='sample post'):
-        config = Command.load_config()
+        config = Command.load_config(Command.locate_base_dir())
         now = datetime.now()
         pub_time = unicode(now.strftime('%Y-%m-%d %H:%M'))
         pinyin = PinYin()
@@ -135,7 +135,7 @@ class Command(object):
 
     @staticmethod
     def deploy():
-        config = Command.load_config('deploy')
+        config = Command.load_config(Command.locate_base_dir())
         deployer = Deployer(config)
         deployer.deploy()
 
