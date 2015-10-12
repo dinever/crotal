@@ -24,6 +24,7 @@ class Renderer(object):
         })
         self.template_engine = TemplateEngine(self.config, self.templates)
 
+    @utils.memoize
     def _layout_file(self, filename):
         if not filename.endswith('.html'):
             filename += '.html'
@@ -61,8 +62,8 @@ class Renderer(object):
             self.site_content[path] = content
 
     def render_page(self):
-        layout_file = self._layout_file('page.html')
         for page in self.data['pages']:
+            layout_file = self._layout_file(page.layout)
             content = self.template_engine.render(layout_file, self._update_variables({'page': page}))
             path = utils.generate_path(page.url, output_path=self.config.publish_dir, site_root=self.config.root_path)
             self.site_content[path] = content

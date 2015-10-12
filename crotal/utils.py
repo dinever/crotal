@@ -62,3 +62,18 @@ def stop_watch(func):
         logger.info("Execution Time of {0}: {1:.2f} seconds".format(func.__name__, end - start))
         return result
     return count_func_time
+
+
+def memoize(function):
+    """
+    Simply cache function returns.
+    """
+    memo = {}
+    def wrapper(*args):
+        if args in memo:
+            return memo[args]
+        else:
+            rv = function(*args)
+            memo[args] = rv
+            return rv
+    return wrapper
