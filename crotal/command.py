@@ -121,7 +121,7 @@ class Command(object):
 
     @staticmethod
     def create_page():
-        config = Command.load_config()
+        config = Command.load_config(Command.locate_base_dir())
         title = logger.info_input('Page Title')
         url = logger.info_input('Page URL (.e.g, /foo/bar/):')
         description = logger.info_input('Page Description:')
