@@ -5,6 +5,7 @@ import os
 
 from crotal.loader import BaseLoader
 from crotal.models.page import Page
+from crotal.models.others import Category
 
 
 class PageLoader(BaseLoader):
@@ -15,4 +16,3 @@ class PageLoader(BaseLoader):
     def sort_data(self, data):
         data['pages'] = data['pages'].values()
         return data
-

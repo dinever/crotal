@@ -15,6 +15,8 @@ class Model(object):
 
     @classmethod
     def from_file(cls, path, config):
+        """Read text form a file and build an object
+        """
         absolute_path = os.path.join(config.base_dir, path)
         text = file(absolute_path, 'r').read().decode('utf8')
         return cls.from_text(path, config, text)
@@ -50,3 +52,16 @@ class Model(object):
 
     def __repr__(self):
         return '<{0}:{1}>'.format(self.__class__.__name__, self.path).encode('utf8')
+
+    @staticmethod
+    def generate_list(string):
+        """
+        This method generates a list from a string with the format of "word1, word2, word3"
+        """
+        if string and (isinstance(string, str) or isinstance(string, unicode)):
+            return [a.strip() for a in string.split(',')]
+        elif isinstance(string, list):
+            return [a.strip() for a in string]
+        else:
+            return list()
+
