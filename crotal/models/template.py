@@ -4,7 +4,6 @@ from __future__ import unicode_literals, print_function
 import os
 import re
 import time
-import yaml
 from datetime import datetime
 
 from markdown import markdown
@@ -25,11 +24,5 @@ class Template(Model):
 
     @classmethod
     def from_text(cls, path, config, text):
-        header = re.compile(r'---[\s\S]*?---').findall(text)
-        if header:
-            attributes = yaml.load(header[0].replace('---', ''))
-            attributes['content'] = text.replace(header[0], '', 1)
-            return cls(path, config, **attributes)
-        else:
-            return cls(path, config, content=text)
+        return cls(path, config, content=text)
 

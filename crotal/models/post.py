@@ -86,17 +86,6 @@ class Post(Model):
         for name, value in extras.iteritems():
             setattr(self, name, value)
 
-    @staticmethod
-    def generate_list(string):
-        """
-        This method generates a list from a string with the format of "word1, word2, word3"
-        """
-        if string and (isinstance(string, str) or isinstance(string, unicode)):
-            return [a.strip() for a in string.split(',')]
-        elif isinstance(string, list):
-            return [a.strip() for a in string]
-        else:
-            return list()
 
     def generate_url(self, permalink):
         """
