@@ -31,7 +31,14 @@ class Site(object):
         for Loader in self.LoaderClass:
             loader = Loader(self.database, self.config)
             loader.load(self.update_data)
-            self.loaders.append(loader)
+        try:
+            self.Renderer = imp.load_source('renderer',
+                                            os.path.join(self.config.base_dir,
+                                                         'module',
+                                                         'renderer.py')).Renderer
+        except IOError:
+            from crotal import renderer
+            self.Renderer = renderer.Renderer
 
     def update_data(self, data):
         self.data.update(data)
