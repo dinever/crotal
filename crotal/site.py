@@ -2,12 +2,15 @@
 from __future__ import unicode_literals, print_function
 
 import os
-import md5
+try:
+   from hashlib import md5
+except ImportError:
+   from md5 import md5
+import imp
 
 from crotal import db
 from crotal import utils
 from crotal.config import Config
-from crotal.renderer import Renderer
 from crotal.loader import PostLoader, PageLoader, TemplateLoader, StaticLoader
 
 
@@ -55,13 +58,13 @@ class Site(object):
                     return loader
 
     def render(self):
-        renderer = Renderer(self.config, **self.data)
+        renderer = self.Renderer(self.config, **self.data)
         self.site_content, self.static_files = renderer.run()
 
     def write(self):
         digest_table = self.database.get_table('digest')
         for path in self.site_content:
-            digest = md5.md5(self.site_content[path]).hexdigest()
+            digest = md5(self.site_content[path]).hexdigest()
             output_path = os.path.join(self.config.publish_dir, path)
             if not os.path.exists(output_path) or digest != digest_table.get(path):
                 utils.output_file(output_path, self.site_content[path])
