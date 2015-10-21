@@ -11,7 +11,7 @@ import imp
 from crotal import db
 from crotal import utils
 from crotal.config import Config
-from crotal.loader import PostLoader, PageLoader, TemplateLoader, StaticLoader
+from crotal.loader import BaseLoader, PostLoader, PageLoader, TemplateLoader, StaticLoader
 
 
 class Site(object):
@@ -28,18 +28,30 @@ class Site(object):
         self.site_content = {}
         self.static_files = []
         self.loaders = []
-        for Loader in self.LoaderClass:
+        self.load_modules()
+        for Loader in utils.get_subclasses(BaseLoader):
             loader = Loader(self.database, self.config)
             loader.load(self.update_data)
             self.loaders.append(loader)
+
+    def load_modules(self):
         try:
             self.Renderer = imp.load_source('renderer',
                                             os.path.join(self.config.base_dir,
-                                                         'module',
+                                                         'modules',
                                                          'renderer.py')).Renderer
+            print(self.Renderer)
         except IOError:
             from crotal import renderer
             self.Renderer = renderer.Renderer
+
+        try:
+            loader = imp.load_source('loader',
+                                            os.path.join(self.config.base_dir, 'modules', 'loaders.py'))
+        except IOError:
+            pass
+
+
 
     def update_data(self, data):
         self.data.update(data)
