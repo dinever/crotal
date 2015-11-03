@@ -13,7 +13,7 @@ from crotal.site import Site
 from crotal.config import Config
 from crotal.deploy import Deployer
 from crotal.version import __version__
-from crotal.plugins.pinyin.pinyin import PinYin
+from crotal.lib.pinyin.pinyin import PinYin
 
 
 LOGO = \

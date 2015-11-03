@@ -8,7 +8,7 @@ from markdown.extensions import Extension
 from markdown.treeprocessors import Treeprocessor
 from markdown.inlinepatterns import ImagePattern, IMAGE_LINK_RE
 
-from crotal.plugins.pinyin.pinyin import PinYin
+from crotal.lib.pinyin.pinyin import PinYin
 from crotal.models import Model
 
 
