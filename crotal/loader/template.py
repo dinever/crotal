@@ -7,8 +7,8 @@ from crotal.models.template import Template
 
 
 class TemplateLoader(BaseLoader):
-    _name = 'templates'
-    _Model = Template
+    name = 'templates'
+    Model = Template
 
     @property
     def path(self):

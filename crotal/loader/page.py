@@ -9,8 +9,8 @@ from crotal.models.others import Category
 
 
 class PageLoader(BaseLoader):
-    _name = 'pages'
-    _Model = Page
+    name = 'pages'
+    Model = Page
     path = [os.path.join('source', 'pages')]
 
     def sort_data(self, data):

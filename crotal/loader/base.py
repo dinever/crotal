@@ -7,7 +7,7 @@ from crotal import logger
 
 
 class BaseLoader(object):
-    _name = ''
+    name = ''
 
     modified_file_list = []
     unmodified_file_list = []
@@ -16,9 +16,9 @@ class BaseLoader(object):
     def __init__(self, database, config):
         self.file_list = []
         self.config = config
-        self._table = database.get_table(self._name)
+        self._table = database.get_table(self.name)
         self.data_mapping = {
-            self._name: {},
+            self.name: {},
         }
         if not isinstance(self.path, list):
             self.file_list += self.scan_files(self.config.base_dir, self.path)
@@ -37,11 +37,11 @@ class BaseLoader(object):
         """
         return ''
 
-    def load(self, callback):
+    def load(self, update_data):
         self.classify_files()
         self.load_main_items()
         self.load_extra_items()
-        callback(self.sort_data(self.data_mapping.copy()))
+        update_data(self.sort_data(self.data_mapping.copy()))
 
     def sort_data(self, data):
         return data
@@ -96,16 +96,16 @@ class BaseLoader(object):
     def load_single_file(self, file_path):
         if os.path.basename(file_path).startswith('.'):
             return
-        item = self._Model.from_file(file_path, self.config)
+        item = self.Model.from_file(file_path, self.config)
         if item:
-            self.data_mapping[self._name][file_path] = item
+            self.data_mapping[self.name][file_path] = item
             self._table[file_path] = item.to_db(os.path.join(self.config.base_dir, file_path))
         else:
             logger.error(message="Incorrect file format: {0}".format(file_path))
 
     def remove_single_file(self, file_path):
-        if file_path in self.data_mapping[self._name]:
-            del self.data_mapping[self._name][file_path]
+        if file_path in self.data_mapping[self.name]:
+            del self.data_mapping[self.name][file_path]
         del self._table[file_path]
 
     def load_main_items(self):
@@ -113,12 +113,12 @@ class BaseLoader(object):
             self.load_single_file(file_path)
 
         for file_path in self.unmodified_file_list:
-            tmp = self._Model.from_db(file_path, self.config, self._table[file_path])
-            self.data_mapping[self._name][file_path] = tmp
+            tmp = self.Model.from_db(file_path, self.config, self._table[file_path])
+            self.data_mapping[self.name][file_path] = tmp
 
         for file_path in self.removed_file_list:
             self.remove_single_file(file_path)
 
-        for file_path, item in self.data_mapping[self._name].iteritems():
+        for file_path, item in self.data_mapping[self.name].iteritems():
             absolute_path = os.path.join(self.config.base_dir, file_path)
             self._table[file_path] = item.to_db(absolute_path)

@@ -8,13 +8,13 @@ from crotal.loader import BaseLoader
 
 
 class StaticLoader(BaseLoader):
-    _name = 'static_files'
-    _Model = Static
+    name = 'static_files'
+    Model = Static
 
     @property
     def path(self):
         return [os.path.join('static'), self.config.static_dir]
 
     def load_extra_items(self):
-        for path, static_file in self.data_mapping[self._name].iteritems():
+        for path, static_file in self.data_mapping[self.name].iteritems():
             static_file.identify_output_path(self.path)

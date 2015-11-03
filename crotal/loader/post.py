@@ -8,13 +8,13 @@ from crotal.models import Post, Category, Tag, Archive
 
 
 class PostLoader(BaseLoader):
-    _name = 'posts'
-    _Model = Post
+    name = 'posts'
+    Model = Post
     path = [os.path.join('source', 'posts')]
 
     def sort_data(self, data):
-        data['posts'] = data['posts'].values()
-        data['posts'].sort(key=lambda x: x.pub_time, reverse=True)
+        data[self.name] = data[self.name].values()
+        data[self.name].sort(key=lambda x: x.pub_time, reverse=True)
         data['tags'].sort(key=lambda x: len(x.posts), reverse=True)
         data['categories'].sort(key=lambda x: len(x.name))
         data['archives'].sort(key=lambda x: x.datetime, reverse=True)
@@ -27,7 +27,7 @@ class PostLoader(BaseLoader):
 
     def load_categories(self):
         categories = {}
-        for _, post in self.data_mapping[self._name].iteritems():
+        for _, post in self.data_mapping[self.name].iteritems():
             post.categories = []
             for category_name in post.raw_categories:
                 category_url = category_name.lower()
@@ -42,7 +42,7 @@ class PostLoader(BaseLoader):
 
     def load_tags(self):
         tags = {}
-        for _, post in self.data_mapping[self._name].iteritems():
+        for _, post in self.data_mapping[self.name].iteritems():
             tag_list = []
             for tag in post.raw_tags:
                 tag_url = tag.lower()
@@ -59,7 +59,7 @@ class PostLoader(BaseLoader):
 
     def load_archives(self):
         archives = {}
-        for _, post in self.data_mapping[self._name].iteritems():
+        for _, post in self.data_mapping[self.name].iteritems():
             a = Archive(post.pub_time)
             if a.__repr__() in archives:
                 archives[a.__repr__()].posts.append(post)
