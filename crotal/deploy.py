@@ -30,7 +30,6 @@ class Deployer(object):
         os.system("git push origin master")
 
     def rsync(self):
-        print self.config.publish_dir
         os.system("rsync -avz {0}\/* {1}:{2}".format(self.config.publish_dir,
                                                   self.config.ip,
                                                   self.config.remote_dir))
