@@ -65,24 +65,13 @@ This is a demo page.
 class Command(object):
 
     @staticmethod
-    def locate_base_dir():
-        current_dir = os.getcwd()
-        while True:
-            if os.path.exists(os.path.join(current_dir, '_config.yml')):
-                return current_dir
-            elif current_dir == os.path.dirname(current_dir):
-                return None
-            else:
-                current_dir = os.path.dirname(current_dir)
-
-    @staticmethod
-    def load_config(output):
-        return Config(Command.locate_base_dir(), output)
+    def load_config(output=None):
+        return Config(utils.locate_base_dir(), output)
 
     @staticmethod
     def generate(full=False, output=None):
         start = time.time()
-        site = Site(path=Command.locate_base_dir(), full=full, output=output)
+        site = Site(path=utils.locate_base_dir(), full=full, output=output)
         site.generate()
         end = time.time()
         logger.info("Site generated in {0:.2f} seconds.".format(end-start))
@@ -100,12 +89,12 @@ class Command(object):
         for line in LOGO_LARGE:
             logger.info(line)
         print()
-        path = Command.locate_base_dir()
+        path = utils.locate_base_dir()
         server.start(port, path=path)
 
     @staticmethod
     def create_post(post_title='sample post'):
-        config = Command.load_config(Command.locate_base_dir())
+        config = Command.load_config()
         now = datetime.now()
         pub_time = unicode(now.strftime('%Y-%m-%d %H:%M'))
         pinyin = PinYin()
@@ -121,7 +110,7 @@ class Command(object):
 
     @staticmethod
     def create_page():
-        config = Command.load_config(Command.locate_base_dir())
+        config = Command.load_config()
         title = logger.info_input('Page Title')
         url = logger.info_input('Page URL (.e.g, /foo/bar/):')
         description = logger.info_input('Page Description:')
@@ -136,6 +125,6 @@ class Command(object):
 
     @staticmethod
     def deploy():
-        config = Command.load_config(Command.locate_base_dir())
+        config = Command.load_config()
         deployer = Deployer(config)
         deployer.deploy()

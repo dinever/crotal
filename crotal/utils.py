@@ -5,6 +5,17 @@ import shutil
 from crotal import logger
 
 
+def locate_base_dir():
+    current_dir = os.getcwd()
+    while True:
+        if os.path.exists(os.path.join(current_dir, '_config.yml')):
+            return current_dir
+        elif current_dir == os.path.dirname(current_dir):
+            return None
+        else:
+            current_dir = os.path.dirname(current_dir)
+
+
 def make_dirs(file_path):
     dir_path = os.path.dirname(file_path)
     if not os.path.exists(dir_path):
@@ -12,8 +23,9 @@ def make_dirs(file_path):
 
 
 def copy_file(src_dir, tar_dir):
-    make_dirs(tar_dir)
-    shutil.copyfile(src_dir, tar_dir)
+    if os.path.exists(src_dir):
+        make_dirs(tar_dir)
+        shutil.copyfile(src_dir, tar_dir)
 
 
 def copy_dir(src_dir, tar_dir):

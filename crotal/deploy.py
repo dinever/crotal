@@ -1,7 +1,7 @@
 import os
 
+from crotal import utils
 from crotal.site import Site
-
 
 class Deployer(object):
 
@@ -23,13 +23,17 @@ class Deployer(object):
             os.system("git clone {0} {1}".format(git_remote, deploy_dir))
         os.chdir(os.path.join(self.config.base_dir, '.deploy'))
         os.system("git pull")
-        site = Site(full=True, output=deploy_dir)
+        site = Site(path=utils.locate_base_dir(), full=True, output=deploy_dir)
         site.generate()
         os.system("git add --all *")
         os.system("git commit -m {0}".format("\"Crotal commit.\""))
         os.system("git push origin master")
 
     def rsync(self):
+        deploy_dir = os.path.join(self.config.base_dir, 'deploy')
+        site = Site(path=utils.locate_base_dir(), output=deploy_dir)
+        site.generate()
+        os.chdir(os.path.join(self.config.base_dir, 'deploy'))
         os.system("rsync -avz {0}\/* {1}:{2}".format(self.config.publish_dir,
                                                   self.config.ip,
                                                   self.config.remote_dir))

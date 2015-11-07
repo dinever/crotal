@@ -32,7 +32,7 @@ class PostLoader(BaseLoader):
             for category_name in post.raw_categories:
                 category_url = category_name.lower()
                 if category_url not in categories:
-                    category_obj = Category(category_name)
+                    category_obj = Category(category_name, category_url)
                     category_obj.add(post)
                     categories[category_url] = category_obj
                 else:
@@ -45,9 +45,9 @@ class PostLoader(BaseLoader):
         for _, post in self.data_mapping[self.name].iteritems():
             tag_list = []
             for tag in post.raw_tags:
-                tag_url = tag.lower()
+                tag_url = tag.lower().replace('.', '_')
                 if tag_url not in tags:
-                    tag_obj = Tag(tag)
+                    tag_obj = Tag(tag, tag_url)
                     tag_obj.add(post)
                     tags[tag_url] = tag_obj
                     tag_list.append(tag_obj)

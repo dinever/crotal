@@ -36,10 +36,11 @@ class Static(Model):
         self.url = self.generate_url()
 
 class Category(object):
-    URL_PATTERN = 'categories/:name'
+    URL_PATTERN = 'categories/:id'
 
-    def __init__(self, name):
+    def __init__(self, name, id):
         self.name = name.strip()
+        self.id = id
         self.url = self.generate_url()
         self.posts = []
 
@@ -69,7 +70,7 @@ class Category(object):
 
 
 class Tag(Category):
-    URL_PATTERN = 'tags/:name'
+    URL_PATTERN = 'tags/:id'
 
 
 class Archive(object):
