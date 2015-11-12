@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 
-import os
-import re
-import time
-from datetime import datetime
-
-from markdown import markdown
-
-from crotal import logger
 from crotal.models import Model
 from crotal.models.fields import *
 
