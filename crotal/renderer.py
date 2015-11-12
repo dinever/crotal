@@ -114,7 +114,7 @@ class Renderer(object):
         render pages like '/page/2/'
         """
         layout_file = self._layout_file('index.html')
-        page_number = len(self.variables['posts']) / self.config.paginate
+        page_number = len(self.variables['posts']) / (self.config.paginate + 1)
         for i in range(page_number + 1):
             v = self._update_variables({
                 'index_posts': self.variables['posts'][i * self.config.paginate: i * self.config.paginate + self.config.paginate],
