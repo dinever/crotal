@@ -12,7 +12,7 @@ from crotal import db
 from crotal import utils
 from crotal import logger
 from crotal.config import Config
-from crotal.models import Model, Page, Post, Template, Static
+from crotal.models import Page, Post, Template, Static
 
 
 class Site(object):
@@ -74,6 +74,15 @@ class Site(object):
         self.site_content, self.static_files = renderer.run()
 
     def write(self):
+        for root, dirs, files in os.walk(self.config.publish_dir):
+            for file in files:
+                file_path = os.path.join(root, file)
+                if not file_path in self.site_content and \
+                    not file_path in self.static_files:
+                    os.unlink(file_path)
+            if not os.listdir(root):
+                os.rmdir(root)
+
         digest_table = self.database.get_table('digest')
         for path in self.site_content:
             digest = md5(self.site_content[path]).hexdigest()
