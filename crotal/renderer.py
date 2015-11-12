@@ -128,7 +128,6 @@ class Renderer(object):
                 path = utils.generate_path("page/{0}/".format(str(i+1)), output_path=self.config.publish_dir, site_root=self.config.root_path)
             self.site_content[path] = content
 
-    @utils.stop_watch
     def run(self):
         for name in dir(self):
             if name.startswith('render'):

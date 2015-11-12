@@ -16,7 +16,6 @@ from crotal.models import Model, Page, Post, Template, Static
 
 class Site(object):
 
-    @utils.stop_watch
     def __init__(self, path=os.getcwd(), full=False, output='preview'):
         self.config = Config(path, output)
         if full:
@@ -32,7 +31,6 @@ class Site(object):
             model.load(self.database, self.config, self.update_data)
             self.models.append(model)
 
-    @utils.stop_watch
     def load_modules(self):
         try:
             self.Renderer = imp.load_source('renderer',
