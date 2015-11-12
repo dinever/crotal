@@ -1,20 +1,27 @@
 #Crotal
 
-A static site generator which is written in Python, simple, static and fast! Start a blog using Crotal now!
+[![downloads](https://img.shields.io/pypi/dm/crotal.svg)](https://pypi.python.org/pypi/crotal/)
+[![version](https://img.shields.io/pypi/v/crotal.svg)](https://pypi.python.org/pypi/crotal/)
+[![supported](https://img.shields.io/pypi/pyversions/crotal.svg)](https://pypi.python.org/pypi/crotal/)
+![license](https://img.shields.io/pypi/l/crotal.svg)
 
-Homepage: [Crotal.org](http://crotal.org)
+A static site framework. Fast, powerful, and easy as 1, 2, 3.
+
+Homepage: [crotal.org](http://crotal.org)
+
+PyPI: [pypi.python.org/pypi/crotal](https://pypi.python.org/pypi/crotal)
 
 ##Installation
 
 via pip:
 
-    $ sudo pip install crotal
+    $ (sudo) pip install crotal
 
 via github:
 
-    $ git clone https://github.com/dinever/Crotal.git
-    $ cd Crotal
-    $ sudo python setup.py install
+    $ git clone https://github.com/dinever/crotal.git
+    $ cd crotal
+    $ (sudo) python setup.py install
 
 ##Usage
 
@@ -29,33 +36,8 @@ Now the website is available at http://localhost:8000.
 See [Crotal.org](http://crotal.org/docs).
 
 ##License
-(BSD Licenses)
 
-Copyright (c) 2013, [Peixuan Ding](http://dinever.com)
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the Cortal nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL [Peixuan Ding](http://dinever.com) BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+[GPL Licenses](https://github.com/dinever/crotal/blob/master/LICENSE)
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/dinever/crotal/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

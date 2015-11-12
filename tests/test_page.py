@@ -46,4 +46,4 @@ class TestPost(unittest.TestCase):
         self.assertEqual('/unit/test/', self.page.url)
 
     def test_date(self):
-        self.assertEqual(self.page.date, datetime.datetime(2010, 1, 1, 10, 00))
+        self.assertEqual(self.page.date, datetime(2010, 1, 1, 10, 00))

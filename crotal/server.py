@@ -89,7 +89,7 @@ class ServerThread(Thread):
         """
         Test the HTTP request handler class.
 
-        This runs an HTTP server on port 8000 (or the first command line
+        This runs an HTTP server on port 1124 (or the first command line
         argument).
 
         """

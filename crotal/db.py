@@ -13,17 +13,19 @@ class Database(object):
     Database is the interface to the file 'db.json'.
     table includes 'posts', 'pages', 'templates', 'static', 'static'.
     """
-
     @classmethod
     def from_file(cls, path):
         try:
             raw_db = json.loads(open(path, 'r').read())
         except:
             raw_db = {}
-        return cls(raw_db, path)
+        return cls(path, content=raw_db)
 
-    def __init__(self, content, path):
-        self.raw_db = content
+    def __init__(self, path, content=None):
+        if content:
+            self.raw_db = content
+        else:
+            self.raw_db = {}
         self._path = path
         self._tables = {}
         for field in self.raw_db:

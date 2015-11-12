@@ -20,7 +20,7 @@ class Site(object):
     def __init__(self, path=os.getcwd(), full=False, output='preview'):
         self.config = Config(path, output)
         if full:
-            self.database = db.Database(dict(), self.config.db_path)
+            self.database = db.Database(self.config.db_path)
         else:
             self.database = db.Database.from_file(self.config.db_path)
         self.data = {}

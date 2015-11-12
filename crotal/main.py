@@ -16,6 +16,9 @@ import argparse
 from crotal.command import Command
 from crotal.version import __version__
 
+
+DEFAULT_PORT = 1124
+
 commands = {
     'generate': Command.generate,
     'init': Command.init_site,
@@ -45,7 +48,7 @@ def parse_arguments():
     parser_generate.add_argument('-o', '--output', help='Indicate the directory where you want to place the site generated.', type=str)
 
     parser_server = subparsers.add_parser('server', help='Start the Crotal server.')
-    parser_server.add_argument('-p', '--port', help='Indicate another port you want to preview the site on.', default=8000, type=int)
+    parser_server.add_argument('-p', '--port', help='Indicate another port you want to preview the site on.', default=DEFAULT_PORT, type=int)
 
     parser_new_post = subparsers.add_parser('new_post', help='Create a new post.')
     parser_new_post.add_argument('post_title', help='Title of the post you want to create.', type=str)

@@ -12,7 +12,7 @@ class TestDatabase(BaseTest):
 
     def setUp(self):
         self.db_file_path = 'db.json'
-        self.db = Database(dict(), self.db_file_path)
+        self.db = Database(self.db_file_path)
 
     def test_database_init(self):
         pass
