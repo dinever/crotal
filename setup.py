@@ -7,7 +7,11 @@ from crotal import version
 
 
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    try:
+        import pypandoc
+        return pypandoc.convert(os.path.join(os.path.dirname(__file__), fname), 'rst')
+    except (IOError, ImportError):
+        return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name = "crotal",

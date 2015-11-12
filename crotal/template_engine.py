@@ -21,6 +21,7 @@ class Lookup(TemplateLookup):
         Override `get_template` so that it returns a `error template` when lookup
         failed to locate the template.
         """
+        uri = uri.replace('/', os.sep)
         if uri in self._collection:
             return self._collection[uri]
         else:

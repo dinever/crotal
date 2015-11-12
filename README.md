@@ -29,7 +29,7 @@ via github:
     $ crotal generate
     $ crotal server
 
-Now the website is available at http://localhost:8000.
+Now the website is available at http://localhost:1124.
 
 ##Documents
 

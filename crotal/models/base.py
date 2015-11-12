@@ -71,6 +71,9 @@ class BaseModel(type):
         setattr(cls, '_fields', fields)
         setattr(cls, 'name', name)
         setattr(cls, 'objects', ObjectManager())
+        if 'PATH' in attrs:
+            setattr(cls, 'PATH', [path.replace('/', os.sep) for path in attrs['PATH']])
+            del attrs['PATH']
         super(BaseModel, cls).__init__(name, bases, attrs)
 
 
