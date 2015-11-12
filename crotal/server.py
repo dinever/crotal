@@ -133,6 +133,7 @@ class ChangeHandler(PatternMatchingEventHandler):
 
 def start(port, path=os.getcwd()):
     if not path:
+        logger.error("Not in a crotal site.")
         sys.exit()
     site = Site(path)
     site.generate()

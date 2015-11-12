@@ -10,6 +10,7 @@ import imp
 
 from crotal import db
 from crotal import utils
+from crotal import logger
 from crotal.config import Config
 from crotal.models import Model, Page, Post, Template, Static
 
@@ -32,13 +33,15 @@ class Site(object):
             self.models.append(model)
 
     def load_modules(self):
-        try:
-            self.Renderer = imp.load_source('renderer',
-                                            os.path.join(self.config.base_dir,
-                                                         'modules',
-                                                         'renderer.py')).Renderer
-            print(self.Renderer)
-        except IOError:
+        renderer_path = os.path.join(self.config.base_dir, 'modules', 'renderer.py')
+        if os.path.exists(renderer_path):
+            try:
+                self.Renderer = imp.load_source('renderer', renderer_path).Renderer
+            except IOError:
+                logger.error("Can not import {0}".format(renderer_path))
+                from crotal import renderer
+                self.Renderer = renderer.Renderer
+        else:
             from crotal import renderer
             self.Renderer = renderer.Renderer
 
