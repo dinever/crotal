@@ -6,17 +6,23 @@ from inspect import ismethod
 
 from crotal import utils
 from crotal.template_engine import TemplateEngine
+from crotal.models import *
 
 
 class Renderer(object):
 
-    def __init__(self, config, **data):
-        self.data = data
+    def __init__(self, config):
         self.config = config
         self.site_content = {}
-        self.templates = data['templates']
+        self.templates = Template.objects.all()
         self.static_files = []
-        self.variables = data.copy()
+        self.variables = {
+            'posts': Post.objects.all(),
+            'pages': Page.objects.all(),
+            'archives': Archive.objects.all(),
+            'tags': Tag.objects.all(),
+            'categories': Category.objects.all(),
+        }
         self.variables.update({
             'site': self.config,
             'sidebar': True,
@@ -37,8 +43,8 @@ class Renderer(object):
         return v
 
     def render_static(self):
-        for path, static_file in self.data['static_files'].iteritems():
-            source_path = os.path.join(self.config.base_dir, path)
+        for static_file in Static.objects.all():
+            source_path = os.path.join(self.config.base_dir, static_file.path)
             path = utils.generate_path(static_file.url,
                                        output_path=self.config.publish_dir,
                                        site_root=self.config.root_path
@@ -47,7 +53,7 @@ class Renderer(object):
             utils.copy_file(source_path, path)
 
     def render_template(self):
-        for path, template in self.templates.iteritems():
+        for template in self.templates:
             rel_path = os.path.relpath(template.path, self.config.templates_dir)
             if not rel_path.startswith('_'):
                 content = self.template_engine.render(template.path, self.variables)
@@ -56,13 +62,13 @@ class Renderer(object):
 
     def render_post(self):
         layout_file = self._layout_file('post.html')
-        for post in self.data['posts']:
+        for post in Post.objects.all():
             content = self.template_engine.render(layout_file, self._update_variables({'post': post}))
             path = utils.generate_path(post.url, output_path=self.config.publish_dir, site_root=self.config.root_path)
             self.site_content[path] = content
 
     def render_page(self):
-        for page in self.data['pages']:
+        for page in Page.objects.all():
             layout_file = self._layout_file(page.layout)
             content = self.template_engine.render(layout_file, self._update_variables({'page': page}))
             path = utils.generate_path(page.url, output_path=self.config.publish_dir, site_root=self.config.root_path)
@@ -70,7 +76,7 @@ class Renderer(object):
 
     def render_category_pages(self):
         layout_file = self._layout_file('categories.html')
-        for category in self.data['categories']:
+        for category in Category.objects.all():
             content = self.template_engine.render(
                 layout_file,
                 self._update_variables({'category': category, 'title': category.name})
@@ -80,7 +86,7 @@ class Renderer(object):
 
     def render_tag_pages(self):
         layout_file = self._layout_file('tags.html')
-        for tag in self.data['tags']:
+        for tag in Tag.objects.all():
             content = self.template_engine.render(
                 layout_file,
                 self._update_variables({'tag': tag, 'title': tag.name})
@@ -90,7 +96,7 @@ class Renderer(object):
 
     def render_archive_pages(self):
         layout_file = self._layout_file('archives.html')
-        for archive in self.data['archives']:
+        for archive in Archive.objects.all():
             content = self.template_engine.render(
                 layout_file,
                 self._update_variables({'archive': archive})
@@ -122,6 +128,7 @@ class Renderer(object):
                 path = utils.generate_path("page/{0}/".format(str(i+1)), output_path=self.config.publish_dir, site_root=self.config.root_path)
             self.site_content[path] = content
 
+    @utils.stop_watch
     def run(self):
         for name in dir(self):
             if name.startswith('render'):

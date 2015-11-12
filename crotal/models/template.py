@@ -10,19 +10,20 @@ from markdown import markdown
 
 from crotal import logger
 from crotal.models import Model
+from crotal.models.fields import *
 
 
 class Template(Model):
+    PATH = ['themes/{theme}/public/']
 
-    def __init__(self, path, config, layout=None, content="", **extras):
-        self.path = path
-        self.layout = layout
-        self.content = content
-        self.extras = extras
-        for name, value in extras.iteritems():
-            setattr(self, name, value)
+    path = CharField()
+    layout = CharField()
+    content = TextField()
 
     @classmethod
-    def from_text(cls, path, config, text):
-        return cls(path, config, content=text)
-
+    def parse_content(cls, file_path, content, config):
+        attributes = {}
+        attributes['content'] = content
+        attributes['path'] = file_path
+        cls.parse_attributes(file_path, config, attributes)
+        return cls(**attributes)

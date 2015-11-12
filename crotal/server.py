@@ -141,8 +141,8 @@ def start(port, path=os.getcwd()):
     serverThread.daemon = True
     serverThread.start()
     observer = Observer()
-    for loader in site.loaders:
-        for path in loader.path:
+    for model in site.models:
+        for path in model.PATH:
             observer.schedule(ChangeHandler(config, site, ignore_patterns=["*/.DS_Store"]),
                               path=os.path.join(config.base_dir, path), recursive=True)
     observer.start()

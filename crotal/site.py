@@ -11,13 +11,12 @@ import imp
 from crotal import db
 from crotal import utils
 from crotal.config import Config
-from crotal.loader import BaseLoader, PostLoader, PageLoader, TemplateLoader, StaticLoader
+from crotal.models import Model, Page, Post, Template, Static
 
 
 class Site(object):
 
-    LoaderClass = [PostLoader, PageLoader, TemplateLoader, StaticLoader]
-
+    @utils.stop_watch
     def __init__(self, path=os.getcwd(), full=False, output='preview'):
         self.config = Config(path, output)
         if full:
@@ -27,13 +26,13 @@ class Site(object):
         self.data = {}
         self.site_content = {}
         self.static_files = []
-        self.loaders = []
+        self.models = []
         self.load_modules()
-        for Loader in utils.get_subclasses(BaseLoader):
-            loader = Loader(self.database, self.config)
-            loader.load(self.update_data)
-            self.loaders.append(loader)
+        for M in [Page, Post, Template, Static]:
+            M.load(self.database, self.config, self.update_data)
+            self.models.append(M)
 
+    @utils.stop_watch
     def load_modules(self):
         try:
             self.Renderer = imp.load_source('renderer',
@@ -44,14 +43,6 @@ class Site(object):
         except IOError:
             from crotal import renderer
             self.Renderer = renderer.Renderer
-
-        try:
-            loader = imp.load_source('loader',
-                                            os.path.join(self.config.base_dir, 'modules', 'loaders.py'))
-        except IOError:
-            pass
-
-
 
     def update_data(self, data):
         self.data.update(data)
@@ -67,18 +58,18 @@ class Site(object):
         running.
         """
         file_path = os.path.relpath(file_path, self.config.base_dir)
-        loader = self.detect_file_type(file_path)
-        loader.single_file_on_change(file_path, event_type, self.update_data)
+        model = self.detect_file_type(file_path)
+        model.single_file_on_change(file_path, event_type, self.config)
         self.generate()
 
     def detect_file_type(self, file_path):
-        for loader in self.loaders:
-            for path in loader.path:
+        for model in self.models:
+            for path in model.PATH:
                 if file_path.startswith(path):
-                    return loader
+                    return model
 
     def render(self):
-        renderer = self.Renderer(self.config, **self.data)
+        renderer = self.Renderer(self.config)
         self.site_content, self.static_files = renderer.run()
 
     def write(self):

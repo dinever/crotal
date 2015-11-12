@@ -10,6 +10,8 @@ from markdown.inlinepatterns import ImagePattern, IMAGE_LINK_RE
 
 from crotal.lib.pinyin.pinyin import PinYin
 from crotal.models import Model
+from crotal.models.others import Tag, Category, Archive
+from crotal.models.fields import *
 
 
 class CheckImagePattern(ImagePattern):
@@ -31,8 +33,8 @@ FIELD_NAME_CONVERT = {
     'categories': 'raw_categories',
     'tags': 'raw_tags',
     'tag': 'raw_tags',
-    'date': 'pub_time',
-    'datetime': 'pub_time'
+    'date': 'date',
+    'datetime': 'date'
 }
 
 
@@ -60,32 +62,56 @@ MARKDOWN_EXTENSION_CONFIG = \
 
 
 class Post(Model):
+    """Model `Post` for posts in the blog.
 
-    def __init__(self, path, config, title, date='', categories='', tags='', content='', slug='', **extras):
-        self.path = path
-        self.title = title
-        self.pub_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
-        self.categories = []
-        self.raw_categories = self.__class__.generate_list(categories)
-        self.tags = []
-        self.raw_tags = self.__class__.generate_list(tags)
+    Attributes:
+        PATH: The relative path where this model is related to, please
+    use the relative path to this script.
+        FILE_EXTENSIONS: Only the files with these file extensions shall
+    be read by the model.
+
+        title: Title of the post.
+        slug: Slug of the post that may be used in its url.
+        pub_date: Publication date of the post.
+        tags: A list of Tags that the post is related to.
+        categories: A list of Categories that the post belongs to.
+        raw_content: The raw markdown content of the post.
+        html_content: The html format post content generated from markdown
+    file(raw_content).
+        short_html_content: A short version of the `html_content`, which
+    may be represented on the index page.
+
+    """
+    PATH = ['source/posts/']
+    FILE_EXTENSIONS = ['.md', '.markdown']
+
+    title = CharField(max_length=200)
+    slug = CharField(max_length=200)
+    date = DateTimeField(format="%Y-%m-%d %H:%M", other_names=['date'])
+    raw_tags = ListField(content_type=str, other_names=['tag', 'tags'])
+    raw_categories = ListField(content_type=str, other_names=['category', 'categories'])
+    content = TextField()
+    short_content = TextField()
+
+    def create(self):
         md = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'tables', ImgExtExtension()], extension_configs=MARKDOWN_EXTENSION_CONFIG)
-        md.config = config
-        md.inlinePatterns['image_link'] = CheckImagePattern(IMAGE_LINK_RE, md, config)
-        self.content = md.convert(content)
+        md.inlinePatterns['image_link'] = CheckImagePattern(IMAGE_LINK_RE, md, self.config)
+        self.url = self.generate_url(self.config.permalink)
+        self.content = md.convert(self.content)
         self.images = md.images
-        self.front_content = self.content.split('<!--more-->')[0]
-        self.author = extras['author'] if 'author' in extras else config.author
-        if slug:
-            self.slug = slug.replace('.', '')
-        else:
-            pinyin = PinYin()
-            pinyin.load_word()
-            self.slug = pinyin.hanzi2pinyin_split(string=self.title, split='-').lower().replace('.', '')
-        self.url = self.generate_url(config.permalink)
-        for name, value in extras.iteritems():
-            setattr(self, name, value)
+        self.short_content = self.content.split('<!--more-->')[0]
+        self.categories = [Category.add(item, self) for item in self.raw_categories]
+        self.tags = [Tag.add(item, self) for item in self.raw_tags]
 
+    @classmethod
+    def load_extra_items(cls, config):
+        for object in cls.objects.all():
+            Archive.add(object.date, object)
+            for category in object.raw_categories:
+                Category.add(category, object)
+            for tag in object.raw_tags:
+                Tag.add(tag, object)
+        cls.objects.sort(key='date', reverse=True)
 
     def generate_url(self, permalink):
         """
@@ -94,7 +120,6 @@ class Post(Model):
         If one part of it startswith ':', then we should find whether there
             is attribute with the same name in the post.
         If not, we regard it as a string
-
         example:
         post/:year/:month/:title
         will be generated to a url like 'crotal.org/post/2013/11/hello-world/'
@@ -110,9 +135,9 @@ class Post(Model):
 
     def escape_keywords(self, word):
         return {
-            'year': self.pub_time.strftime('%Y'),
-            'month': self.pub_time.strftime('%m'),
-            'day': self.pub_time.strftime('%d'),
+            'year': self.date.strftime('%Y'),
+            'month': self.date.strftime('%m'),
+            'day': self.date.strftime('%d'),
             'title': str(self.slug),
             'category': self.raw_categories[0].lower() if self.raw_categories else 'null',
         }[word]

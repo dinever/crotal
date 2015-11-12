@@ -2,6 +2,7 @@ import os
 
 from mako.template import Template
 from mako.lookup import TemplateLookup
+from mako import exceptions
 
 from crotal import logger
 
@@ -39,8 +40,8 @@ class TemplateLoader(object):
         self.mapping = mapping
         self.config = config
         self.lookup = Lookup(output_encoding='utf-8', filesystem_checks=False)
-        for path, template in self.mapping.iteritems():
-            self.lookup.put_string(os.path.relpath(path, self.config.templates_dir), template.content)
+        for template in self.mapping:
+            self.lookup.put_string(os.path.relpath(template.path, self.config.templates_dir), template.content)
 
     def get_template(self, file_path):
         return self.lookup.get_template(os.path.relpath(file_path, self.config.templates_dir))
@@ -66,4 +67,8 @@ class TemplateEngine(object):
 
     def render(self, file_path, parameter):
         template = self._template_loader.get_template(file_path)
-        return template.render(**parameter)
+        try:
+            return template.render(**parameter)
+        except:
+            logger.error("Template Error: {0}".format(file_path))
+            return exceptions.html_error_template().render()

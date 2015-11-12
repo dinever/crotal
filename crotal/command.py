@@ -96,11 +96,11 @@ class Command(object):
     def create_post(post_title='sample post'):
         config = Command.load_config()
         now = datetime.now()
-        pub_time = unicode(now.strftime('%Y-%m-%d %H:%M'))
+        date = unicode(now.strftime('%Y-%m-%d %H:%M'))
         pinyin = PinYin()
         pinyin.load_word()
         slug = pinyin.hanzi2pinyin_split(string=post_title, split='-')
-        new_post = POST_SAMPLE.format(post_title.decode('utf8'), pub_time, slug)
+        new_post = POST_SAMPLE.format(post_title.decode('utf8'), date, slug)
         file_title = "{0}-{1}.markdown".format(unicode(now.strftime('%Y-%m-%d')), post_title.decode('utf8'))
         absolute_file_path = os.path.join(config.base_dir, (os.path.join(config.posts_dir, file_title)))
         if not os.path.exists(absolute_file_path):
