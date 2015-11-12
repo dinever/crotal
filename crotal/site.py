@@ -28,9 +28,9 @@ class Site(object):
         self.static_files = []
         self.models = []
         self.load_modules()
-        for M in [Page, Post, Template, Static]:
-            M.load(self.database, self.config, self.update_data)
-            self.models.append(M)
+        for model in [Page, Post, Template, Static]:
+            model.load(self.database, self.config, self.update_data)
+            self.models.append(model)
 
     @utils.stop_watch
     def load_modules(self):
