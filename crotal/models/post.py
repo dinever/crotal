@@ -8,7 +8,6 @@ from markdown.extensions import Extension
 from markdown.treeprocessors import Treeprocessor
 from markdown.inlinepatterns import ImagePattern, IMAGE_LINK_RE
 
-from crotal.lib.pinyin.pinyin import PinYin
 from crotal.models import Model
 from crotal.models.others import Tag, Category, Archive
 from crotal.models.fields import *
@@ -112,6 +111,9 @@ class Post(Model):
             for tag in object.raw_tags:
                 Tag.add(tag, object)
         cls.objects.sort(key='date', reverse=True)
+        Archive.objects.sort(key='datetime', reverse=True)
+        Category.objects.sort(key=lambda x: len(x.posts), reverse=True)
+        Tag.objects.sort(key=lambda x: len(x.posts), reverse=True)
 
     def generate_url(self, permalink):
         """

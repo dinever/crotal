@@ -48,7 +48,10 @@ class ObjectManager(object):
         return [self._objects[key] for key in self._keys]
 
     def sort(self, key, reverse=False):
-        sort_key = lambda x: getattr(x, key)
+        if not callable(key):
+            sort_key = lambda x: getattr(x, key)
+        else:
+            sort_key = key
         self._keys.sort(key=lambda x: sort_key(self._objects[x]), reverse=reverse)
 
 
@@ -215,7 +218,7 @@ class Model():
             else:
                 logger.error(message="Incorrect file format: {0}".format(file_path))
         elif event_type == 'deleted':
-            cls.remove_single_file(file_path, config)
+            cls.remove_single_file(file_path)
         if callable(getattr(cls, 'load_extra_items', None)):
             cls.load_extra_items(config)
 
@@ -223,4 +226,5 @@ class Model():
     def remove_single_file(cls, file_path):
         if file_path in cls.objects:
             cls.objects.remove(file_path)
-        del cls._table[file_path]
+        if file_path in cls._table:
+            del cls._table[file_path]
