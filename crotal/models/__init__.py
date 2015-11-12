@@ -1,4 +1,4 @@
-from crotal.models.base import Model
+from crotal.models.base import Model, ObjectManager
 from crotal.models.page import Page
 from crotal.models.post import Post
 from crotal.models.template import Template
