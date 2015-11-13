@@ -34,6 +34,7 @@ setup(
     url = "http://github.com/dinever/crotal",
     description = 'A static site framework written in Python. Fast, powerful, and easy as 1, 2, 3.',
     long_description = read('README.md'),
+    license = "GNU GPLv3",
     classifiers=[
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: Microsoft :: Windows',

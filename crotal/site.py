@@ -75,6 +75,9 @@ class Site(object):
 
     def write(self):
         for root, dirs, files in os.walk(self.config.publish_dir):
+            root_dir = os.path.relpath(root, self.config.publish_dir)
+            if root_dir.startswith('.') and root_dir != '.':
+                continue
             for file in files:
                 file_path = os.path.join(root, file)
                 if not file_path in self.site_content and \
@@ -87,9 +90,8 @@ class Site(object):
         for path in self.site_content:
             digest = md5(self.site_content[path]).hexdigest()
             output_path = os.path.join(self.config.publish_dir, path)
-            if not os.path.exists(output_path) or digest != digest_table.get(path):
-                utils.output_file(output_path, self.site_content[path])
-                digest_table[path] = digest
+            utils.output_file(output_path, self.site_content[path])
+            digest_table[path] = digest
 
     def save(self):
         self.database.save()

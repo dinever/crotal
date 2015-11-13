@@ -1,9 +1,9 @@
 #Crotal
 
 [![downloads](https://img.shields.io/pypi/dm/crotal.svg)](https://pypi.python.org/pypi/crotal/)
-[![version](https://img.shields.io/pypi/v/crotal.svg)](https://pypi.python.org/pypi/crotal/)
+[![version](https://img.shields.io/pypi/v/crotal.svg?label=version)](https://pypi.python.org/pypi/crotal/)
 [![supported](https://img.shields.io/pypi/pyversions/crotal.svg)](https://pypi.python.org/pypi/crotal/)
-![license](https://img.shields.io/pypi/l/crotal.svg)
+[![license](https://img.shields.io/pypi/l/crotal.svg)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
 A static site framework. Fast, powerful, and easy as 1, 2, 3.
 
@@ -33,7 +33,7 @@ Now the website is available at http://localhost:1124.
 
 ##Documents
 
-See [Crotal.org](http://crotal.org/docs).
+See [crotal.org](http://crotal.org/docs).
 
 ##License
 
