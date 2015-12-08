@@ -25,7 +25,10 @@ class Lookup(TemplateLookup):
         if uri in self._collection:
             return self._collection[uri]
         else:
-            error_message = "template not found: {0}, calling by: {1}".format(uri, self.calling_uri)
+            if hasattr(self, 'calling_uri'):
+                error_message = "template not found: {0}, calling by: {1}".format(uri, self.calling_uri)
+            else:
+                error_message = "template not found: {0}".format(uri)
             logger.error(error_message)
             error_template = Template(text=error_message)
             self.put_template(uri, Template(text=error_message))
