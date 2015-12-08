@@ -84,13 +84,13 @@ class Post(Model):
     PATH = ['source/posts/']
     FILE_EXTENSIONS = ['.md', '.markdown']
 
-    title = CharField(max_length=200)
-    slug = CharField(max_length=200)
-    date = DateTimeField(format="%Y-%m-%d %H:%M", other_names=['date'])
+    title = CharField(max_length=200, default="No Title Found")
+    slug = CharField(max_length=200, default="no-slug-found")
+    date = DateTimeField(format="%Y-%m-%d %H:%M", other_names=['date', 'pub_time'])
     raw_tags = ListField(content_type=str, other_names=['tag', 'tags'])
     raw_categories = ListField(content_type=str, other_names=['category', 'categories'])
-    content = TextField()
-    short_content = TextField()
+    content = TextField(default="")
+    short_content = TextField(default="")
 
     def create(self):
         md = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'tables', ImgExtExtension()], extension_configs=MARKDOWN_EXTENSION_CONFIG)

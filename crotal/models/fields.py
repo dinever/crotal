@@ -7,11 +7,14 @@ class Field(object):
 
 class CharField(Field):
 
-    def __init__(self, max_length=None, other_names=None):
+    def __init__(self, max_length=None, default=None, other_names=None):
         self.max_length = max_length
         self.other_names = other_names if other_names else []
+        self.default = default
 
     def parse(self, input):
+        if input is None:
+            return self.default
         if isinstance(input, basestring):
             return input[:self.max_length]
         else:
@@ -20,19 +23,23 @@ class CharField(Field):
 
 class DateTimeField(Field):
 
-    def __init__(self, format="", other_names=None):
+    def __init__(self, format="", default=None, other_names=None):
+        # TODO: work on the default value of DateTimeField
         self.format = format
         self.other_names = other_names if other_names else []
 
     def parse(self, input):
+        if input is None:
+            return datetime.now()
         return datetime.strptime(input, self.format)
 
 
 class ListField(Field):
 
-    def __init__(self, content_type, other_names=None):
+    def __init__(self, content_type, default=None, other_names=None):
         self.content_type = content_type
         self.other_names = other_names if other_names else []
+        self.default = default
 
     def parse(self, input):
         """
@@ -48,8 +55,11 @@ class ListField(Field):
 
 class TextField(Field):
 
-    def __init__(self):
+    def __init__(self, default=None):
         self.other_names = []
+        self.default = default
 
     def parse(self, input):
+        if input is None:
+            return self.default
         return input
