@@ -41,6 +41,7 @@ class Static(Model):
 
 class Category(object):
     URL_PATTERN = 'categories/:id'
+    objects = ObjectManager()
 
     @classmethod
     def add(cls, name, obj):
@@ -94,6 +95,7 @@ class Category(object):
 
 class Tag(object):
     URL_PATTERN = 'tags/:id'
+    objects = ObjectManager()
 
     @classmethod
     def add(cls, name, obj):
