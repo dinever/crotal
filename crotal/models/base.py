@@ -61,7 +61,6 @@ class BaseModel(type):
         return super(BaseModel, cls).__new__(cls, name, bases, attrs)
 
     def __init__(cls, name, bases, attrs):
-
         fields = {}
         for attr_name, attr_value in attrs.iteritems():
             if isinstance(attr_value, Field):
@@ -193,6 +192,8 @@ class Model():
                 for other_name in field.other_names:
                     if other_name in attributes:
                         attributes[attr] = field.parse(attributes[other_name])
+            if attr not in attributes:
+                attributes[attr] = field.parse(None)
 
     @staticmethod
     def get_file_list(base_dir, path_list):
