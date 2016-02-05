@@ -18,6 +18,24 @@ from crotal.models import Page, Post, Template, Static
 class Site(object):
 
     def __init__(self, path=os.getcwd(), full=False, output='preview'):
+        """
+        Site is an abstraction of a Crotal site.
+
+        Example usage:
+
+        .. testcode::
+
+            from crotal.site import Site
+
+            site = Site(path='path_to_the_crotal_site', full=False, output='publish')
+            site.generate()
+
+        :param path: The root path of the site.
+        :param full: Set as `true` to do a full build, `false` to do an
+            incremental build.
+        :param output: Indicating the path of the output folder.
+        :return:
+        """
         self.config = Config(path, output)
         if full:
             self.database = db.Database(self.config.db_path)
