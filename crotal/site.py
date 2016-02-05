@@ -3,9 +3,9 @@ from __future__ import unicode_literals, print_function
 
 import os
 try:
-   from hashlib import md5
+    from hashlib import md5
 except ImportError:
-   from md5 import md5
+    from md5 import md5
 import imp
 
 from crotal import db
