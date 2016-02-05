@@ -1,0 +1,36 @@
+<%page args="post"/>
+
+<%!
+import re
+
+def excerpt(text):
+    return re.sub('<[^<]+?>', '', text)[:200]
+%>
+
+<article class="article article-summary">
+<div class="article-summary-inner">
+
+    % if post.images:
+        <a href="${site.root_path}${post.url}" class="thumbnail" style="height: 162.548076923077px;">
+            <span style="background-image:url(${post.images[0]})" alt="${post.title}" class="thumbnail-image"></span>
+        </a>
+    % else:
+        <a href="${site.root_path}${post.url}" class="thumbnail" style="height: 162.548076923077px;">
+            <span alt="${post.title}" class="thumbnail-image thumbnail-none"></span>
+        </a>
+    % endif
+
+    <div class="article-meta">
+        % for category in post.categories:
+            <p class="category"><a class="article-category-link" href="${site.root_path}${category.url}">${category.name}</a></p>
+        % endfor
+        <p class="date"><time datetime="2015-03-03T00:13:55.108Z" itemprop="datePublished">${post.date.strftime('%Y-%m-%d')}</time></p>
+    </div>
+    <h2 class="article-title">
+        <a href="${site.root_path}${post.url}" class="title">${post.title}</a>
+    </h2>
+    <p class="article-excerpt">
+        ${post.short_content | excerpt}
+    </p>
+</div>
+</article>

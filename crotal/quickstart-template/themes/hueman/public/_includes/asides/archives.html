@@ -1,0 +1,13 @@
+<div class="widget-wrap widget-list">
+    <h3 class="widget-title">archives</h3>
+    <div class="widget">
+        <ul class="archive-list">
+            % for archive in archives:
+                <li class="archive-list-item">
+                <a class="archive-list-link" href="${site.root_path}${archive.url}">${archive.datetime.strftime("%b %Y")}</a>
+                <span class="archive-list-count">${len(archive.posts)}</span>
+                </li>
+            % endfor
+        </ul>
+    </div>
+</div>

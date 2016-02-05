@@ -1,0 +1,64 @@
+
+% if site.mathjax:
+    <script type="text/javascript"
+            src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+% endif
+
+% if site.google_analytics_tracking_id:
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', '{{ site.google_analytics_tracking_id }}']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+% endif
+
+% if site.clicky_tracking_id:
+    <script type="text/javascript">try{ clicky.init({{ site.clicky_tracking_id }}); }catch(e){}</script>
+% endif
+
+% if site.woopra_tracking_site:
+    <script>
+    (function(){
+        var t,i,e,n=window,o=document,a=arguments,s="script",r=["config","track","identify","visit","push","call"],c=function(){var t,i=this;for(i._e=[],t=0;r.length>t;t++)(function(t){i[t]=function(){return i._e.push([t].concat(Array.prototype.slice.call(arguments,0))),i}})(r[t])};for(n._w=n._w||{},t=0;a.length>t;t++)n._w[a[t]]=n[a[t]]=n[a[t]]||new c;i=o.createElement(s),i.async=1,i.src="//static.woopra.com/js/w.js",e=o.getElementsByTagName(s)[0],e.parentNode.insertBefore(i,e)
+    })("woopra");
+
+    woopra.config({
+        domain: '{{ site.woopra_tracking_site }}',
+        idle_timeout: 1800000
+    });
+    woopra.track();
+</script>
+% endif
+
+% if site.disqus_short_name:
+<script>
+    var disqus_shortname = '${site.disqus_short_name}';
+(function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    console.log(dsq.src);
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+% endif
+
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="${site.root_path}fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+<script src="${site.root_path}scrollLoading/jquery.scrollLoading.js" type="text/javascript"></script>
+<script src="${site.root_path}scrollLoading/main.js" type="text/javascript"></script>
+<script src="${site.root_path}js/html-patch.js" type="text/javascript"></script>
+<script src="${site.root_path}js/script.js" type="text/javascript"></script>

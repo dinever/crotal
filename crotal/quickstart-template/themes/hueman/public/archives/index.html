@@ -1,0 +1,37 @@
+<%inherit file="_layout/default.html"/>
+
+<%def name="title()">Archives</%def>
+<%def name="header()"><i class="icon" id="icon-archive"></i>Archive</%def>
+
+<%!
+import re
+
+def excerpt(text):
+    return re.sub('<[^<]+?>', '', text)[:200]
+%>
+
+
+<div class="article-row">
+% for post in posts:
+      <article class="article article-summary article-summary-full">
+      <div class="article-summary-inner">
+
+          % if hasattr(post, 'feature_image'):
+              <a href="${site.root_path}${post.featured_image}" class="thumbnail" style="height: 162.548076923077px;">
+                  <span style="background-image:url(${post.featured_image})" alt="${post.title}" class="thumbnail-image"></span>
+              </a>
+          % endif
+
+          <div class="article-meta">
+              % for category in post.categories:
+                  <p class="category"><a class="article-category-link" href="${site.root_path}${category.url}">${category.name}</a></p>
+              % endfor
+              <p class="date"><time datetime="2015-03-03T00:13:55.108Z" itemprop="datePublished">${post.date.strftime('%Y-%m-%d')}</time></p>
+          </div>
+          <h2 class="article-title">
+              <a href="${site.root_path}${post.url}" class="title">${post.title}</a>
+          </h2>
+      </div>
+      </article>
+% endfor
+</div>
