@@ -1,4 +1,6 @@
-#Crotal
+# Crotal
+
+![logo](/docs/crotal.png)
 
 [![downloads](https://img.shields.io/pypi/dm/crotal.svg)](https://pypi.python.org/pypi/crotal/)
 [![version](https://img.shields.io/pypi/v/crotal.svg?label=version)](https://pypi.python.org/pypi/crotal/)
@@ -33,11 +35,8 @@ Now the website is available at http://localhost:1124.
 
 ##Documents
 
-See [crotal.org](http://crotal.org/docs).
+See [http://crotal.org](http://crotal.github.io/docs).
 
 ##License
 
 [GPL Licenses](https://github.com/dinever/crotal/blob/master/LICENSE)
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/dinever/crotal/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
