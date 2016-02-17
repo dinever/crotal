@@ -70,7 +70,7 @@ class Command(object):
     @staticmethod
     def generate(full=False, output=None):
         start = time.time()
-        site = Site(path=utils.locate_base_dir(), full=full, output=output)
+        site = Site(utils.locate_base_dir(), full=full, output=output)
         site.generate()
         end = time.time()
         logger.info("Site generated in {0:.2f} seconds.".format(end-start))
@@ -87,8 +87,7 @@ class Command(object):
         for line in LOGO_LARGE:
             logger.info(line)
         print()
-        path = utils.locate_base_dir()
-        server.start(port, path=path)
+        server.start(port, utils.locate_base_dir())
 
     @staticmethod
     def create_post(post_title='sample post'):

@@ -37,12 +37,12 @@ FIELD_NAME_CONVERT = {
 }
 
 
-# First create the treeprocessor
-
 class ImgExtractor(Treeprocessor):
 
     def run(self, doc):
-        "Find all images and append to markdown.images. "
+        """
+        Find all images and append to markdown.images. "
+        """
         self.markdown.images = []
         for image in doc.findall('.//img'):
             self.markdown.images.append(image.get('src'))
@@ -61,23 +61,33 @@ MARKDOWN_EXTENSION_CONFIG = \
 
 
 class Post(Model):
-    """Model `Post` for posts in the blog.
+    """
+    Model `Post` for posts in the blog.
 
     Attributes:
-        PATH: The relative path where this model is related to, please
-    use the relative path to this script.
-        FILE_EXTENSIONS: Only the files with these file extensions shall
-    be read by the model.
 
-        title: Title of the post.
-        slug: Slug of the post that may be used in its url.
-        pub_date: Publication date of the post.
-        tags: A list of Tags that the post is related to.
-        categories: A list of Categories that the post belongs to.
-        raw_content: The raw markdown content of the post.
-        html_content: The html format post content generated from markdown
+    ``PATH``: A list of relative paths where this model is related to, please
+    use the relative path to this script.
+
+    ``FILE_EXTENSIONS``: A list containing file extensions. Only the files
+    with these file extensions shall be read by the model.
+
+    ``title``: Title of the post.
+
+    ``slug``: Slug of the post that may be used in its url.
+
+    ``pub_date``: Publication date of the post.
+
+    ``tags``: A list of Tags that the post is related to.
+
+    ``categories``: A list of Categories that the post belongs to.
+
+    ``raw_content``: The raw markdown content of the post.
+
+    ``html_content``: The html format post content generated from markdown
     file(raw_content).
-        short_html_content: A short version of the `html_content`, which
+
+    ``short_html_content``: A short version of the ``html_content``, which
     may be represented on the index page.
 
     """
@@ -93,23 +103,44 @@ class Post(Model):
     short_content = TextField(default="")
 
     def create(self):
-        md = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'tables', ImgExtExtension()], extension_configs=MARKDOWN_EXTENSION_CONFIG)
+        """
+        This method:
+
+        1. Converts the post content from markdown into html format.
+        2. Extracts a list of image urls.
+        3. Creates a short version of the post content for display.
+        4. Converts the categories and tags from string to object.
+
+        :return:
+        """
+        md = markdown.Markdown(
+            extensions=['fenced_code',
+                        'codehilite',
+                        'tables',
+                        ImgExtExtension()],
+            extension_configs=MARKDOWN_EXTENSION_CONFIG)
         md.inlinePatterns['image_link'] = CheckImagePattern(IMAGE_LINK_RE, md, self.config)
         self.url = self.generate_url(self.config.permalink)
         self.content = md.convert(self.content)
-        self.images = md.images
+        self.images = md.images if hasattr(md, 'images') else []
         self.short_content = self.content.split('<!--more-->')[0]
         self.categories = [Category.add(item, self) for item in self.raw_categories]
         self.tags = [Tag.add(item, self) for item in self.raw_tags]
 
     @classmethod
     def load_extra_items(cls, config):
-        for object in cls.objects.all():
-            Archive.add(object.date, object)
-            for category in object.raw_categories:
-                Category.add(category, object)
-            for tag in object.raw_tags:
-                Tag.add(tag, object)
+        """
+        Load ``Archive``, ``Categorie`` and ``Tag`` objects created from this Post
+        into the object manger of their own class.
+        :param config:
+        :return:
+        """
+        for obj in cls.objects.all():
+            Archive.add(obj.date, obj)
+            for category in obj.raw_categories:
+                Category.add(category, obj)
+            for tag in obj.raw_tags:
+                Tag.add(tag, obj)
         cls.objects.sort(key='date', reverse=True)
         Archive.objects.sort(key='datetime', reverse=True)
         Category.objects.sort(key=lambda x: len(x.posts), reverse=True)
@@ -117,14 +148,15 @@ class Post(Model):
 
     def generate_url(self, permalink):
         """
-        Save the post url, refering to the permalink in the config file.
+        Save the post url by the permalink in config file.
+
         The permalink is seperated into servel parts from '/'.
         If one part of it startswith ':', then we should find whether there
-            is attribute with the same name in the post.
-        If not, we regard it as a string
+        is attribute with the same name in the post.
+        If not, we take it as a string.
+
         example:
-        post/:year/:month/:title
-        will be generated to a url like 'crotal.org/post/2013/11/hello-world/'
+        '/post/2013/11/hello-world/' can be generated from ``/post/:year/:month/:title``
         """
         url = ''
         for item in permalink.split('/'):
@@ -136,6 +168,11 @@ class Post(Model):
         return url.decode('utf8')
 
     def escape_keywords(self, word):
+        """
+        This method serves like a switch statement, return field by the indicated keyword.
+        :param word: ``year``, ``month``, ``day``, ``title`` or ``category``
+        :return: The corresponding item as a string.
+        """
         return {
             'year': self.date.strftime('%Y'),
             'month': self.date.strftime('%m'),

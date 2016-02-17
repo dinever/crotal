@@ -131,7 +131,7 @@ class ChangeHandler(PatternMatchingEventHandler):
         self.process(event)
 
 
-def start(port, path=os.getcwd()):
+def start(port, path):
     if not path:
         logger.error("Not in a crotal site.")
         sys.exit()

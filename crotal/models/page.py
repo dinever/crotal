@@ -8,23 +8,33 @@ from crotal.models.fields import *
 
 
 class Page(Model):
-    """Model `Post` for posts in the blog.
+    """
+    Model `Post` for posts in the blog.
 
     Attributes:
-        PATH: The relative path where this model is related to, please
+
+    ``PATH``: The relative path where this model is related to, please
     use the relative path to this script.
-        FILE_EXTENSIONS: Only the files with these file extensions shall
+
+    ``FILE_EXTENSIONS``: Only the files with these file extensions shall
     be read by the model.
 
-        title: Title of the post.
-        slug: Slug of the post that may be used in its url.
-        pub_date: Publication date of the post.
-        tags: A list of Tags that the post is related to.
-        categories: A list of Categories that the post belongs to.
-        raw_content: The raw markdown content of the post.
-        html_content: The html format post content genearted from markdown
+    ``title``: Title of the post.
+
+    ``slug``: Slug of the post that may be used in its url.
+
+    ``pub_date``: Publication date of the post.
+
+    ``tags``: A list of Tags that the post is related to.
+
+    ``categories``: A list of Categories that the post belongs to.
+
+    ``raw_content``: The raw markdown content of the post.
+
+    ``html_content``: The html format post content genearted from markdown
     file(raw_content).
-        short_html_content: A short version of the `html_content`, which
+
+    ``short_html_content``: A short version of the ``html_content``, which
     may be represented on the index page.
 
     """
@@ -42,4 +52,7 @@ class Page(Model):
     short_html_content = TextField()
 
     def create(self):
+        """
+        Convert the page content from markdown into html format.
+        """
         self.content = markdown(self.content, extensions=['fenced_code', 'codehilite', 'tables'])

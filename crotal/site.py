@@ -17,13 +17,13 @@ from crotal.models import Page, Post, Template, Static
 
 class Site(object):
 
-    def __init__(self, path=os.getcwd(), full=False, output='preview'):
+    def __init__(self, path, full=False, output='preview'):
         """
         Site is an abstraction of a Crotal site.
 
         Example usage:
 
-        .. testcode::
+        .. ::
 
             from crotal.site import Site
 
@@ -31,7 +31,7 @@ class Site(object):
             site.generate()
 
         :param path: The root path of the site.
-        :param full: Set as `true` to do a full build, `false` to do an
+        :param full: Set as ``true`` to do a full build, ``false`` to do an
             incremental build.
         :param output: Indicating the path of the output folder.
         :return: None
@@ -68,7 +68,7 @@ class Site(object):
     def generate(self):
         """
         Generate the site, first render the templates, then write the rendered
-        files in the output path, then save the database json file `db.json`.
+        files in the output path, then save the database json file ``db.json``.
 
         :return: None
         """
@@ -82,18 +82,17 @@ class Site(object):
         running.
 
         When a single file is modified, created or deleted, the crotal server calls
-        this function and pass the `file_path` and `event_type` into it. Then the
+        this function and pass the ``file_path`` and ``event_type`` into it. Then the
         model(e.g. Post or Page or Template) of the file will be found based on
-        `file_path` and model will be called to react to the file change, and the
+        ``file_path`` and model will be called to react to the file change, and the
         output will be rewrite.
 
         :param file_path: The path of the modified file.
-        :param event_type: Type of the event, can be `modified`, `created` or
-            `deleted`.
-        :return:
+        :param event_type: Type of the event, can be ``modified``, ``created`` or
+            ``deleted``.
+        :return: None
         """
 
-        print(event_type)
 
         file_path = os.path.relpath(file_path, self.config.base_dir)
         model = self.detect_file_type(file_path)
@@ -105,7 +104,7 @@ class Site(object):
         Decide which model the file belongs to.
 
         :param file_path: Path of the file.
-        :return: `model` that the file belongs to.
+        :return: ``model`` that the file belongs to.
         """
         for model in self.models:
             for path in model.PATH:
@@ -122,7 +121,7 @@ class Site(object):
 
     def write(self):
         """
-        Write the site content based on `self.site_content`.
+        Write the site content based on ``self.site_content``.
 
         :return: None
         """
@@ -147,7 +146,7 @@ class Site(object):
 
     def save(self):
         """
-        Save the database content into `db.json`.
+        Save the database content into ``db.json``.
         :return: None
         """
         self.database.save()

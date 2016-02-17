@@ -45,7 +45,7 @@ class ListField(Field):
         """
         This method generates a list from a string with the format of "word1, word2, word3"
         """
-        if input and (isinstance(input, str) or isinstance(input, unicode)):
+        if input and isinstance(input, basestring):
             return [self.content_type(a.strip()) for a in input.split(',')]
         elif isinstance(input, list):
             return [self.content_type(a) for a in input]

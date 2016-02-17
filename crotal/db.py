@@ -11,17 +11,29 @@ from crotal import logger
 class Database(object):
     """
     Database is the interface to the file 'db.json'.
-    table includes 'posts', 'pages', 'templates', 'static', 'static'.
     """
     @classmethod
     def from_file(cls, path):
+        """
+        Read the database from the path argument.
+        :param path: The file path of the designated database file.
+        :return: The database object.
+        """
         try:
             raw_db = json.loads(open(path, 'r').read())
-        except:
+        except (ValueError, IOError):
             raw_db = {}
         return cls(path, content=raw_db)
 
     def __init__(self, path, content=None):
+        """
+        Initalize a new database object.
+
+        :param path: Indicating the path of the file that this database will
+            be written to when saving the database.
+        :param content: Content of the database if needed to predefine.
+        :return: None
+        """
         if content:
             self.raw_db = content
         else:
@@ -32,29 +44,67 @@ class Database(object):
             self._tables[field] = Table(field, content=self.raw_db[field])
 
     def __getitem__(self, table):
+        """
+        Fetch a ``table`` from the database.
+
+        :param table: Name of the table acquired.
+        :return: A ``table`` object.
+        """
         return self.get_table(table)
 
     def get_table(self, table):
-        if not table in self._tables:
+        """
+        Get a table object, same to ``self.__getitem__``.
+
+        :param table: Name of the table acquired.
+        :return: A ``table`` object.
+        """
+        if table not in self._tables:
             self._tables[table] = Table(table, content={})
             logger.info('New table "{0}" created.'.format(table))
             return self._tables[table]
         else:
             return self._tables[table]
 
-    def get_item(self, table, filename):
-        return self[table].get(filename, {'content': None})
+    def get_item(self, table, key):
+        """
+        Get the value directly from the database based on key and table name.
 
-    def set_item(self, table, filename, item_dict):
-        self[table][filename] = item_dict
+        :param table: Name of the table acquired.
+        :param key: Name of the key in the indicated table.
+        :return: The corresponding value stored in the table.
+        """
+        return self[table].get(key, {'content': None})
 
-    def remove_item(self, table, filename):
-        if filename in self.db[table]:
-            del self[table][filename]
+    def set_item(self, table, key, value):
+        """
+        Set the entry directly from the database based on key and table name.
+
+        :param table: Name of the table acquired.
+        :param key: Name of the key in the indicated table.
+        :value value: Value to be set in the table.
+        :return: The corresponding value stored in the table.
+        """
+        self[table][key] = value
+
+    def remove_item(self, table, key):
+        """
+        Remove the entry directly from the database based on key and table name.
+
+        :param table: Name of the table acquired.
+        :param key: Name of the key in the indicated table.
+        :value value: Value to be set in the table.
+        :return: The corresponding value stored in the table.
+        """
+        if key in self.raw_db[table]:
+            del self[table][key]
         else:
-            logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(filename, table))
+            logger.warning("Failed to remove from database: {0}, TYPE: {1}".format(key, table))
 
-    def dump(self):
+    def dumps(self):
+        """
+        Similar to ``json.dumps``.
+        """
         json_output = {}
         for table in self._tables:
             json_output[table] = self._tables[table].content
@@ -62,10 +112,19 @@ class Database(object):
         return json_string
 
     def save(self):
-        io.open(self._path, 'w+', encoding='utf8').write(self.dump())
+        """
+        Write the content of the database to the file indicated by ``self._path``
+        in json format.
+        :return:
+        """
+        io.open(self._path, 'w+', encoding='utf8').write(self.dumps())
 
 
 class Table(object):
+
+    """
+    Table is a wrapper of dictionary. The usage is the same as ``dict``.
+    """
 
     def __init__(self, table_name, content=None):
         self._table_name = table_name
@@ -104,7 +163,6 @@ class Table(object):
         return self._mapping.keys()
 
     def get(self, key, default=None):
-        """Return an item from the cache dict or `default`"""
         try:
             return self[key]
         except KeyError:

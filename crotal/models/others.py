@@ -154,6 +154,7 @@ class Tag(object):
 
 class Archive(object):
     URL_PATTERN = 'archives/:year/:month'
+    objects = ObjectManager()
 
     @classmethod
     def add(cls, datetime, obj):
