@@ -9,7 +9,7 @@
 
 A static site framework. Fast, powerful, and easy as 1, 2, 3.
 
-Homepage: [crotal.org](http://crotal.org)
+Homepage: [crotal.github.io](http://crotal.github.io)
 
 PyPI: [pypi.python.org/pypi/crotal](https://pypi.python.org/pypi/crotal)
 
@@ -35,7 +35,7 @@ Now the website is available at http://localhost:1124.
 
 ##Documents
 
-See [http://crotal.org](http://crotal.github.io/docs).
+See [http://crotal.github.io](http://crotal.github.io/docs)
 
 ##License
 
