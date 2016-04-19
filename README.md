@@ -39,4 +39,4 @@ See [http://crotal.github.io](http://crotal.github.io/docs)
 
 ##License
 
-[GPL Licenses](https://github.com/dinever/crotal/blob/master/LICENSE)
+[GPL License](https://github.com/dinever/crotal/blob/master/LICENSE)
