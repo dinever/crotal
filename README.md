@@ -13,6 +13,8 @@ Homepage: [crotal.github.io](http://crotal.github.io)
 
 PyPI: [pypi.python.org/pypi/crotal](https://pypi.python.org/pypi/crotal)
 
+![Crotal Usage](/docs/usage.gif)
+
 ##Installation
 
 via pip:
