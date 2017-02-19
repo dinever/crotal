@@ -2,7 +2,6 @@
 
 ![logo](/docs/crotal.png)
 
-[![downloads](https://img.shields.io/pypi/dm/crotal.svg)](https://pypi.python.org/pypi/crotal/)
 [![version](https://img.shields.io/pypi/v/crotal.svg?label=version)](https://pypi.python.org/pypi/crotal/)
 [![supported](https://img.shields.io/pypi/pyversions/crotal.svg)](https://pypi.python.org/pypi/crotal/)
 [![license](https://img.shields.io/pypi/l/crotal.svg)](http://www.gnu.org/licenses/gpl-3.0.en.html)
